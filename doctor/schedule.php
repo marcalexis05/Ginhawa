@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
     <link rel="icon" href="../Images/G-icon.png">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <title>Schedule</title>
     <style>
         .popup { animation: transitionIn-Y-bottom 0.5s; }
@@ -50,6 +52,11 @@
                       INNER JOIN patient p ON pr.patient_id = p.pid 
                       WHERE pr.doctor_id = $userid AND pr.status = 'pending'";
     $requests_result = $database->query($requests_query);
+
+    // Calculate min and max dates for Flatpickr
+    date_default_timezone_set('Asia/Kolkata');
+    $today = date('Y-m-d');
+    $oneWeekLater = date('Y-m-d', strtotime('+7 days'));
     ?>
     <div class="container">
         <div class="menu">
@@ -99,11 +106,7 @@
                     <td width="15%">
                         <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">Today's Date</p>
                         <p class="heading-sub12" style="padding: 0;margin: 0;">
-                            <?php 
-                            date_default_timezone_set('Asia/Kolkata');
-                            $today = date('Y-m-d');
-                            echo $today;
-                            ?>
+                            <?php echo $today; ?>
                         </p>
                     </td>
                     <td width="10%">
@@ -159,7 +162,7 @@
                                     <td width="5%" style="text-align: center;">Date:</td>
                                     <td width="30%">
                                         <form action="" method="post">
-                                            <input type="date" name="sheduledate" id="date" class="input-text filter-container-items" style="margin: 0;width: 95%;">
+                                            <input type="text" name="sheduledate" id="date" class="input-text filter-container-items" style="margin: 0;width: 95%;">
                                     </td>
                                     <td width="12%">
                                         <input type="submit" name="filter" value="Filter" class="btn-primary-soft btn button-icon btn-filter" style="padding: 15px; margin:0;width:100%">
@@ -239,7 +242,7 @@
                         <label for="title" class="form-label">Session Title:</label>
                         <input type="text" name="title" id="title" class="input-text" placeholder="Enter session title" required>
                         <label for="session_date" class="form-label">Session Date:</label>
-                        <input type="date" name="session_date" id="session_date" class="input-text" min="<?php echo date('Y-m-d'); ?>" required>
+                        <input type="text" name="session_date" id="session_date" class="input-text" required>
                         <label for="start_time" class="form-label">Start Time (8:00 AM - 5:30 PM):</label>
                         <select name="start_time" id="start_time" class="input-text" required onchange="updateEndTime()">
                             <option value="">Select Start Time</option>
@@ -339,7 +342,40 @@
         }
     }
     ?>
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
+    // Initialize Flatpickr for filter and session request dates
+    document.addEventListener('DOMContentLoaded', function() {
+        flatpickr('#date', {
+            minDate: '<?php echo $today; ?>',
+            maxDate: '<?php echo $oneWeekLater; ?>',
+            disable: [
+                function(date) {
+                    return date.getDay() === 0; // Disable Sundays
+                }
+            ],
+            dateFormat: 'Y-m-d',
+            onOpen: function(selectedDates, dateStr, instance) {
+                instance.redraw();
+            }
+        });
+
+        flatpickr('#session_date', {
+            minDate: '<?php echo $today; ?>',
+            maxDate: '<?php echo $oneWeekLater; ?>',
+            disable: [
+                function(date) {
+                    return date.getDay() === 0; // Disable Sundays
+                }
+            ],
+            dateFormat: 'Y-m-d',
+            onOpen: function(selectedDates, dateStr, instance) {
+                instance.redraw();
+            }
+        });
+    });
+
     function updateEndTime() {
         let startTime = document.getElementById('start_time').value;
         let duration = parseInt(document.getElementById('duration').value);
@@ -354,8 +390,9 @@
             document.getElementById('end_time').value = endTime;
         }
     }
+
     function validateForm() {
-        let sessionDate = new Date(document.getElementById('session_date').value);
+        let sessionDate = document.getElementById('session_date').value;
         let startTime = document.getElementById('start_time').value;
         let duration = document.getElementById('duration').value;
         let today = new Date();
@@ -366,7 +403,11 @@
             alert('Session title cannot be empty');
             return false;
         }
-        if (sessionDate < today) {
+        if (!sessionDate) {
+            alert('Please select a session date');
+            return false;
+        }
+        if (new Date(sessionDate) < today) {
             alert('Session date cannot be in the past');
             return false;
         }

@@ -55,31 +55,24 @@
     $userid = $userfetch["pid"];
     $username = $userfetch["pname"];
 
-    // Main query for appointments with gmeet_link
+    // Main query for appointments with updated schema
     $sqlmain = "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, 
-                schedule.scheduledate, schedule.start_time, schedule.end_time, appointment.apponum, 
-                appointment.appodate, appointment.gmeet_link 
+                schedule.scheduledate, schedule.start_time, schedule.end_time, appointment.apponum, appointment.appodate 
                 FROM schedule 
                 INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid 
                 INNER JOIN patient ON patient.pid = appointment.pid 
                 INNER JOIN doctor ON schedule.docid = doctor.docid 
-                WHERE patient.pid = ?";
+                WHERE patient.pid = $userid";
 
     if ($_POST && !empty($_POST["sheduledate"])) {
         $sheduledate = $_POST["sheduledate"];
-        $sqlmain .= " AND schedule.scheduledate = ?";
+        $sqlmain .= " AND schedule.scheduledate = '$sheduledate'";
     }
 
     $sqlmain .= " ORDER BY appointment.appodate ASC";
-    $stmt = $database->prepare($sqlmain);
-    if ($_POST && !empty($_POST["sheduledate"])) {
-        $stmt->bind_param("is", $userid, $sheduledate);
-    } else {
-        $stmt->bind_param("i", $userid);
-    }
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $result = $database->query($sqlmain);
 
+    // Check if query failed
     if ($result === false) {
         die("Query failed: " . $database->error);
     }
@@ -203,7 +196,7 @@
                                                     $scheduledate = $row["scheduledate"];
                                                     $start_time = date('h:i A', strtotime($row["start_time"]));
                                                     $end_time = date('h:i A', strtotime($row["end_time"]));
-                                                    $apponum = $row["apponum"];
+                                                    $apponum = $row["apponum"]; // Now correctly counts per doctor per day
                                                     $appodate = $row["appodate"];
                                                     $appoid = $row["appoid"];
                                                     $gmeet_link = $row["gmeet_link"] ?? 'Not yet generated';
@@ -224,7 +217,7 @@
                                                                         ' . substr($title, 0, 21) . '<br>
                                                                     </div>
                                                                     <div class="h3-search">
-                                                                        Appointment Number: <div class="h1-search">0' . $apponum . '</div>
+                                                                        Appointment Number: <div class="h1-search">' . sprintf("%02d", $apponum) . '</div>
                                                                     </div>
                                                                     <div class="h3-search">
                                                                         ' . substr($docname, 0, 30) . '

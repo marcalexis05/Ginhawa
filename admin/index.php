@@ -48,7 +48,7 @@
 <body>
     <?php
     session_start();
-    if(!isset($_SESSION["user"]) || $_SESSION['usertype']!='a'){
+    if (!isset($_SESSION["user"]) || $_SESSION['usertype'] != 'a') {
         header("location: ../login.php");
         exit;
     }
@@ -135,10 +135,10 @@
                                 echo "Error in doctor search query: " . $database->error;
                             } else {
                                 echo '<datalist id="doctors">';
-                                for ($y=0; $y<$list11->num_rows; $y++){
-                                    $row00=$list11->fetch_assoc();
-                                    $d=$row00["docname"];
-                                    $c=$row00["docemail"];
+                                for ($y = 0; $y < $list11->num_rows; $y++) {
+                                    $row00 = $list11->fetch_assoc();
+                                    $d = $row00["docname"];
+                                    $c = $row00["docemail"];
                                     echo "<option value='$d'><br/>";
                                     echo "<option value='$c'><br/>";
                                 }
@@ -246,7 +246,7 @@
                             <tr>
                                 <td>
                                     <p style="padding:10px;padding-left:48px;padding-bottom:0;font-size:23px;font-weight:700;color:var(--primarycolor);">
-                                        Upcoming Appointments until Next <?php echo date("l",strtotime("+1 week")); ?>
+                                        Upcoming Appointments until Next <?php echo date("l", strtotime("+1 week")); ?>
                                     </p>
                                     <p style="padding-bottom:19px;padding-left:50px;font-size:15px;font-weight:500;color:#212529e3;line-height:20px;">
                                         Here's Quick access to Upcoming Appointments until 7 days<br>
@@ -255,7 +255,7 @@
                                 </td>
                                 <td>
                                     <p style="text-align:right;padding:10px;padding-right:48px;padding-bottom:0;font-size:23px;font-weight:700;color:var(--primarycolor);">
-                                        Upcoming Sessions until Next <?php echo date("l",strtotime("+1 week")); ?>
+                                        Upcoming Sessions until Next <?php echo date("l", strtotime("+1 week")); ?>
                                     </p>
                                     <p style="padding-bottom:19px;text-align:right;padding-right:50px;font-size:15px;font-weight:500;color:#212529e3;line-height:20px;">
                                         Here's Quick access to Upcoming Sessions that Scheduled until 7 days<br>
@@ -278,7 +278,7 @@
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $nextweek = date("Y-m-d",strtotime("+1 week"));
+                                            $nextweek = date("Y-m-d", strtotime("+1 week"));
                                             $sqlmain = "select appointment.appoid,schedule.scheduleid,schedule.title,doctor.docname,patient.pname,schedule.scheduledate,schedule.start_time,schedule.end_time,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join patient on patient.pid=appointment.pid inner join doctor on schedule.docid=doctor.docid where schedule.scheduledate>='$today' and schedule.scheduledate<='$nextweek' order by schedule.scheduledate desc";
                                             $result = $database->query($sqlmain);
                                             
@@ -299,7 +299,7 @@
                                                     $pname = $row["pname"];
                                                     $apponum = $row["apponum"];
                                                     $appodate = $row["appodate"];
-                                                    echo '<tr><td style="text-align:center;font-size:23px;font-weight:500;color:var(--btnnicetext);padding:20px;">'.$apponum.'</td><td style="font-weight:600;">'.substr($pname,0,25).'</td><td style="font-weight:600;">'.substr($docname,0,25).'</td><td>'.substr($title,0,15).'</td></tr>';
+                                                    echo '<tr><td style="text-align:center;font-size:23px;font-weight:500;color:var(--btnnicetext);padding:20px;">' . sprintf("%02d", $apponum) . '</td><td style="font-weight:600;">' . substr($pname, 0, 25) . '</td><td style="font-weight:600;">' . substr($docname, 0, 25) . '</td><td>' . substr($title, 0, 15) . '</td></tr>';
                                                 }
                                             }
                                             ?>
@@ -321,8 +321,8 @@
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $nextweek = date("Y-m-d",strtotime("+1 week"));
-                                            $sqlmain = "select schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.start_time,schedule.end_time,schedule.nop from schedule inner join doctor on schedule.docid=doctor.docid where schedule.scheduledate>='$today' and schedule.scheduledate<='$nextweek' order by schedule.scheduledate desc";
+                                            $nextweek = date("Y-m-d", strtotime("+1 week"));
+                                            $sqlmain = "select schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.start_time,schedule.end_time from schedule inner join doctor on schedule.docid=doctor.docid where schedule.scheduledate>='$today' and schedule.scheduledate<='$nextweek' order by schedule.scheduledate desc";
                                             $result = $database->query($sqlmain);
                                             
                                             if ($result === false) {
@@ -331,15 +331,14 @@
                                                 echo '<tr><td colspan="3"><br><br><br><br><center><img src="../img/notfound.svg" width="25%"><br><p class="heading-main12" style="margin-left:45px;font-size:20px;color:rgb(49,49,49)">We couldn\'t find anything related to your keywords!</p><a class="non-style-link" href="schedule.php"><button class="login-btn btn-primary-soft btn" style="display:flex;justify-content:center;align-items:center;margin-left:20px;">Show all Sessions</button></a></center><br><br><br><br></td></tr>';
                                             } else {
                                                 for ($x = 0; $x < $result->num_rows; $x++) {
-                                                    $row = $row = $result->fetch_assoc();
+                                                    $row = $result->fetch_assoc();
                                                     $scheduleid = $row["scheduleid"];
                                                     $title = $row["title"];
                                                     $docname = $row["docname"];
                                                     $scheduledate = $row["scheduledate"];
                                                     $start_time = date('h:i A', strtotime($row["start_time"]));
                                                     $end_time = date('h:i A', strtotime($row["end_time"]));
-                                                    $nop = $row["nop"];
-                                                    echo '<tr><td style="padding:20px;">'.substr($title,0,30).'</td><td>'.substr($docname,0,20).'</td><td style="text-align:center;">'.substr($scheduledate,0,10).' '.$start_time.' - '.$end_time.'</td></tr>';
+                                                    echo '<tr><td style="padding:20px;">' . substr($title, 0, 30) . '</td><td>' . substr($docname, 0, 20) . '</td><td style="text-align:center;">' . substr($scheduledate, 0, 10) . ' ' . $start_time . ' - ' . $end_time . '</td></tr>';
                                                 }
                                             }
                                             ?>
