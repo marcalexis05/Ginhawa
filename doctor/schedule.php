@@ -53,7 +53,6 @@
     ?>
     <div class="container">
         <div class="menu">
-            <!-- Menu content remains the same -->
             <table class="menu-container" border="0">
                 <tr>
                     <td style="padding:10px" colspan="2">
@@ -143,12 +142,12 @@
                 <tr>
                     <td colspan="4" style="padding-top:10px;width: 100%;">
                         <?php
-                        $sqlmain = "SELECT schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.start_time,schedule.end_time,schedule.nop 
+                        $sqlmain = "SELECT schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.start_time,schedule.end_time 
                                   FROM schedule INNER JOIN doctor ON schedule.docid=doctor.docid 
                                   WHERE doctor.docid=$userid";
                         $result = $database->query($sqlmain);
                         ?>
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">My Sessions (<?php echo $result->num_rows; ?>)</p>
+                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">My Sessions (<?php echo ($result !== false && $result->num_rows !== null) ? $result->num_rows : 0; ?>)</p>
                     </td>
                 </tr>
                 <tr>
@@ -194,14 +193,13 @@
                                         <tr>
                                             <th class="table-headin">Session Title</th>
                                             <th class="table-headin">Scheduled Date & Time</th>
-                                            <th class="table-headin">Max Bookings</th>
                                             <th class="table-headin">Events</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        if($result->num_rows == 0){
-                                            echo '<tr><td colspan="4"><center><img src="../img/notfound.svg" width="25%"><br><p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">No sessions found!</p></center></td></tr>';
+                                        if($result === false || $result->num_rows == 0){
+                                            echo '<tr><td colspan="3"><center><img src="../img/notfound.svg" width="25%"><br><p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">No sessions found!</p></center></td></tr>';
                                         } else {
                                             while($row = $result->fetch_assoc()){
                                                 $scheduleid = $row["scheduleid"];
@@ -209,11 +207,9 @@
                                                 $scheduledate = $row["scheduledate"];
                                                 $start_time = date('h:i A', strtotime($row["start_time"]));
                                                 $end_time = date('h:i A', strtotime($row["end_time"]));
-                                                $nop = $row["nop"];
                                                 echo '<tr>
                                                     <td>'.substr($title,0,30).'</td>
                                                     <td style="text-align:center;">'.$scheduledate.' '.$start_time.' - '.$end_time.'</td>
-                                                    <td style="text-align:center;">'.$nop.'</td>
                                                     <td>
                                                         <div style="display:flex;justify-content: center;">
                                                             <a href="?action=view&id='.$scheduleid.'" class="non-style-link"><button class="btn-primary-soft btn button-icon btn-view" style="padding:12px 40px;margin:10px;"><font class="tn-in-text">View</font></button></a>
@@ -242,8 +238,6 @@
                     <form action="submit-request.php" method="post" onsubmit="return validateForm()">
                         <label for="title" class="form-label">Session Title:</label>
                         <input type="text" name="title" id="title" class="input-text" placeholder="Enter session title" required>
-                        <label for="num_sessions" class="form-label">Number of Sessions (1-5):</label>
-                        <input type="number" name="num_sessions" id="num_sessions" min="1" max="5" class="input-text" required>
                         <label for="session_date" class="form-label">Session Date:</label>
                         <input type="date" name="session_date" id="session_date" class="input-text" min="<?php echo date('Y-m-d'); ?>" required>
                         <label for="start_time" class="form-label">Start Time (8:00 AM - 5:30 PM):</label>
@@ -302,7 +296,7 @@
                 </div>
             </div>';
         } elseif($action == 'view'){
-            $sqlmain = "SELECT schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.start_time,schedule.end_time,schedule.nop 
+            $sqlmain = "SELECT schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.start_time,schedule.end_time 
                        FROM schedule INNER JOIN doctor ON schedule.docid=doctor.docid 
                        WHERE schedule.scheduleid=$id";
             $result = $database->query($sqlmain);
@@ -314,7 +308,6 @@
                 $scheduledate = $row["scheduledate"];
                 $start_time = date('h:i A', strtotime($row["start_time"]));
                 $end_time = date('h:i A', strtotime($row["end_time"]));
-                $nop = $row['nop'];
                 $sqlmain12 = "SELECT * FROM appointment 
                              INNER JOIN patient ON patient.pid=appointment.pid 
                              INNER JOIN schedule ON schedule.scheduleid=appointment.scheduleid 
@@ -332,7 +325,7 @@
                                     <tr><td class="label-td" colspan="2"><label class="form-label">Doctor: </label>'.$docname.'</td></tr>
                                     <tr><td class="label-td" colspan="2"><label class="form-label">Scheduled Date: </label>'.$scheduledate.'</td></tr>
                                     <tr><td class="label-td" colspan="2"><label class="form-label">Scheduled Time: </label>'.$start_time.' - '.$end_time.'</td></tr>
-                                    <tr><td class="label-td" colspan="2"><label class="form-label"><b>Registered Patients:</b> ('.$result12->num_rows.'/'.$nop.')</label></td></tr>
+                                    <tr><td class="label-td" colspan="2"><label class="form-label"><b>Registered Patients:</b> ('.$result12->num_rows.')</label></td></tr>
                                     <tr><td colspan="4"><center><div class="abc scroll"><table width="100%" class="sub-table scrolldown" border="0"><thead><tr><th class="table-headin">Patient ID</th><th class="table-headin">Patient Name</th><th class="table-headin">Appointment Number</th><th class="table-headin">Patient Telephone</th></tr></thead><tbody>';
                                     if($result12->num_rows == 0){
                                         echo '<tr><td colspan="4"><center><img src="../img/notfound.svg" width="25%"><p class="heading-main12" style="font-size:20px;color:rgb(49, 49, 49)">No registrations found!</p></center></td></tr>';
@@ -362,7 +355,6 @@
         }
     }
     function validateForm() {
-        let numSessions = document.getElementById('num_sessions').value;
         let sessionDate = new Date(document.getElementById('session_date').value);
         let startTime = document.getElementById('start_time').value;
         let duration = document.getElementById('duration').value;
@@ -372,10 +364,6 @@
 
         if (title === '') {
             alert('Session title cannot be empty');
-            return false;
-        }
-        if (numSessions < 1 || numSessions > 5) {
-            alert('Number of sessions must be between 1 and 5');
             return false;
         }
         if (sessionDate < today) {
@@ -401,7 +389,6 @@
         dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
     }
 
-    // Close dropdown when clicking outside
     window.onclick = function(event) {
         if (!event.target.closest('.notification-bell')) {
             var dropdown = document.getElementById('notificationDropdown');
