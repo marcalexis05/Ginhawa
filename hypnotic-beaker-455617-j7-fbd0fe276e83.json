@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "hypnotic-beaker-455617-j7",
+  "private_key_id": "fbd0fe276e832949fc56edb1b2e7e4a2a244bf2d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDJe/MbKgbLttcw\noclp+fxH1NjsBQXUjbMvbe7m1s9NuILR/dD97bWlgLDzXW1i+LpIhlaIOwE4XaQU\nHmuf1CmJ2k7KkqoLnCIANoPa14FNElJgRKboWmURKd/f/G7kWizAotyfL0tqTI3N\nKHd3jV20lbCMDiA/++QEy5T/ZY44KgPoukfkX+hDo6NFOjQPlFplhMYMVR/QX8BB\nZbmlNjSW8zReU12TcLRtv/P3Aq0rsLZjc0w4s3MrNuLKbMh/YN0SchNGIT5rINZ7\np+2uxV8Ot1nk9XZT2zDsJrKaGpRLT2lYm602hPbSVUuC8nyd6zNroKSnTacVoOde\npO5xlADxAgMBAAECggEABnot0l8jTf2nHGqHFKHVd/SiO9KYcqd03MMlYd6LeHyA\nGK1SjUUiM1dHLlmRBL8LvHS9I4yylwLUtzGpTDbziU7rBSFYLOuBti9fzerrRyfA\nGURREZdRjahvbws6AFeXqJW6KMdjuEYdoKK/ALpOPZ5LpyT+ceNW9ZNwSyM1QmIc\nh+xkGXcwcgU5svz0Gche6pcSmxd3F/KmZ+kMJlUzh5oVM9TY1XtQbSNGLF6cL/dh\nGYjSPihuRxE2+U36SnKDWLWAhFucLFSxRPvmyPbT7P6mrBbK0ytzPQfozGVai5yE\ncRzIJIZmzdAdx0N0b3xJesqTmF11AvHfCKIE3gtqlQKBgQDj+jEiraftOU8FBs5l\nuuba3X9/V0K7egwUISxazGdDI9ykt7ZKsruU7B+GYMrIyo2hGLTpgXmDC9ZtN9AE\nkHFTG6uodKXZu9Z0j7ia4bRDJ8sa3N30Ac/CBeOqk2QVcK9kaLy6w8hpVz8Kicyf\nB9GGGp/Cg8CNHJ9OXb/GjA//JwKBgQDiQBfIw5VpEXdxn+mMG95MutH1xX/GVd85\nqZ5FZcVkp4mOJX5ltskgU4fevMEguyM6ozwqL1TgO9KXHEcxOOJ5O9eUPKkSgRfy\n4w1Y/3+8EgdE+f9KevN+yGTACl88awAukeb53xh2IBRVxQiLwyooXI5YDopNMR/h\nQ3NU6VAOJwKBgQC2wIFTA1JyYFZv+RzLgCA/ov/p3NGp6BR2roEX6HN+5uihQoPn\nLZAhuYcr+buVaopOcbfU1+3Il1y1AODIR+IQdUYOLDQnbuRjXDLoNbaDfwrZ5eQn\nDqy1JHN08eJxLXvsSenA7eFiUIZAtGZLtcDId99J1sQsWp15/L0XNIA+UQKBgQCc\nSzxi80GOoINL2fVDVakehlwulO2svHuFYPg15pUS8G2k5Z/IchnEnA+bPfeIPd6b\nTlJsrd/LO2hB/UXs6egBaeaFv9XoM4ewwUriNTYvXKDq9Gx4LjFxXsvCoieiHCS3\nBxFxgb1rNMP3cDJ0IjFISpAGopzFsG7edXMBsF8eNwKBgBTTNZMHI0bFMy/L6DdT\n3PuEsVE5074VglP2TsI5pj7oRVZWhN8X3jO3OveC5io9Lcq/yBbQF+d7MR+KU6JL\nz39qXxX3kpjNbXFm2oS0cI/M+K5hGCJwY3/pTEBGQj10n9QtCYk5ijPHMlqeSqhF\nK7cU7p5keb/aSyvjyQsl1f50\n-----END PRIVATE KEY-----\n",
+  "client_email": "ginhawa@hypnotic-beaker-455617-j7.iam.gserviceaccount.com",
+  "client_id": "106049325495006378784",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/ginhawa%40hypnotic-beaker-455617-j7.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
