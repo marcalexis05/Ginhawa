@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require 'C:/xampp/htdocs/Ginhawa/vendor/autoload.php';
+require 'C:/xampp/htdocs/Ginhawa/vendor/autoload.php'; // Include Google Client Library
 
 use Google\Client;
 
@@ -26,11 +26,10 @@ if (isset($_GET['code'])) {
     }
     file_put_contents($tokenPath, json_encode($client->getAccessToken()));
 
-    // Redirect back to booking-complete.php
+    // Redirect back to booking-complete.php to continue the process
     header("Location: http://localhost/Ginhawa/patient/booking-complete.php");
     exit;
 } else {
     echo "Authorization failed. No code received.";
-    exit;
 }
 ?>

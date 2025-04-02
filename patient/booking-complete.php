@@ -4,13 +4,9 @@ session_start();
 require 'C:/xampp/htdocs/Ginhawa/PHPMailer/src/PHPMailer.php';
 require 'C:/xampp/htdocs/Ginhawa/PHPMailer/src/SMTP.php';
 require 'C:/xampp/htdocs/Ginhawa/PHPMailer/src/Exception.php';
-require 'C:/xampp/htdocs/Ginhawa/vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-use Google\Client;
-use Google\Service\Calendar;
-use Google\Service\Calendar\Event;
 
 if (isset($_SESSION["user"])) {
     if (empty($_SESSION["user"]) || $_SESSION['usertype'] != 'p') {
@@ -45,63 +41,11 @@ if ($_POST && isset($_POST["booknow"])) {
     $docname = $_POST["docname"];
     $patient_email = $useremail;
 
-    // Set up Google Client
-    $client = new Client();
-    $client->setApplicationName('Ginhawa Meet');
-    $client->setScopes([Calendar::CALENDAR]);
-    $client->setAuthConfig('C:/xampp/htdocs/Ginhawa/credentials.json');
-    $client->setAccessType('offline');
-    $client->setPrompt('select_account consent');
-    $client->setRedirectUri('http://localhost/Ginhawa/patient/callback.php'); // Must match Google Cloud Console
-
-    // Load previously authorized token, if it exists
-    $tokenPath = 'C:/xampp/htdocs/Ginhawa/token.json';
-    if (file_exists($tokenPath)) {
-        $accessToken = json_decode(file_get_contents($tokenPath), true);
-        $client->setAccessToken($accessToken);
-    }
-
-    // Check if token is expired or missing
-    if ($client->isAccessTokenExpired() || !$client->getAccessToken()) {
-        if ($client->getRefreshToken()) {
-            $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
-            file_put_contents($tokenPath, json_encode($client->getAccessToken()));
-        } else {
-            $authUrl = $client->createAuthUrl();
-            header("Location: $authUrl");
-            exit;
-        }
-    }
-
-    // Create Google Calendar event with Google Meet link
-    $service = new Calendar($client);
-
-    $event = new Event([
-        'summary' => $title,
-        'description' => "Session with Dr. $docname for $patient_name",
-        'start' => [
-            'dateTime' => "$scheduledate" . "T$start_time:00+08:00",
-            'timeZone' => 'Asia/Manila',
-        ],
-        'end' => [
-            'dateTime' => "$scheduledate" . "T" . date("H:i", strtotime($start_time) + 3600) . ":00+08:00",
-            'timeZone' => 'Asia/Manila',
-        ],
-        'attendees' => [
-            ['email' => $patient_email],
-            ['email' => 'ginhawamentalhealth@gmail.com'],
-        ],
-        'conferenceData' => [
-            'createRequest' => [
-                'requestId' => uniqid(),
-                'conferenceSolutionKey' => ['type' => 'hangoutsMeet'],
-            ],
-        ],
-    ]);
-
-    $calendarId = 'primary';
-    $event = $service->events->insert($calendarId, $event, ['conferenceDataVersion' => 1]);
-    $gmeet_link = $event->hangoutLink;
+    // Generate a simple Google Meet link
+    $meetCode = substr(str_shuffle("ooe-hytx-obg"), 0, 3) . "-" . 
+                substr(str_shuffle("ghq-tunk-jes"), 0, 4) . "-" . 
+                substr(str_shuffle("xjj-tado-vrt"), 0, 3);
+    $gmeet_link = "https://meet.google.com/" . $meetCode;
 
     // Insert appointment into database
     $sql2 = "INSERT INTO appointment (pid, apponum, scheduleid, appodate, scheduledate, start_time, title, docname, patient_email, patient_name, gmeet_link) 
