@@ -1,0 +1,53 @@
+/* Import font and theme-specific settings if needed */
+@import url('font-inter.css');
+
+/* Chatbot Stylesheet */
+.chatbot-section {
+  padding: 50px 0;
+  background-color: #f7f7f7;
+}
+
+.chatbot-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.chatbot-header {
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.chatbot-controls {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.chatbot-btn {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  background-color: #007BFF;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chatbot-btn:hover {
+  background-color: #0056b3;
+}
+
+.chatbot-output {
+  min-height: 50px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  background: #fafafa;
+}
