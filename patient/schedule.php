@@ -113,6 +113,24 @@
         while ($row = $appointment_dates_result->fetch_assoc()) {
             $booked_dates[] = $row['scheduledate'];
         }
+
+        // Check for approved patient requests
+        $approved_request_sql = "SELECT doctor_id, session_date, start_time, end_time 
+                                 FROM patient_requests 
+                                 WHERE patient_id = ? AND status = 'approved'";
+        $stmt = $database->prepare($approved_request_sql);
+        $stmt->bind_param("i", $userid);
+        $stmt->execute();
+        $approved_requests_result = $stmt->get_result();
+        $approved_requests = [];
+        while ($row = $approved_requests_result->fetch_assoc()) {
+            $approved_requests[] = [
+                'doctor_id' => $row['doctor_id'],
+                'session_date' => $row['session_date'],
+                'start_time' => $row['start_time'],
+                'end_time' => $row['end_time']
+            ];
+        }
         ?>
         <div class="dash-body">
             <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;margin-top:25px; ">
@@ -207,8 +225,20 @@
                                                     $schedule_row = $schedule_result->fetch_assoc();
                                                     $schedule_booked = $schedule_row['count'] > 0;
 
+                                                    // Check if this patient has an approved request for this doctor's session
+                                                    $has_approved_request = false;
+                                                    foreach ($approved_requests as $request) {
+                                                        if ($request['doctor_id'] == $docid && 
+                                                            $request['session_date'] == $scheduledate && 
+                                                            $request['start_time'] == $row["start_time"] && 
+                                                            $request['end_time'] == $row["end_time"]) {
+                                                            $has_approved_request = true;
+                                                            break;
+                                                        }
+                                                    }
+
                                                     // Determine button state
-                                                    $button_disabled = $already_booked || $date_booked || $schedule_booked;
+                                                    $button_disabled = $already_booked || $date_booked || $schedule_booked || !$has_approved_request;
                                                     $button_class = $button_disabled ? "login-btn btn-primary-soft btn disabled-btn" : "login-btn btn-primary-soft btn";
                                                     if ($already_booked) {
                                                         $button_text = "Already Booked";
@@ -216,6 +246,8 @@
                                                         $button_text = "Date Booked";
                                                     } elseif ($schedule_booked) {
                                                         $button_text = "Slot Taken";
+                                                    } elseif (!$has_approved_request) {
+                                                        $button_text = "Request Pending";
                                                     } else {
                                                         $button_text = "Book Now";
                                                     }
@@ -262,6 +294,9 @@
                     break;
                 case 'Slot Taken':
                     message = 'This time slot is already booked by another patient.';
+                    break;
+                case 'Request Pending':
+                    message = 'You need to request this session and get approval from the doctor first.';
                     break;
             }
             Swal.fire({
