@@ -56,8 +56,15 @@
     
     date_default_timezone_set('Asia/Manila');
     $today = date('Y-m-d');
+    
+    // Check active doctors
     $active_doctors = $database->query("SELECT COUNT(*) as count FROM doctor_attendance WHERE date = '$today' AND time_in IS NOT NULL AND time_out IS NULL");
-    $active_count = $active_doctors->fetch_assoc()['count'];
+    if ($active_doctors === false) {
+        echo "Error in active doctors query: " . $database->error;
+        $active_count = 0;
+    } else {
+        $active_count = $active_doctors->fetch_assoc()['count'];
+    }
     ?>
     
     <div class="container">
@@ -121,18 +128,22 @@
                 <tr>
                     <td colspan="2" class="nav-bar">
                         <form action="doctors.php" method="post" class="header-search">
-                            <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Doctor name or Email" list="doctors">  
+                            <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Doctor name or Email" list="doctors">  
                             <?php
-                            echo '<datalist id="doctors">';
                             $list11 = $database->query("select docname,docemail from doctor;");
-                            for ($y=0;$y<$list11->num_rows;$y++){
-                                $row00=$list11->fetch_assoc();
-                                $d=$row00["docname"];
-                                $c=$row00["docemail"];
-                                echo "<option value='$d'><br/>";
-                                echo "<option value='$c'><br/>";
-                            };
-                            echo '</datalist>';
+                            if ($list11 === false) {
+                                echo "Error in doctor search query: " . $database->error;
+                            } else {
+                                echo '<datalist id="doctors">';
+                                for ($y=0; $y<$list11->num_rows; $y++){
+                                    $row00=$list11->fetch_assoc();
+                                    $d=$row00["docname"];
+                                    $c=$row00["docemail"];
+                                    echo "<option value='$d'><br/>";
+                                    echo "<option value='$c'><br/>";
+                                }
+                                echo '</datalist>';
+                            }
                             ?>
                             <input type="Submit" value="Search" class="login-btn btn-primary-soft btn" style="padding-left:25px;padding-right:25px;padding-top:10px;padding-bottom:10px;">
                         </form>
@@ -180,7 +191,7 @@
                                 <td style="width:25%;">
                                     <div class="dashboard-items" style="padding:20px;margin:auto;width:95%;display:flex">
                                         <div>
-                                            <div class="h1-dashboard"><?php echo $doctorrow->num_rows ?></div><br>
+                                            <div class="h1-dashboard"><?php echo ($doctorrow === false) ? 0 : $doctorrow->num_rows ?></div><br>
                                             <div class="h3-dashboard">Doctors</div>
                                         </div>
                                         <div class="btn-icon-back dashboard-icons" style="background-image:url('../img/icons/doctors-hover.svg');"></div>
@@ -189,7 +200,7 @@
                                 <td style="width:25%;">
                                     <div class="dashboard-items" style="padding:20px;margin:auto;width:95%;display:flex;">
                                         <div>
-                                            <div class="h1-dashboard"><?php echo $patientrow->num_rows ?></div><br>
+                                            <div class="h1-dashboard"><?php echo ($patientrow === false) ? 0 : $patientrow->num_rows ?></div><br>
                                             <div class="h3-dashboard">Patients</div>
                                         </div>
                                         <div class="btn-icon-back dashboard-icons" style="background-image:url('../img/icons/patients-hover.svg');"></div>
@@ -198,7 +209,7 @@
                                 <td style="width:25%;">
                                     <div class="dashboard-items" style="padding:20px;margin:auto;width:95%;display:flex;">
                                         <div>
-                                            <div class="h1-dashboard"><?php echo $appointmentrow->num_rows ?></div><br>
+                                            <div class="h1-dashboard"><?php echo ($appointmentrow === false) ? 0 : $appointmentrow->num_rows ?></div><br>
                                             <div class="h3-dashboard">New Booking</div>
                                         </div>
                                         <div class="btn-icon-back dashboard-icons" style="background-image:url('../img/icons/book-hover.svg');"></div>
@@ -207,7 +218,7 @@
                                 <td style="width:25%;">
                                     <div class="dashboard-items" style="padding:20px;margin:auto;width:95%;display:flex;padding-top:26px;padding-bottom:26px;">
                                         <div>
-                                            <div class="h1-dashboard"><?php echo $schedulerow->num_rows ?></div><br>
+                                            <div class="h1-dashboard"><?php echo ($schedulerow === false) ? 0 : $schedulerow->num_rows ?></div><br>
                                             <div class="h3-dashboard" style="font-size:15px">Today Sessions</div>
                                         </div>
                                         <div class="btn-icon-back dashboard-icons" style="background-image:url('../img/icons/session-iceblue.svg');"></div>
@@ -268,20 +279,23 @@
                                         <tbody>
                                             <?php
                                             $nextweek = date("Y-m-d",strtotime("+1 week"));
-                                            $sqlmain = "select appointment.appoid,schedule.scheduleid,schedule.title,doctor.docname,patient.pname,schedule.scheduledate,schedule.scheduletime,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join patient on patient.pid=appointment.pid inner join doctor on schedule.docid=doctor.docid where schedule.scheduledate>='$today' and schedule.scheduledate<='$nextweek' order by schedule.scheduledate desc";
+                                            $sqlmain = "select appointment.appoid,schedule.scheduleid,schedule.title,doctor.docname,patient.pname,schedule.scheduledate,schedule.start_time,schedule.end_time,appointment.apponum,appointment.appodate from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join patient on patient.pid=appointment.pid inner join doctor on schedule.docid=doctor.docid where schedule.scheduledate>='$today' and schedule.scheduledate<='$nextweek' order by schedule.scheduledate desc";
                                             $result = $database->query($sqlmain);
                                             
-                                            if($result->num_rows==0){
+                                            if ($result === false) {
+                                                echo '<tr><td colspan="4">Error in query: ' . $database->error . '</td></tr>';
+                                            } elseif ($result->num_rows == 0) {
                                                 echo '<tr><td colspan="4"><br><br><br><br><center><img src="../img/notfound.svg" width="25%"><br><p class="heading-main12" style="margin-left:45px;font-size:20px;color:rgb(49,49,49)">We couldn\'t find anything related to your keywords!</p><a class="non-style-link" href="appointment.php"><button class="login-btn btn-primary-soft btn" style="display:flex;justify-content:center;align-items:center;margin-left:20px;">Show all Appointments</button></a></center><br><br><br><br></td></tr>';
                                             } else {
-                                                for ($x=0; $x<$result->num_rows; $x++){
+                                                for ($x = 0; $x < $result->num_rows; $x++) {
                                                     $row = $result->fetch_assoc();
                                                     $appoid = $row["appoid"];
                                                     $scheduleid = $row["scheduleid"];
                                                     $title = $row["title"];
                                                     $docname = $row["docname"];
                                                     $scheduledate = $row["scheduledate"];
-                                                    $scheduletime = $row["scheduletime"];
+                                                    $start_time = date('h:i A', strtotime($row["start_time"]));
+                                                    $end_time = date('h:i A', strtotime($row["end_time"]));
                                                     $pname = $row["pname"];
                                                     $apponum = $row["apponum"];
                                                     $appodate = $row["appodate"];
@@ -308,21 +322,24 @@
                                         <tbody>
                                             <?php
                                             $nextweek = date("Y-m-d",strtotime("+1 week"));
-                                            $sqlmain = "select schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join doctor on schedule.docid=doctor.docid where schedule.scheduledate>='$today' and schedule.scheduledate<='$nextweek' order by schedule.scheduledate desc";
+                                            $sqlmain = "select schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.start_time,schedule.end_time,schedule.nop from schedule inner join doctor on schedule.docid=doctor.docid where schedule.scheduledate>='$today' and schedule.scheduledate<='$nextweek' order by schedule.scheduledate desc";
                                             $result = $database->query($sqlmain);
                                             
-                                            if($result->num_rows==0){
-                                                echo '<tr><td colspan="4"><br><br><br><br><center><img src="../img/notfound.svg" width="25%"><br><p class="heading-main12" style="margin-left:45px;font-size:20px;color:rgb(49,49,49)">We couldn\'t find anything related to your keywords!</p><a class="non-style-link" href="schedule.php"><button class="login-btn btn-primary-soft btn" style="display:flex;justify-content:center;align-items:center;margin-left:20px;">Show all Sessions</button></a></center><br><br><br><br></td></tr>';
+                                            if ($result === false) {
+                                                echo '<tr><td colspan="3">Error in query: ' . $database->error . '</td></tr>';
+                                            } elseif ($result->num_rows == 0) {
+                                                echo '<tr><td colspan="3"><br><br><br><br><center><img src="../img/notfound.svg" width="25%"><br><p class="heading-main12" style="margin-left:45px;font-size:20px;color:rgb(49,49,49)">We couldn\'t find anything related to your keywords!</p><a class="non-style-link" href="schedule.php"><button class="login-btn btn-primary-soft btn" style="display:flex;justify-content:center;align-items:center;margin-left:20px;">Show all Sessions</button></a></center><br><br><br><br></td></tr>';
                                             } else {
-                                                for ($x=0; $x<$result->num_rows; $x++){
-                                                    $row = $result->fetch_assoc();
+                                                for ($x = 0; $x < $result->num_rows; $x++) {
+                                                    $row = $row = $result->fetch_assoc();
                                                     $scheduleid = $row["scheduleid"];
                                                     $title = $row["title"];
                                                     $docname = $row["docname"];
                                                     $scheduledate = $row["scheduledate"];
-                                                    $scheduletime = $row["scheduletime"];
+                                                    $start_time = date('h:i A', strtotime($row["start_time"]));
+                                                    $end_time = date('h:i A', strtotime($row["end_time"]));
                                                     $nop = $row["nop"];
-                                                    echo '<tr><td style="padding:20px;">'.substr($title,0,30).'</td><td>'.substr($docname,0,20).'</td><td style="text-align:center;">'.substr($scheduledate,0,10).' '.substr($scheduletime,0,5).'</td></tr>';
+                                                    echo '<tr><td style="padding:20px;">'.substr($title,0,30).'</td><td>'.substr($docname,0,20).'</td><td style="text-align:center;">'.substr($scheduledate,0,10).' '.$start_time.' - '.$end_time.'</td></tr>';
                                                 }
                                             }
                                             ?>

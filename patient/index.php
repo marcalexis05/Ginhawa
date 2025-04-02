@@ -227,7 +227,13 @@
                                                 <tbody>
                                                     <?php
                                                     $nextweek = date("Y-m-d", strtotime("+1 week"));
-                                                    $sqlmain = "select * from schedule inner join appointment on schedule.scheduleid=appointment.scheduleid inner join patient on patient.pid=appointment.pid inner join doctor on schedule.docid=doctor.docid where patient.pid=? and schedule.scheduledate>='$today' order by schedule.scheduledate asc";
+                                                    $sqlmain = "select schedule.scheduleid, schedule.title, appointment.apponum, doctor.docname, schedule.scheduledate, schedule.start_time, schedule.end_time 
+                                                                from schedule 
+                                                                inner join appointment on schedule.scheduleid=appointment.scheduleid 
+                                                                inner join patient on patient.pid=appointment.pid 
+                                                                inner join doctor on schedule.docid=doctor.docid 
+                                                                where patient.pid=? and schedule.scheduledate>='$today' 
+                                                                order by schedule.scheduledate asc";
                                                     $stmt = $database->prepare($sqlmain);
                                                     $stmt->bind_param("i", $userid);
                                                     $stmt->execute();
@@ -253,12 +259,13 @@
                                                             $apponum = $row["apponum"];
                                                             $docname = $row["docname"];
                                                             $scheduledate = $row["scheduledate"];
-                                                            $scheduletime = $row["scheduletime"];
+                                                            $start_time = date("h:i A", strtotime($row["start_time"]));
+                                                            $end_time = date("h:i A", strtotime($row["end_time"]));
                                                             echo '<tr>
                                                                 <td style="padding:30px;font-size:25px;font-weight:700;">'.$apponum.'</td>
                                                                 <td style="padding:20px;">'.substr($title,0,30).'</td>
                                                                 <td>'.substr($docname,0,20).'</td>
-                                                                <td style="text-align:center;">'.substr($scheduledate,0,10).' '.substr($scheduletime,0,5).'</td>
+                                                                <td style="text-align:center;">'.substr($scheduledate,0,10).' '.$start_time.' - '.$end_time.'</td>
                                                             </tr>';
                                                         }
                                                     }

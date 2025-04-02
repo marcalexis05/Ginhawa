@@ -194,11 +194,13 @@
                                     } else {
                                         while($request = $requests->fetch_assoc()) {
                                             $request_id = $request['request_id'];
+                                            $start_time = date('h:i A', strtotime($request["session_time"]));
+                                            $end_time = date('h:i A', strtotime($request["session_time"] . " +30 minutes")); // Assuming 30-minute default duration
                                             echo '<div class="notification-item">';
                                             echo '<p><strong>'.$request['docname'].'</strong></p>';
                                             echo '<p>Title: '.$request['title'].'</p>';
                                             echo '<p>Sessions: '.$request['num_sessions'].'</p>';
-                                            echo '<p>Date: '.$request['session_date'].' '.$request['session_time'].'</p>';
+                                            echo '<p>Date: '.$request['session_date'].' '.$start_time.' - '.$end_time.'</p>';
                                             echo '<p>Requested: '.$request['request_date'].'</p>';
                                             echo '<div class="notification-actions">';
                                             echo '<a href="handle_request.php?action=approve&id='.$request_id.'"><button class="btn-approve">Approve</button></a>';
@@ -279,7 +281,7 @@
                             $docid=$_POST["docid"];
                             $sqlpt2=" doctor.docid=$docid ";
                         }
-                        $sqlmain= "select schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join doctor on schedule.docid=doctor.docid ";
+                        $sqlmain= "select schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.start_time,schedule.end_time from schedule inner join doctor on schedule.docid=doctor.docid ";
                         $sqllist=array($sqlpt1,$sqlpt2);
                         $sqlkeywords=array(" where "," and ");
                         $key2=0;
@@ -290,7 +292,7 @@
                             };
                         };
                     }else{
-                        $sqlmain= "select schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join doctor on schedule.docid=doctor.docid  order by schedule.scheduledate desc";
+                        $sqlmain= "select schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.start_time,schedule.end_time from schedule inner join doctor on schedule.docid=doctor.docid  order by schedule.scheduledate desc";
                     }
                 ?>
                 <tr>
@@ -303,7 +305,6 @@
                                 <th class="table-headin">Session Title</th>
                                 <th class="table-headin">Doctor</th>
                                 <th class="table-headin">Scheduled Date & Time</th>
-                                <th class="table-headin">Max num that can be booked</th>
                                 <th class="table-headin">Events</th>
                         </tr>
                         </thead>
@@ -318,7 +319,7 @@
                                     <img src="../img/notfound.svg" width="25%">
                                     <br>
                                     <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We couldn\'t find anything related to your keywords!</p>
-                                    <a class="non-style-link" href="schedule.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp;Show all Sessions&nbsp;</font></button>
+                                    <a class="non-style-link" href="schedule.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;"> Show all Sessions </font></button>
                                     </a>
                                     </center>
                                     <br><br><br><br>
@@ -332,17 +333,16 @@
                                     $title=$row["title"];
                                     $docname=$row["docname"];
                                     $scheduledate=$row["scheduledate"];
-                                    $scheduletime=$row["scheduletime"];
-                                    $nop=$row["nop"];
+                                    $start_time = date('h:i A', strtotime($row["start_time"]));
+                                    $end_time = date('h:i A', strtotime($row["end_time"]));
                                     echo '<tr>
-                                        <td>&nbsp;'.substr($title,0,30).'</td>
+                                        <td> '.substr($title,0,30).'</td>
                                         <td>'.substr($docname,0,20).'</td>
-                                        <td style="text-align:center;">'.substr($scheduledate,0,10).' '.substr($scheduletime,0,5).'</td>
-                                        <td style="text-align:center;">'.$nop.'</td>
+                                        <td style="text-align:center;">'.substr($scheduledate,0,10).' '.$start_time.' - '.$end_time.'</td>
                                         <td>
                                         <div style="display:flex;justify-content: center;">
                                         <a href="?action=view&id='.$scheduleid.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-view"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
-                                        &nbsp;&nbsp;
+                                          
                                        <a href="?action=drop&id='.$scheduleid.'&name='.$title.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-delete"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Remove</font></button></a>
                                         </div>
                                         </td>
@@ -382,13 +382,13 @@
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                <form action="add-session.php" method="POST" class="add-new-form">
+                                <form action="add-session.php" method="POST" class="add-new-form" onsubmit="return validateForm()">
                                     <label for="title" class="form-label">Session Title : </label>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                    <input type="text" name="title" class="input-text" placeholder="Name of this Session" required><br>
+                                    <input type="text" name="title" id="title" class="input-text" placeholder="Name of this Session" required><br>
                                 </td>
                             </tr>
                             <tr>
@@ -412,37 +412,64 @@
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                    <label for="nop" class="form-label">Number of Patients/Appointment Numbers : </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <input type="number" name="nop" class="input-text" min="0"  placeholder="The final appointment number for this session depends on this number" required><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
                                     <label for="date" class="form-label">Session Date: </label>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                    <input type="date" name="date" class="input-text" min="'.date('Y-m-d').'" required><br>
+                                    <input type="date" name="date" id="session_date" class="input-text" min="'.date('Y-m-d').'" required><br>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                    <label for="time" class="form-label">Schedule Time: </label>
+                                    <label for="start_time" class="form-label">Start Time (8:00 AM - 5:30 PM): </label>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                    <input type="time" name="time" class="input-text" placeholder="Time" required><br>
+                                    <select name="start_time" id="start_time" class="input-text" required onchange="updateEndTime()">
+                                        <option value="">Select Start Time</option>';
+                                        for ($h = 8; $h < 18; $h++) {
+                                            foreach ([0, 30] as $m) {
+                                                if ($h == 12 && $m == 0) continue;
+                                                if ($h == 17 && $m == 30) break;
+                                                $time = sprintf("%02d:%02d:00", $h, $m);
+                                                $ampm = $h >= 12 ? 'PM' : 'AM';
+                                                $display_h = $h > 12 ? $h - 12 : ($h == 0 ? 12 : $h);
+                                                echo "<option value='$time'>$display_h:" . ($m == 0 ? '00' : '30') . " $ampm</option>";
+                                            }
+                                        }
+                        echo '          </select><br><br>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td" colspan="2">
+                                    <label for="duration" class="form-label">Duration: </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td" colspan="2">
+                                    <select name="duration" id="duration" class="input-text" required onchange="updateEndTime()">
+                                        <option value="30">30 minutes</option>
+                                        <option value="60">1 hour</option>
+                                        <option value="90">1 hour 30 minutes</option>
+                                        <option value="120">2 hours</option>
+                                    </select><br><br>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td" colspan="2">
+                                    <label for="end_time" class="form-label">End Time: </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td" colspan="2">
+                                    <input type="text" name="end_time" id="end_time" class="input-text" readonly><br>
                                 </td>
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                    <input type="reset" value="Reset" class="login-btn btn-primary-soft btn" >&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="reset" value="Reset" class="login-btn btn-primary-soft btn" >    
                                     <input type="submit" value="Place this Session" class="login-btn btn-primary btn" name="shedulesubmit">
                                 </td>
                             </tr>
@@ -469,7 +496,7 @@
                         '.substr($titleget,0,40).' was scheduled.<br><br>
                         </div>
                         <div style="display: flex;justify-content: center;">
-                        <a href="schedule.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;OK&nbsp;&nbsp;</font></button></a>
+                        <a href="schedule.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">  OK  </font></button></a>
                         <br><br><br><br>
                         </div>
                     </center>
@@ -488,23 +515,23 @@
                             You want to delete this record<br>('.substr($nameget,0,40).').
                         </div>
                         <div style="display: flex;justify-content: center;">
-                        <a href="delete-session.php?id='.$id.'" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"<font class="tn-in-text">&nbsp;Yes&nbsp;</font></button></a>&nbsp;&nbsp;&nbsp;
-                        <a href="schedule.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">&nbsp;&nbsp;No&nbsp;&nbsp;</font></button></a>
+                        <a href="delete-session.php?id='.$id.'" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"<font class="tn-in-text"> Yes </font></button></a>   
+                        <a href="schedule.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">  No  </font></button></a>
                         </div>
                     </center>
             </div>
             </div>
             '; 
         }elseif($action=='view'){
-            $sqlmain= "select schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.scheduletime,schedule.nop from schedule inner join doctor on schedule.docid=doctor.docid  where  schedule.scheduleid=$id";
+            $sqlmain= "select schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.start_time,schedule.end_time from schedule inner join doctor on schedule.docid=doctor.docid  where  schedule.scheduleid=$id";
             $result= $database->query($sqlmain);
             $row=$result->fetch_assoc();
             $docname=$row["docname"];
             $scheduleid=$row["scheduleid"];
             $title=$row["title"];
             $scheduledate=$row["scheduledate"];
-            $scheduletime=$row["scheduletime"];
-            $nop=$row['nop'];
+            $start_time = date('h:i A', strtotime($row["start_time"]));
+            $end_time = date('h:i A', strtotime($row["end_time"]));
             $sqlmain12= "select * from appointment inner join patient on patient.pid=appointment.pid inner join schedule on schedule.scheduleid=appointment.scheduleid where schedule.scheduleid=$id;";
             $result12= $database->query($sqlmain12);
             echo '
@@ -559,12 +586,12 @@
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                '.$scheduletime.'<br><br>
+                                '.$start_time.' - '.$end_time.'<br><br>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                    <label for="spec" class="form-label"><b>Patients that Already registered for this session:</b> ('.$result12->num_rows."/".$nop.')</label>
+                                    <label for="spec" class="form-label"><b>Patients that Already registered for this session:</b> ('.$result12->num_rows.')</label>
                                     <br><br>
                                 </td>
                             </tr>
@@ -590,7 +617,7 @@
                                              <img src="../img/notfound.svg" width="25%">
                                              <br>
                                              <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We couldn\'t find anything related to your keywords!</p>
-                                             <a class="non-style-link" href="appointment.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp;Show all Appointments&nbsp;</font></button>
+                                             <a class="non-style-link" href="appointment.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;"> Show all Appointments </font></button>
                                              </a>
                                              </center>
                                              <br><br><br><br>
@@ -642,6 +669,51 @@
             dropdown.style.display = 'none';
         }
     });
+
+    function updateEndTime() {
+        let startTime = document.getElementById('start_time').value;
+        let duration = parseInt(document.getElementById('duration').value);
+        if (startTime && duration) {
+            let [hours, minutes] = startTime.split(':').map(Number);
+            let totalMinutes = hours * 60 + minutes + duration;
+            let newHours = Math.floor(totalMinutes / 60);
+            let newMinutes = totalMinutes % 60;
+            let ampm = newHours >= 12 ? 'PM' : 'AM';
+            newHours = newHours > 12 ? newHours - 12 : (newHours == 0 ? 12 : newHours);
+            let endTime = `${newHours}:${newMinutes < 10 ? '0' + newMinutes : newMinutes} ${ampm}`;
+            document.getElementById('end_time').value = endTime;
+        }
+    }
+
+    function validateForm() {
+        let sessionDate = new Date(document.getElementById('session_date').value);
+        let startTime = document.getElementById('start_time').value;
+        let duration = document.getElementById('duration').value;
+        let today = new Date();
+        today.setHours(0, 0, 0, 0);
+        let title = document.getElementById('title').value.trim();
+
+        if (title === '') {
+            alert('Session title cannot be empty');
+            return false;
+        }
+        if (sessionDate < today) {
+            alert('Session date cannot be in the past');
+            return false;
+        }
+        if (!startTime || !duration) {
+            alert('Please select start time and duration');
+            return false;
+        }
+        let [hours] = startTime.split(':').map(Number);
+        let endMinutes = (hours * 60 + parseInt(duration)) % 1440;
+        let endHour = Math.floor(endMinutes / 60);
+        if (hours < 8 || endHour > 18 || (hours < 13 && endHour > 12)) {
+            alert('Time must be between 8:00 AM - 6:00 PM, excluding 12:00 PM - 1:00 PM');
+            return false;
+        }
+        return true;
+    }
     </script>
 </body>
 </html>

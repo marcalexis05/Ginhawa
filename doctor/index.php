@@ -132,7 +132,7 @@
                         <p style="font-size:14px;color:rgb(119,119,119);padding:0;margin:0;text-align:right;">Today's Date</p>
                         <p class="heading-sub12" style="padding:0;margin:0;">
                             <?php 
-                            date_default_timezone_set('Asia/Manila'); // Changed to Manila to match logout.php
+                            date_default_timezone_set('Asia/Manila');
                             $today = date('Y-m-d');
                             echo $today;
                             $patientrow = $database->query("SELECT * FROM patient");
@@ -181,7 +181,7 @@
                                                 <td style="width:25%;">
                                                     <div class="dashboard-items" style="padding:20px;margin:auto;width:95%;display:flex">
                                                         <div>
-                                                            <div class="h1-dashboard"><?php echo $doctorrow->num_rows ?></div><br>
+                                                            <div class="h1-dashboard"><?php echo $doctorrow ? $doctorrow->num_rows : 0 ?></div><br>
                                                             <div class="h3-dashboard">All Doctors</div>
                                                         </div>
                                                         <div class="btn-icon-back dashboard-icons" style="background-image:url('../img/icons/doctors-hover.svg');"></div>
@@ -190,7 +190,7 @@
                                                 <td style="width:25%;">
                                                     <div class="dashboard-items" style="padding:20px;margin:auto;width:95%;display:flex;">
                                                         <div>
-                                                            <div class="h1-dashboard"><?php echo $patientrow->num_rows ?></div><br>
+                                                            <div class="h1-dashboard"><?php echo $patientrow ? $patientrow->num_rows : 0 ?></div><br>
                                                             <div class="h3-dashboard">All Patients</div>
                                                         </div>
                                                         <div class="btn-icon-back dashboard-icons" style="background-image:url('../img/icons/patients-hover.svg');"></div>
@@ -201,7 +201,7 @@
                                                 <td style="width:25%;">
                                                     <div class="dashboard-items" style="padding:20px;margin:auto;width:95%;display:flex;">
                                                         <div>
-                                                            <div class="h1-dashboard"><?php echo $appointmentrow->num_rows ?></div><br>
+                                                            <div class="h1-dashboard"><?php echo $appointmentrow ? $appointmentrow->num_rows : 0 ?></div><br>
                                                             <div class="h3-dashboard">New Booking</div>
                                                         </div>
                                                         <div class="btn-icon-back dashboard-icons" style="background-image:url('../img/icons/book-hover.svg');"></div>
@@ -210,7 +210,7 @@
                                                 <td style="width:25%;">
                                                     <div class="dashboard-items" style="padding:20px;margin:auto;width:95%;display:flex;padding-top:21px;padding-bottom:21px;">
                                                         <div>
-                                                            <div class="h1-dashboard"><?php echo $schedulerow->num_rows ?></div><br>
+                                                            <div class="h1-dashboard"><?php echo $schedulerow ? $schedulerow->num_rows : 0 ?></div><br>
                                                             <div class="h3-dashboard" style="font-size:15px">Today Sessions</div>
                                                         </div>
                                                         <div class="btn-icon-back dashboard-icons" style="background-image:url('../img/icons/session-iceblue.svg');"></div>
@@ -228,6 +228,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th class="table-headin">Session Title</th>
+                                                        <th class="table-headin">Patient Name</th>
                                                         <th class="table-headin">Scheduled Date</th>
                                                         <th class="table-headin">Time</th>
                                                     </tr>
@@ -235,17 +236,21 @@
                                                 <tbody>
                                                     <?php
                                                     $nextweek = date("Y-m-d", strtotime("+1 week"));
-                                                    $sqlmain = "SELECT schedule.scheduleid, schedule.title, doctor.docname, schedule.scheduledate, schedule.scheduletime, schedule.nop 
+                                                    $sqlmain = "SELECT schedule.scheduleid, schedule.title, doctor.docname, schedule.scheduledate, schedule.start_time, schedule.end_time, patient.pname 
                                                                 FROM schedule 
                                                                 INNER JOIN doctor ON schedule.docid=doctor.docid 
+                                                                INNER JOIN appointment ON schedule.scheduleid=appointment.scheduleid 
+                                                                INNER JOIN patient ON appointment.pid=patient.pid 
                                                                 WHERE schedule.scheduledate>='$today' AND schedule.scheduledate<='$nextweek' 
                                                                 AND doctor.docid='$userid' 
                                                                 ORDER BY schedule.scheduledate DESC";
                                                     $result = $database->query($sqlmain);
 
-                                                    if ($result->num_rows == 0) {
+                                                    if ($result === false) {
+                                                        echo '<tr><td colspan="4">Query failed: ' . htmlspecialchars($database->error) . '</td></tr>';
+                                                    } elseif ($result->num_rows == 0) {
                                                         echo '<tr>
-                                                            <td colspan="3">
+                                                            <td colspan="4">
                                                                 <br><br><br><br>
                                                                 <center>
                                                                     <img src="../img/notfound.svg" width="25%">
@@ -263,11 +268,14 @@
                                                             $title = $row["title"];
                                                             $docname = $row["docname"];
                                                             $scheduledate = $row["scheduledate"];
-                                                            $scheduletime = $row["scheduletime"];
+                                                            $start_time = date("h:i A", strtotime($row["start_time"]));
+                                                            $end_time = date("h:i A", strtotime($row["end_time"]));
+                                                            $pname = $row["pname"];
                                                             echo '<tr>
                                                                 <td style="padding:20px;"> ' . substr($title, 0, 30) . '</td>
+                                                                <td style="padding:20px;"> ' . substr($pname, 0, 20) . '</td>
                                                                 <td style="padding:20px;font-size:13px;">' . substr($scheduledate, 0, 10) . '</td>
-                                                                <td style="text-align:center;">' . substr($scheduletime, 0, 5) . '</td>
+                                                                <td style="text-align:center;">' . $start_time . ' - ' . $end_time . '</td>
                                                             </tr>';
                                                         }
                                                     }
