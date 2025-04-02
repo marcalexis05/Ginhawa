@@ -39,7 +39,6 @@ class Comments extends \Google\Service\Resource
    * @param string $commentId
    * @param array $optParams Optional parameters.
    * @return Comment
-   * @throws \Google\Service\Exception
    */
   public function approve($blogId, $postId, $commentId, $optParams = [])
   {
@@ -54,7 +53,6 @@ class Comments extends \Google\Service\Resource
    * @param string $postId
    * @param string $commentId
    * @param array $optParams Optional parameters.
-   * @throws \Google\Service\Exception
    */
   public function delete($blogId, $postId, $commentId, $optParams = [])
   {
@@ -72,7 +70,6 @@ class Comments extends \Google\Service\Resource
    *
    * @opt_param string view
    * @return Comment
-   * @throws \Google\Service\Exception
    */
   public function get($blogId, $postId, $commentId, $optParams = [])
   {
@@ -95,7 +92,6 @@ class Comments extends \Google\Service\Resource
    * @opt_param string status
    * @opt_param string view
    * @return CommentList
-   * @throws \Google\Service\Exception
    */
   public function listComments($blogId, $postId, $optParams = [])
   {
@@ -116,7 +112,6 @@ class Comments extends \Google\Service\Resource
    * @opt_param string startDate
    * @opt_param string status
    * @return CommentList
-   * @throws \Google\Service\Exception
    */
   public function listByBlog($blogId, $optParams = [])
   {
@@ -133,7 +128,6 @@ class Comments extends \Google\Service\Resource
    * @param string $commentId
    * @param array $optParams Optional parameters.
    * @return Comment
-   * @throws \Google\Service\Exception
    */
   public function markAsSpam($blogId, $postId, $commentId, $optParams = [])
   {
@@ -150,7 +144,6 @@ class Comments extends \Google\Service\Resource
    * @param string $commentId
    * @param array $optParams Optional parameters.
    * @return Comment
-   * @throws \Google\Service\Exception
    */
   public function removeContent($blogId, $postId, $commentId, $optParams = [])
   {

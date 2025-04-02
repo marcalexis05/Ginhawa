@@ -22,7 +22,7 @@ namespace Google\Service\Apigee\Resource;
  * Typical usage is:
  *  <code>
  *   $apigeeService = new Google\Service\Apigee(...);
- *   $analytics = $apigeeService->organizations_analytics;
+ *   $analytics = $apigeeService->analytics;
  *  </code>
  */
 class OrganizationsAnalytics extends \Google\Service\Resource

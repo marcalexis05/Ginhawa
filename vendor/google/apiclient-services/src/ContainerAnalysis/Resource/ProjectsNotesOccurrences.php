@@ -24,7 +24,7 @@ use Google\Service\ContainerAnalysis\ListNoteOccurrencesResponse;
  * Typical usage is:
  *  <code>
  *   $containeranalysisService = new Google\Service\ContainerAnalysis(...);
- *   $occurrences = $containeranalysisService->projects_notes_occurrences;
+ *   $occurrences = $containeranalysisService->occurrences;
  *  </code>
  */
 class ProjectsNotesOccurrences extends \Google\Service\Resource
@@ -43,7 +43,6 @@ class ProjectsNotesOccurrences extends \Google\Service\Resource
    * @opt_param string pageToken Token to provide to skip to a particular spot in
    * the list.
    * @return ListNoteOccurrencesResponse
-   * @throws \Google\Service\Exception
    */
   public function listProjectsNotesOccurrences($name, $optParams = [])
   {

@@ -33,7 +33,7 @@ use Google\Service\CloudSourceRepositories\UpdateRepoRequest;
  * Typical usage is:
  *  <code>
  *   $sourcerepoService = new Google\Service\CloudSourceRepositories(...);
- *   $repos = $sourcerepoService->projects_repos;
+ *   $repos = $sourcerepoService->repos;
  *  </code>
  */
 class ProjectsRepos extends \Google\Service\Resource
@@ -48,7 +48,6 @@ class ProjectsRepos extends \Google\Service\Resource
    * @param Repo $postBody
    * @param array $optParams Optional parameters.
    * @return Repo
-   * @throws \Google\Service\Exception
    */
   public function create($parent, Repo $postBody, $optParams = [])
   {
@@ -63,7 +62,6 @@ class ProjectsRepos extends \Google\Service\Resource
    * `projects//repos/`.
    * @param array $optParams Optional parameters.
    * @return SourcerepoEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -78,7 +76,6 @@ class ProjectsRepos extends \Google\Service\Resource
    * form `projects//repos/`.
    * @param array $optParams Optional parameters.
    * @return Repo
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -87,29 +84,23 @@ class ProjectsRepos extends \Google\Service\Resource
     return $this->call('get', [$params], Repo::class);
   }
   /**
-   * Gets the IAM policy policy for a resource. Returns an empty policy if the
+   * Gets the access control policy for a resource. Returns an empty policy if the
    * resource exists and does not have a policy set. (repos.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See [Resource
-   * names](https://cloud.google.com/apis/design/resource_names) for the
-   * appropriate value for this field.
+   * requested. See the operation documentation for the appropriate value for this
+   * field.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param int options.requestedPolicyVersion Optional. The maximum policy
-   * version that will be used to format the policy. Valid values are 0, 1, and 3.
-   * Requests specifying an invalid value will be rejected. Requests for policies
-   * with any conditional role bindings must specify version 3. Policies with no
-   * conditional role bindings may specify any valid value or leave the field
-   * unset. The policy in the response might use the policy version that you
-   * specified, or it might use a lower policy version. For example, if you
-   * specify version 3, but the policy has no conditional role bindings, the
-   * response uses version 1. To learn which resources support conditions in their
-   * IAM policies, see the [IAM
+   * @opt_param int options.requestedPolicyVersion Optional. The policy format
+   * version to be returned. Valid values are 0, 1, and 3. Requests specifying an
+   * invalid value will be rejected. Requests for policies with any conditional
+   * bindings must specify version 3. Policies without any conditional bindings
+   * may specify any valid value or leave the field unset. To learn which
+   * resources support conditions in their IAM policies, see the [IAM
    * documentation](https://cloud.google.com/iam/help/conditions/resource-
    * policies).
    * @return Policy
-   * @throws \Google\Service\Exception
    */
   public function getIamPolicy($resource, $optParams = [])
   {
@@ -132,7 +123,6 @@ class ProjectsRepos extends \Google\Service\Resource
    * ListReposResponse left off. This is an opaque token that must be obtained
    * from a recent, prior ListReposResponse's next_page_token field.
    * @return ListReposResponse
-   * @throws \Google\Service\Exception
    */
   public function listProjectsRepos($name, $optParams = [])
   {
@@ -148,7 +138,6 @@ class ProjectsRepos extends \Google\Service\Resource
    * @param UpdateRepoRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Repo
-   * @throws \Google\Service\Exception
    */
   public function patch($name, UpdateRepoRequest $postBody, $optParams = [])
   {
@@ -157,17 +146,15 @@ class ProjectsRepos extends \Google\Service\Resource
     return $this->call('patch', [$params], Repo::class);
   }
   /**
-   * Sets the IAM policy on the specified resource. Replaces any existing policy.
-   * (repos.setIamPolicy)
+   * Sets the access control policy on the specified resource. Replaces any
+   * existing policy. (repos.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See [Resource
-   * names](https://cloud.google.com/apis/design/resource_names) for the
-   * appropriate value for this field.
+   * specified. See the operation documentation for the appropriate value for this
+   * field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
-   * @throws \Google\Service\Exception
    */
   public function setIamPolicy($resource, SetIamPolicyRequest $postBody, $optParams = [])
   {
@@ -184,7 +171,6 @@ class ProjectsRepos extends \Google\Service\Resource
    * @param SyncRepoRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function sync($name, SyncRepoRequest $postBody, $optParams = [])
   {
@@ -198,13 +184,11 @@ class ProjectsRepos extends \Google\Service\Resource
    * NOT_FOUND error. (repos.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See [Resource
-   * names](https://cloud.google.com/apis/design/resource_names) for the
-   * appropriate value for this field.
+   * being requested. See the operation documentation for the appropriate value
+   * for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse
-   * @throws \Google\Service\Exception
    */
   public function testIamPermissions($resource, TestIamPermissionsRequest $postBody, $optParams = [])
   {

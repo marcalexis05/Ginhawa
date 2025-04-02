@@ -36,7 +36,6 @@ class Sites extends \Google\Service\Resource
    * `sites/http%3A%2F%2Fwww.google.com%2F`. Format: `sites/{site}`
    * @param array $optParams Optional parameters.
    * @return SiteSummaryResponse
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {

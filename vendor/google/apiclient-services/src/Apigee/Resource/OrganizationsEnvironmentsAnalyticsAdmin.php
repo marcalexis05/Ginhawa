@@ -24,7 +24,7 @@ use Google\Service\Apigee\GoogleCloudApigeeV1Schema;
  * Typical usage is:
  *  <code>
  *   $apigeeService = new Google\Service\Apigee(...);
- *   $admin = $apigeeService->organizations_environments_analytics_admin;
+ *   $admin = $apigeeService->admin;
  *  </code>
  */
 class OrganizationsEnvironmentsAnalyticsAdmin extends \Google\Service\Resource
@@ -46,7 +46,6 @@ class OrganizationsEnvironmentsAnalyticsAdmin extends \Google\Service\Resource
    * @opt_param string type Required. Name of the dataset for which you want to
    * retrieve the schema. For example: `fact` or `agg_cus1`
    * @return GoogleCloudApigeeV1Schema
-   * @throws \Google\Service\Exception
    */
   public function getSchemav2($name, $optParams = [])
   {

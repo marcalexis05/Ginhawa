@@ -46,7 +46,6 @@ class AndroidProvisioningPartner extends \Google\Service
   public $partners_devices;
   public $partners_vendors;
   public $partners_vendors_customers;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the AndroidProvisioningPartner
@@ -60,7 +59,6 @@ class AndroidProvisioningPartner extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://androiddeviceprovisioning.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://androiddeviceprovisioning.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1';
@@ -350,16 +348,6 @@ class AndroidProvisioningPartner extends \Google\Service
               'httpMethod' => 'GET',
               'parameters' => [
                 'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'getSimLockState' => [
-              'path' => 'v1/partners/{+partnerId}/devices:getSimLockState',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'partnerId' => [
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,

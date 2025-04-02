@@ -25,7 +25,7 @@ use Google\Service\Analytics\Filters;
  * Typical usage is:
  *  <code>
  *   $analyticsService = new Google\Service\Analytics(...);
- *   $filters = $analyticsService->management_filters;
+ *   $filters = $analyticsService->filters;
  *  </code>
  */
 class ManagementFilters extends \Google\Service\Resource
@@ -37,7 +37,6 @@ class ManagementFilters extends \Google\Service\Resource
    * @param string $filterId ID of the filter to be deleted.
    * @param array $optParams Optional parameters.
    * @return Filter
-   * @throws \Google\Service\Exception
    */
   public function delete($accountId, $filterId, $optParams = [])
   {
@@ -52,7 +51,6 @@ class ManagementFilters extends \Google\Service\Resource
    * @param string $filterId Filter ID to retrieve filters for.
    * @param array $optParams Optional parameters.
    * @return Filter
-   * @throws \Google\Service\Exception
    */
   public function get($accountId, $filterId, $optParams = [])
   {
@@ -67,7 +65,6 @@ class ManagementFilters extends \Google\Service\Resource
    * @param Filter $postBody
    * @param array $optParams Optional parameters.
    * @return Filter
-   * @throws \Google\Service\Exception
    */
   public function insert($accountId, Filter $postBody, $optParams = [])
   {
@@ -86,7 +83,6 @@ class ManagementFilters extends \Google\Service\Resource
    * @opt_param int start-index An index of the first entity to retrieve. Use this
    * parameter as a pagination mechanism along with the max-results parameter.
    * @return Filters
-   * @throws \Google\Service\Exception
    */
   public function listManagementFilters($accountId, $optParams = [])
   {
@@ -103,7 +99,6 @@ class ManagementFilters extends \Google\Service\Resource
    * @param Filter $postBody
    * @param array $optParams Optional parameters.
    * @return Filter
-   * @throws \Google\Service\Exception
    */
   public function patch($accountId, $filterId, Filter $postBody, $optParams = [])
   {
@@ -119,7 +114,6 @@ class ManagementFilters extends \Google\Service\Resource
    * @param Filter $postBody
    * @param array $optParams Optional parameters.
    * @return Filter
-   * @throws \Google\Service\Exception
    */
   public function update($accountId, $filterId, Filter $postBody, $optParams = [])
   {

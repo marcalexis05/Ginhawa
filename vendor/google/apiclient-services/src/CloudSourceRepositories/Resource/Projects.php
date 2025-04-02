@@ -38,7 +38,6 @@ class Projects extends \Google\Service\Resource
    * `projects/`.
    * @param array $optParams Optional parameters.
    * @return ProjectConfig
-   * @throws \Google\Service\Exception
    */
   public function getConfig($name, $optParams = [])
   {
@@ -55,7 +54,6 @@ class Projects extends \Google\Service\Resource
    * @param UpdateProjectConfigRequest $postBody
    * @param array $optParams Optional parameters.
    * @return ProjectConfig
-   * @throws \Google\Service\Exception
    */
   public function updateConfig($name, UpdateProjectConfigRequest $postBody, $optParams = [])
   {

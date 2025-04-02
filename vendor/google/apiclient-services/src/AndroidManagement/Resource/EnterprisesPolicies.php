@@ -26,7 +26,7 @@ use Google\Service\AndroidManagement\Policy;
  * Typical usage is:
  *  <code>
  *   $androidmanagementService = new Google\Service\AndroidManagement(...);
- *   $policies = $androidmanagementService->enterprises_policies;
+ *   $policies = $androidmanagementService->policies;
  *  </code>
  */
 class EnterprisesPolicies extends \Google\Service\Resource
@@ -39,7 +39,6 @@ class EnterprisesPolicies extends \Google\Service\Resource
    * enterprises/{enterpriseId}/policies/{policyId}.
    * @param array $optParams Optional parameters.
    * @return AndroidmanagementEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -54,7 +53,6 @@ class EnterprisesPolicies extends \Google\Service\Resource
    * enterprises/{enterpriseId}/policies/{policyId}.
    * @param array $optParams Optional parameters.
    * @return Policy
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -74,7 +72,6 @@ class EnterprisesPolicies extends \Google\Service\Resource
    * @opt_param string pageToken A token identifying a page of results returned by
    * the server.
    * @return ListPoliciesResponse
-   * @throws \Google\Service\Exception
    */
   public function listEnterprisesPolicies($parent, $optParams = [])
   {
@@ -93,7 +90,6 @@ class EnterprisesPolicies extends \Google\Service\Resource
    * @opt_param string updateMask The field mask indicating the fields to update.
    * If not set, all modifiable fields will be modified.
    * @return Policy
-   * @throws \Google\Service\Exception
    */
   public function patch($name, Policy $postBody, $optParams = [])
   {

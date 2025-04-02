@@ -27,7 +27,7 @@ use Google\Service\Appengine\Operation;
  * Typical usage is:
  *  <code>
  *   $appengineService = new Google\Service\Appengine(...);
- *   $instances = $appengineService->apps_services_versions_instances;
+ *   $instances = $appengineService->instances;
  *  </code>
  */
 class AppsServicesVersionsInstances extends \Google\Service\Resource
@@ -48,7 +48,6 @@ class AppsServicesVersionsInstances extends \Google\Service\Resource
    * @param DebugInstanceRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function debug($appsId, $servicesId, $versionsId, $instancesId, DebugInstanceRequest $postBody, $optParams = [])
   {
@@ -77,7 +76,6 @@ class AppsServicesVersionsInstances extends \Google\Service\Resource
    * @param string $instancesId Part of `name`. See documentation of `appsId`.
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function delete($appsId, $servicesId, $versionsId, $instancesId, $optParams = [])
   {
@@ -95,7 +93,6 @@ class AppsServicesVersionsInstances extends \Google\Service\Resource
    * @param string $instancesId Part of `name`. See documentation of `appsId`.
    * @param array $optParams Optional parameters.
    * @return Instance
-   * @throws \Google\Service\Exception
    */
   public function get($appsId, $servicesId, $versionsId, $instancesId, $optParams = [])
   {
@@ -119,7 +116,6 @@ class AppsServicesVersionsInstances extends \Google\Service\Resource
    * @opt_param string pageToken Continuation token for fetching the next page of
    * results.
    * @return ListInstancesResponse
-   * @throws \Google\Service\Exception
    */
   public function listAppsServicesVersionsInstances($appsId, $servicesId, $versionsId, $optParams = [])
   {

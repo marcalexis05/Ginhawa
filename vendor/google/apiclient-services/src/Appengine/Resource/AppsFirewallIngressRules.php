@@ -28,7 +28,7 @@ use Google\Service\Appengine\ListIngressRulesResponse;
  * Typical usage is:
  *  <code>
  *   $appengineService = new Google\Service\Appengine(...);
- *   $ingressRules = $appengineService->apps_firewall_ingressRules;
+ *   $ingressRules = $appengineService->ingressRules;
  *  </code>
  */
 class AppsFirewallIngressRules extends \Google\Service\Resource
@@ -45,7 +45,6 @@ class AppsFirewallIngressRules extends \Google\Service\Resource
    * @param BatchUpdateIngressRulesRequest $postBody
    * @param array $optParams Optional parameters.
    * @return BatchUpdateIngressRulesResponse
-   * @throws \Google\Service\Exception
    */
   public function batchUpdate($appsId, BatchUpdateIngressRulesRequest $postBody, $optParams = [])
   {
@@ -62,7 +61,6 @@ class AppsFirewallIngressRules extends \Google\Service\Resource
    * @param FirewallRule $postBody
    * @param array $optParams Optional parameters.
    * @return FirewallRule
-   * @throws \Google\Service\Exception
    */
   public function create($appsId, FirewallRule $postBody, $optParams = [])
   {
@@ -78,7 +76,6 @@ class AppsFirewallIngressRules extends \Google\Service\Resource
    * @param string $ingressRulesId Part of `name`. See documentation of `appsId`.
    * @param array $optParams Optional parameters.
    * @return AppengineEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($appsId, $ingressRulesId, $optParams = [])
   {
@@ -94,7 +91,6 @@ class AppsFirewallIngressRules extends \Google\Service\Resource
    * @param string $ingressRulesId Part of `name`. See documentation of `appsId`.
    * @param array $optParams Optional parameters.
    * @return FirewallRule
-   * @throws \Google\Service\Exception
    */
   public function get($appsId, $ingressRulesId, $optParams = [])
   {
@@ -117,7 +113,6 @@ class AppsFirewallIngressRules extends \Google\Service\Resource
    * @opt_param string pageToken Continuation token for fetching the next page of
    * results.
    * @return ListIngressRulesResponse
-   * @throws \Google\Service\Exception
    */
   public function listAppsFirewallIngressRules($appsId, $optParams = [])
   {
@@ -137,7 +132,6 @@ class AppsFirewallIngressRules extends \Google\Service\Resource
    * @opt_param string updateMask Standard field mask for the set of fields to be
    * updated.
    * @return FirewallRule
-   * @throws \Google\Service\Exception
    */
   public function patch($appsId, $ingressRulesId, FirewallRule $postBody, $optParams = [])
   {

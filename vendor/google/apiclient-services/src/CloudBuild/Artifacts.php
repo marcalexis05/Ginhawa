@@ -19,61 +19,18 @@ namespace Google\Service\CloudBuild;
 
 class Artifacts extends \Google\Collection
 {
-  protected $collection_key = 'pythonPackages';
-  /**
-   * @var string[]
-   */
+  protected $collection_key = 'images';
   public $images;
-  protected $mavenArtifactsType = MavenArtifact::class;
-  protected $mavenArtifactsDataType = 'array';
-  protected $npmPackagesType = NpmPackage::class;
-  protected $npmPackagesDataType = 'array';
   protected $objectsType = ArtifactObjects::class;
   protected $objectsDataType = '';
-  protected $pythonPackagesType = PythonPackage::class;
-  protected $pythonPackagesDataType = 'array';
 
-  /**
-   * @param string[]
-   */
   public function setImages($images)
   {
     $this->images = $images;
   }
-  /**
-   * @return string[]
-   */
   public function getImages()
   {
     return $this->images;
-  }
-  /**
-   * @param MavenArtifact[]
-   */
-  public function setMavenArtifacts($mavenArtifacts)
-  {
-    $this->mavenArtifacts = $mavenArtifacts;
-  }
-  /**
-   * @return MavenArtifact[]
-   */
-  public function getMavenArtifacts()
-  {
-    return $this->mavenArtifacts;
-  }
-  /**
-   * @param NpmPackage[]
-   */
-  public function setNpmPackages($npmPackages)
-  {
-    $this->npmPackages = $npmPackages;
-  }
-  /**
-   * @return NpmPackage[]
-   */
-  public function getNpmPackages()
-  {
-    return $this->npmPackages;
   }
   /**
    * @param ArtifactObjects
@@ -88,20 +45,6 @@ class Artifacts extends \Google\Collection
   public function getObjects()
   {
     return $this->objects;
-  }
-  /**
-   * @param PythonPackage[]
-   */
-  public function setPythonPackages($pythonPackages)
-  {
-    $this->pythonPackages = $pythonPackages;
-  }
-  /**
-   * @return PythonPackage[]
-   */
-  public function getPythonPackages()
-  {
-    return $this->pythonPackages;
   }
 }
 

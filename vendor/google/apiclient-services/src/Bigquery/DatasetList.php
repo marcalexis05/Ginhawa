@@ -19,25 +19,12 @@ namespace Google\Service\Bigquery;
 
 class DatasetList extends \Google\Collection
 {
-  protected $collection_key = 'unreachable';
+  protected $collection_key = 'datasets';
   protected $datasetsType = DatasetListDatasets::class;
   protected $datasetsDataType = 'array';
-  /**
-   * @var string
-   */
   public $etag;
-  /**
-   * @var string
-   */
   public $kind;
-  /**
-   * @var string
-   */
   public $nextPageToken;
-  /**
-   * @var string[]
-   */
-  public $unreachable;
 
   /**
    * @param DatasetListDatasets[]
@@ -53,61 +40,29 @@ class DatasetList extends \Google\Collection
   {
     return $this->datasets;
   }
-  /**
-   * @param string
-   */
   public function setEtag($etag)
   {
     $this->etag = $etag;
   }
-  /**
-   * @return string
-   */
   public function getEtag()
   {
     return $this->etag;
   }
-  /**
-   * @param string
-   */
   public function setKind($kind)
   {
     $this->kind = $kind;
   }
-  /**
-   * @return string
-   */
   public function getKind()
   {
     return $this->kind;
   }
-  /**
-   * @param string
-   */
   public function setNextPageToken($nextPageToken)
   {
     $this->nextPageToken = $nextPageToken;
   }
-  /**
-   * @return string
-   */
   public function getNextPageToken()
   {
     return $this->nextPageToken;
-  }
-  /**
-   * @param string[]
-   */
-  public function setUnreachable($unreachable)
-  {
-    $this->unreachable = $unreachable;
-  }
-  /**
-   * @return string[]
-   */
-  public function getUnreachable()
-  {
-    return $this->unreachable;
   }
 }
 

@@ -36,7 +36,6 @@ class Storelayoutpages extends \Google\Service\Resource
    * @param string $enterpriseId The ID of the enterprise.
    * @param string $pageId The ID of the page.
    * @param array $optParams Optional parameters.
-   * @throws \Google\Service\Exception
    */
   public function delete($enterpriseId, $pageId, $optParams = [])
   {
@@ -51,7 +50,6 @@ class Storelayoutpages extends \Google\Service\Resource
    * @param string $pageId The ID of the page.
    * @param array $optParams Optional parameters.
    * @return StorePage
-   * @throws \Google\Service\Exception
    */
   public function get($enterpriseId, $pageId, $optParams = [])
   {
@@ -66,7 +64,6 @@ class Storelayoutpages extends \Google\Service\Resource
    * @param StorePage $postBody
    * @param array $optParams Optional parameters.
    * @return StorePage
-   * @throws \Google\Service\Exception
    */
   public function insert($enterpriseId, StorePage $postBody, $optParams = [])
   {
@@ -81,7 +78,6 @@ class Storelayoutpages extends \Google\Service\Resource
    * @param string $enterpriseId The ID of the enterprise.
    * @param array $optParams Optional parameters.
    * @return StoreLayoutPagesListResponse
-   * @throws \Google\Service\Exception
    */
   public function listStorelayoutpages($enterpriseId, $optParams = [])
   {
@@ -97,7 +93,6 @@ class Storelayoutpages extends \Google\Service\Resource
    * @param StorePage $postBody
    * @param array $optParams Optional parameters.
    * @return StorePage
-   * @throws \Google\Service\Exception
    */
   public function update($enterpriseId, $pageId, StorePage $postBody, $optParams = [])
   {

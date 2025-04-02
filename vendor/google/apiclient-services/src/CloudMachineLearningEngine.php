@@ -34,10 +34,10 @@ use Google\Client;
  */
 class CloudMachineLearningEngine extends \Google\Service
 {
-  /** See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account.. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
-  /** View your data across Google Cloud services and see the email address of your Google Account. */
+  /** View your data across Google Cloud Platform services. */
   const CLOUD_PLATFORM_READ_ONLY =
       "https://www.googleapis.com/auth/cloud-platform.read-only";
 
@@ -50,7 +50,6 @@ class CloudMachineLearningEngine extends \Google\Service
   public $projects_models;
   public $projects_models_versions;
   public $projects_operations;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the CloudMachineLearningEngine
@@ -64,7 +63,6 @@ class CloudMachineLearningEngine extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://ml.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://ml.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1';

@@ -26,7 +26,7 @@ use Google\Service\Appengine\ListAuthorizedCertificatesResponse;
  * Typical usage is:
  *  <code>
  *   $appengineService = new Google\Service\Appengine(...);
- *   $authorizedCertificates = $appengineService->apps_authorizedCertificates;
+ *   $authorizedCertificates = $appengineService->authorizedCertificates;
  *  </code>
  */
 class AppsAuthorizedCertificates extends \Google\Service\Resource
@@ -39,7 +39,6 @@ class AppsAuthorizedCertificates extends \Google\Service\Resource
    * @param AuthorizedCertificate $postBody
    * @param array $optParams Optional parameters.
    * @return AuthorizedCertificate
-   * @throws \Google\Service\Exception
    */
   public function create($appsId, AuthorizedCertificate $postBody, $optParams = [])
   {
@@ -56,7 +55,6 @@ class AppsAuthorizedCertificates extends \Google\Service\Resource
    * `appsId`.
    * @param array $optParams Optional parameters.
    * @return AppengineEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($appsId, $authorizedCertificatesId, $optParams = [])
   {
@@ -76,7 +74,6 @@ class AppsAuthorizedCertificates extends \Google\Service\Resource
    * @opt_param string view Controls the set of fields returned in the GET
    * response.
    * @return AuthorizedCertificate
-   * @throws \Google\Service\Exception
    */
   public function get($appsId, $authorizedCertificatesId, $optParams = [])
   {
@@ -98,7 +95,6 @@ class AppsAuthorizedCertificates extends \Google\Service\Resource
    * @opt_param string view Controls the set of fields returned in the LIST
    * response.
    * @return ListAuthorizedCertificatesResponse
-   * @throws \Google\Service\Exception
    */
   public function listAppsAuthorizedCertificates($appsId, $optParams = [])
   {
@@ -124,7 +120,6 @@ class AppsAuthorizedCertificates extends \Google\Service\Resource
    * updated. Updates are only supported on the certificate_raw_data and
    * display_name fields.
    * @return AuthorizedCertificate
-   * @throws \Google\Service\Exception
    */
   public function patch($appsId, $authorizedCertificatesId, AuthorizedCertificate $postBody, $optParams = [])
   {

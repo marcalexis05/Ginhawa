@@ -24,7 +24,7 @@ use Google\Service\AndroidManagement\WebToken;
  * Typical usage is:
  *  <code>
  *   $androidmanagementService = new Google\Service\AndroidManagement(...);
- *   $webTokens = $androidmanagementService->enterprises_webTokens;
+ *   $webTokens = $androidmanagementService->webTokens;
  *  </code>
  */
 class EnterprisesWebTokens extends \Google\Service\Resource
@@ -38,7 +38,6 @@ class EnterprisesWebTokens extends \Google\Service\Resource
    * @param WebToken $postBody
    * @param array $optParams Optional parameters.
    * @return WebToken
-   * @throws \Google\Service\Exception
    */
   public function create($parent, WebToken $postBody, $optParams = [])
   {

@@ -30,7 +30,7 @@ use Google\Service\CloudIot\SendCommandToDeviceResponse;
  * Typical usage is:
  *  <code>
  *   $cloudiotService = new Google\Service\CloudIot(...);
- *   $devices = $cloudiotService->projects_locations_registries_devices;
+ *   $devices = $cloudiotService->devices;
  *  </code>
  */
 class ProjectsLocationsRegistriesDevices extends \Google\Service\Resource

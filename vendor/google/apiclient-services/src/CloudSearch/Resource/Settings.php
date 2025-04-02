@@ -36,7 +36,6 @@ class Settings extends \Google\Service\Resource
    *
    * @param array $optParams Optional parameters.
    * @return CustomerSettings
-   * @throws \Google\Service\Exception
    */
   public function getCustomer($optParams = [])
   {
@@ -57,7 +56,6 @@ class Settings extends \Google\Service\Resource
    * will be updated. Currently supported field paths: vpc_settings and
    * audit_logging_settings
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function updateCustomer(CustomerSettings $postBody, $optParams = [])
   {

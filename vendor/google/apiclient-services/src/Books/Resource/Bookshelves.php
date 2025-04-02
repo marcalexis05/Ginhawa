@@ -40,7 +40,6 @@ class Bookshelves extends \Google\Service\Resource
    *
    * @opt_param string source String to identify the originator of this request.
    * @return Bookshelf
-   * @throws \Google\Service\Exception
    */
   public function get($userId, $shelf, $optParams = [])
   {
@@ -57,7 +56,6 @@ class Bookshelves extends \Google\Service\Resource
    *
    * @opt_param string source String to identify the originator of this request.
    * @return BookshelvesModel
-   * @throws \Google\Service\Exception
    */
   public function listBookshelves($userId, $optParams = [])
   {

@@ -39,7 +39,6 @@ class Blogs extends \Google\Service\Resource
    * @opt_param string maxPosts
    * @opt_param string view
    * @return Blog
-   * @throws \Google\Service\Exception
    */
   public function get($blogId, $optParams = [])
   {
@@ -55,7 +54,6 @@ class Blogs extends \Google\Service\Resource
    *
    * @opt_param string view
    * @return Blog
-   * @throws \Google\Service\Exception
    */
   public function getByUrl($url, $optParams = [])
   {
@@ -74,7 +72,6 @@ class Blogs extends \Google\Service\Resource
    * @opt_param string status Default value of status is LIVE.
    * @opt_param string view
    * @return BlogList
-   * @throws \Google\Service\Exception
    */
   public function listByUser($userId, $optParams = [])
   {

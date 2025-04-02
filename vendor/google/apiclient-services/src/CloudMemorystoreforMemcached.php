@@ -35,14 +35,13 @@ use Google\Client;
  */
 class CloudMemorystoreforMemcached extends \Google\Service
 {
-  /** See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account.. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
 
   public $projects_locations;
   public $projects_locations_instances;
   public $projects_locations_operations;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the CloudMemorystoreforMemcached
@@ -56,7 +55,6 @@ class CloudMemorystoreforMemcached extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://memcache.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://memcache.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1';
@@ -194,29 +192,9 @@ class CloudMemorystoreforMemcached extends \Google\Service
                   'type' => 'string',
                 ],
               ],
-            ],'rescheduleMaintenance' => [
-              'path' => 'v1/{+instance}:rescheduleMaintenance',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'instance' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
             ],'updateParameters' => [
               'path' => 'v1/{+name}:updateParameters',
               'httpMethod' => 'PATCH',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'upgrade' => [
-              'path' => 'v1/{+name}:upgrade',
-              'httpMethod' => 'POST',
               'parameters' => [
                 'name' => [
                   'location' => 'path',

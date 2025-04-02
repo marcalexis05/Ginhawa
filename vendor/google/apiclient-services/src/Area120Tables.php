@@ -43,10 +43,10 @@ class Area120Tables extends \Google\Service
   /** See and download all your Google Drive files. */
   const DRIVE_READONLY =
       "https://www.googleapis.com/auth/drive.readonly";
-  /** See, edit, create, and delete all your Google Sheets spreadsheets. */
+  /** See, edit, create, and delete your spreadsheets in Google Drive. */
   const SPREADSHEETS =
       "https://www.googleapis.com/auth/spreadsheets";
-  /** See all your Google Sheets spreadsheets. */
+  /** View your Google Spreadsheets. */
   const SPREADSHEETS_READONLY =
       "https://www.googleapis.com/auth/spreadsheets.readonly";
   /** See, edit, create, and delete your tables in Tables by Area 120. */
@@ -56,7 +56,6 @@ class Area120Tables extends \Google\Service
   public $tables;
   public $tables_rows;
   public $workspaces;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the Area120Tables service.
@@ -69,7 +68,6 @@ class Area120Tables extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://area120tables.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://area120tables.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1alpha1';

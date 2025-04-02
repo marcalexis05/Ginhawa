@@ -35,7 +35,7 @@ use Google\Client;
  */
 class CloudIot extends \Google\Service
 {
-  /** See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account.. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
   /** Register and manage devices in the Google Cloud IoT service. */

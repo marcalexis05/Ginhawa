@@ -35,7 +35,6 @@ class ViolatingSites extends \Google\Service\Resource
    *
    * @param array $optParams Optional parameters.
    * @return ViolatingSitesResponse
-   * @throws \Google\Service\Exception
    */
   public function listViolatingSites($optParams = [])
   {

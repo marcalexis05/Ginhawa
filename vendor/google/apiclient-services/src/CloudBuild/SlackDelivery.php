@@ -21,7 +21,6 @@ class SlackDelivery extends \Google\Model
 {
   protected $webhookUriType = NotifierSecretRef::class;
   protected $webhookUriDataType = '';
-  public $webhookUri;
 
   /**
    * @param NotifierSecretRef

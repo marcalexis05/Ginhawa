@@ -40,7 +40,6 @@ class CivicInfo extends \Google\Service
   public $divisions;
   public $elections;
   public $representatives;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the CivicInfo service.
@@ -53,7 +52,6 @@ class CivicInfo extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://civicinfo.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://civicinfo.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v2';
@@ -65,16 +63,7 @@ class CivicInfo extends \Google\Service
         'divisions',
         [
           'methods' => [
-            'queryDivisionByAddress' => [
-              'path' => 'civicinfo/v2/divisionsByAddress',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'address' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-              ],
-            ],'search' => [
+            'search' => [
               'path' => 'civicinfo/v2/divisions',
               'httpMethod' => 'GET',
               'parameters' => [
@@ -96,12 +85,7 @@ class CivicInfo extends \Google\Service
             'electionQuery' => [
               'path' => 'civicinfo/v2/elections',
               'httpMethod' => 'GET',
-              'parameters' => [
-                'productionDataOnly' => [
-                  'location' => 'query',
-                  'type' => 'boolean',
-                ],
-              ],
+              'parameters' => [],
             ],'voterInfoQuery' => [
               'path' => 'civicinfo/v2/voterinfo',
               'httpMethod' => 'GET',
@@ -109,16 +93,13 @@ class CivicInfo extends \Google\Service
                 'address' => [
                   'location' => 'query',
                   'type' => 'string',
+                  'required' => true,
                 ],
                 'electionId' => [
                   'location' => 'query',
                   'type' => 'string',
                 ],
                 'officialOnly' => [
-                  'location' => 'query',
-                  'type' => 'boolean',
-                ],
-                'productionDataOnly' => [
                   'location' => 'query',
                   'type' => 'boolean',
                 ],

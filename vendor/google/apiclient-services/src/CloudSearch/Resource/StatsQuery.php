@@ -22,7 +22,7 @@ namespace Google\Service\CloudSearch\Resource;
  * Typical usage is:
  *  <code>
  *   $cloudsearchService = new Google\Service\CloudSearch(...);
- *   $query = $cloudsearchService->stats_query;
+ *   $query = $cloudsearchService->query;
  *  </code>
  */
 class StatsQuery extends \Google\Service\Resource

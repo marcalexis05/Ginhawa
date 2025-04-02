@@ -57,7 +57,6 @@ class Registrations extends \Google\Service\Resource
    * @param Registration $postBody
    * @param array $optParams Optional parameters.
    * @return Registration
-   * @throws \Google\Service\Exception
    */
   public function create(Registration $postBody, $optParams = [])
   {
@@ -73,7 +72,6 @@ class Registrations extends \Google\Service\Resource
    * be deleted.
    * @param array $optParams Optional parameters.
    * @return ClassroomEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($registrationId, $optParams = [])
   {

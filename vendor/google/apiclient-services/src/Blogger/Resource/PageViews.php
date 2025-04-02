@@ -37,7 +37,6 @@ class PageViews extends \Google\Service\Resource
    *
    * @opt_param string range
    * @return PageviewsModel
-   * @throws \Google\Service\Exception
    */
   public function get($blogId, $optParams = [])
   {

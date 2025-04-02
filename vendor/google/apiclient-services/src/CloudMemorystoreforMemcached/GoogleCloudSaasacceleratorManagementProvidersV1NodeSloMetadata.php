@@ -17,60 +17,43 @@
 
 namespace Google\Service\CloudMemorystoreforMemcached;
 
-class GoogleCloudSaasacceleratorManagementProvidersV1NodeSloMetadata extends \Google\Model
+class GoogleCloudSaasacceleratorManagementProvidersV1NodeSloMetadata extends \Google\Collection
 {
-  /**
-   * @var string
-   */
+  protected $collection_key = 'exclusions';
+  protected $exclusionsType = GoogleCloudSaasacceleratorManagementProvidersV1SloExclusion::class;
+  protected $exclusionsDataType = 'array';
   public $location;
-  /**
-   * @var string
-   */
   public $nodeId;
-  protected $perSliEligibilityType = GoogleCloudSaasacceleratorManagementProvidersV1PerSliSloEligibility::class;
-  protected $perSliEligibilityDataType = '';
 
   /**
-   * @param string
+   * @param GoogleCloudSaasacceleratorManagementProvidersV1SloExclusion[]
    */
+  public function setExclusions($exclusions)
+  {
+    $this->exclusions = $exclusions;
+  }
+  /**
+   * @return GoogleCloudSaasacceleratorManagementProvidersV1SloExclusion[]
+   */
+  public function getExclusions()
+  {
+    return $this->exclusions;
+  }
   public function setLocation($location)
   {
     $this->location = $location;
   }
-  /**
-   * @return string
-   */
   public function getLocation()
   {
     return $this->location;
   }
-  /**
-   * @param string
-   */
   public function setNodeId($nodeId)
   {
     $this->nodeId = $nodeId;
   }
-  /**
-   * @return string
-   */
   public function getNodeId()
   {
     return $this->nodeId;
-  }
-  /**
-   * @param GoogleCloudSaasacceleratorManagementProvidersV1PerSliSloEligibility
-   */
-  public function setPerSliEligibility(GoogleCloudSaasacceleratorManagementProvidersV1PerSliSloEligibility $perSliEligibility)
-  {
-    $this->perSliEligibility = $perSliEligibility;
-  }
-  /**
-   * @return GoogleCloudSaasacceleratorManagementProvidersV1PerSliSloEligibility
-   */
-  public function getPerSliEligibility()
-  {
-    return $this->perSliEligibility;
   }
 }
 

@@ -34,17 +34,13 @@ use Google\Client;
  */
 class CloudComposer extends \Google\Service
 {
-  /** See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account.. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
 
   public $projects_locations_environments;
-  public $projects_locations_environments_userWorkloadsConfigMaps;
-  public $projects_locations_environments_userWorkloadsSecrets;
-  public $projects_locations_environments_workloads;
   public $projects_locations_imageVersions;
   public $projects_locations_operations;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the CloudComposer service.
@@ -57,7 +53,6 @@ class CloudComposer extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://composer.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://composer.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1';
@@ -69,31 +64,11 @@ class CloudComposer extends \Google\Service
         'environments',
         [
           'methods' => [
-            'checkUpgrade' => [
-              'path' => 'v1/{+environment}:checkUpgrade',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'environment' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'create' => [
+            'create' => [
               'path' => 'v1/{+parent}/environments',
               'httpMethod' => 'POST',
               'parameters' => [
                 'parent' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'databaseFailover' => [
-              'path' => 'v1/{+environment}:databaseFailover',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'environment' => [
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
@@ -104,26 +79,6 @@ class CloudComposer extends \Google\Service
               'httpMethod' => 'DELETE',
               'parameters' => [
                 'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'executeAirflowCommand' => [
-              'path' => 'v1/{+environment}:executeAirflowCommand',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'environment' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'fetchDatabaseProperties' => [
-              'path' => 'v1/{+environment}:fetchDatabaseProperties',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'environment' => [
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
@@ -155,16 +110,6 @@ class CloudComposer extends \Google\Service
                 'pageToken' => [
                   'location' => 'query',
                   'type' => 'string',
-                ],
-              ],
-            ],'loadSnapshot' => [
-              'path' => 'v1/{+environment}:loadSnapshot',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'environment' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
                 ],
               ],
             ],'patch' => [
@@ -177,204 +122,6 @@ class CloudComposer extends \Google\Service
                   'required' => true,
                 ],
                 'updateMask' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-              ],
-            ],'pollAirflowCommand' => [
-              'path' => 'v1/{+environment}:pollAirflowCommand',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'environment' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'saveSnapshot' => [
-              'path' => 'v1/{+environment}:saveSnapshot',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'environment' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'stopAirflowCommand' => [
-              'path' => 'v1/{+environment}:stopAirflowCommand',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'environment' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],
-          ]
-        ]
-    );
-    $this->projects_locations_environments_userWorkloadsConfigMaps = new CloudComposer\Resource\ProjectsLocationsEnvironmentsUserWorkloadsConfigMaps(
-        $this,
-        $this->serviceName,
-        'userWorkloadsConfigMaps',
-        [
-          'methods' => [
-            'create' => [
-              'path' => 'v1/{+parent}/userWorkloadsConfigMaps',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'parent' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'delete' => [
-              'path' => 'v1/{+name}',
-              'httpMethod' => 'DELETE',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'get' => [
-              'path' => 'v1/{+name}',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'list' => [
-              'path' => 'v1/{+parent}/userWorkloadsConfigMaps',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'parent' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'pageSize' => [
-                  'location' => 'query',
-                  'type' => 'integer',
-                ],
-                'pageToken' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-              ],
-            ],'update' => [
-              'path' => 'v1/{+name}',
-              'httpMethod' => 'PUT',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],
-          ]
-        ]
-    );
-    $this->projects_locations_environments_userWorkloadsSecrets = new CloudComposer\Resource\ProjectsLocationsEnvironmentsUserWorkloadsSecrets(
-        $this,
-        $this->serviceName,
-        'userWorkloadsSecrets',
-        [
-          'methods' => [
-            'create' => [
-              'path' => 'v1/{+parent}/userWorkloadsSecrets',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'parent' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'delete' => [
-              'path' => 'v1/{+name}',
-              'httpMethod' => 'DELETE',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'get' => [
-              'path' => 'v1/{+name}',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'list' => [
-              'path' => 'v1/{+parent}/userWorkloadsSecrets',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'parent' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'pageSize' => [
-                  'location' => 'query',
-                  'type' => 'integer',
-                ],
-                'pageToken' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-              ],
-            ],'update' => [
-              'path' => 'v1/{+name}',
-              'httpMethod' => 'PUT',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],
-          ]
-        ]
-    );
-    $this->projects_locations_environments_workloads = new CloudComposer\Resource\ProjectsLocationsEnvironmentsWorkloads(
-        $this,
-        $this->serviceName,
-        'workloads',
-        [
-          'methods' => [
-            'list' => [
-              'path' => 'v1/{+parent}/workloads',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'parent' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'filter' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-                'pageSize' => [
-                  'location' => 'query',
-                  'type' => 'integer',
-                ],
-                'pageToken' => [
                   'location' => 'query',
                   'type' => 'string',
                 ],

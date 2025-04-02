@@ -26,7 +26,7 @@ use Google\Service\AdSenseHost\AdUnits;
  * Typical usage is:
  *  <code>
  *   $adsensehostService = new Google\Service\AdSenseHost(...);
- *   $adunits = $adsensehostService->accounts_adunits;
+ *   $adunits = $adsensehostService->adunits;
  *  </code>
  */
 class AccountsAdunits extends \Google\Service\Resource
@@ -40,7 +40,6 @@ class AccountsAdunits extends \Google\Service\Resource
    * @param string $adUnitId Ad unit to delete.
    * @param array $optParams Optional parameters.
    * @return AdUnit
-   * @throws \Google\Service\Exception
    */
   public function delete($accountId, $adClientId, $adUnitId, $optParams = [])
   {
@@ -56,7 +55,6 @@ class AccountsAdunits extends \Google\Service\Resource
    * @param string $adUnitId Ad unit to get.
    * @param array $optParams Optional parameters.
    * @return AdUnit
-   * @throws \Google\Service\Exception
    */
   public function get($accountId, $adClientId, $adUnitId, $optParams = [])
   {
@@ -76,7 +74,6 @@ class AccountsAdunits extends \Google\Service\Resource
    * @opt_param string hostCustomChannelId Host custom channel to attach to the ad
    * code.
    * @return AdCode
-   * @throws \Google\Service\Exception
    */
   public function getAdCode($accountId, $adClientId, $adUnitId, $optParams = [])
   {
@@ -93,7 +90,6 @@ class AccountsAdunits extends \Google\Service\Resource
    * @param AdUnit $postBody
    * @param array $optParams Optional parameters.
    * @return AdUnit
-   * @throws \Google\Service\Exception
    */
   public function insert($accountId, $adClientId, AdUnit $postBody, $optParams = [])
   {
@@ -117,7 +113,6 @@ class AccountsAdunits extends \Google\Service\Resource
    * units. To retrieve the next page, set this parameter to the value of
    * "nextPageToken" from the previous response.
    * @return AdUnits
-   * @throws \Google\Service\Exception
    */
   public function listAccountsAdunits($accountId, $adClientId, $optParams = [])
   {
@@ -135,7 +130,6 @@ class AccountsAdunits extends \Google\Service\Resource
    * @param AdUnit $postBody
    * @param array $optParams Optional parameters.
    * @return AdUnit
-   * @throws \Google\Service\Exception
    */
   public function patch($accountId, $adClientId, $adUnitId, AdUnit $postBody, $optParams = [])
   {
@@ -152,7 +146,6 @@ class AccountsAdunits extends \Google\Service\Resource
    * @param AdUnit $postBody
    * @param array $optParams Optional parameters.
    * @return AdUnit
-   * @throws \Google\Service\Exception
    */
   public function update($accountId, $adClientId, AdUnit $postBody, $optParams = [])
   {

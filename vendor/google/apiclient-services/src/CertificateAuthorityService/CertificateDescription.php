@@ -20,17 +20,11 @@ namespace Google\Service\CertificateAuthorityService;
 class CertificateDescription extends \Google\Collection
 {
   protected $collection_key = 'crlDistributionPoints';
-  /**
-   * @var string[]
-   */
   public $aiaIssuingCertificateUrls;
   protected $authorityKeyIdType = KeyId::class;
   protected $authorityKeyIdDataType = '';
   protected $certFingerprintType = CertificateFingerprint::class;
   protected $certFingerprintDataType = '';
-  /**
-   * @var string[]
-   */
   public $crlDistributionPoints;
   protected $publicKeyType = PublicKey::class;
   protected $publicKeyDataType = '';
@@ -38,23 +32,13 @@ class CertificateDescription extends \Google\Collection
   protected $subjectDescriptionDataType = '';
   protected $subjectKeyIdType = KeyId::class;
   protected $subjectKeyIdDataType = '';
-  /**
-   * @var string
-   */
-  public $tbsCertificateDigest;
   protected $x509DescriptionType = X509Parameters::class;
   protected $x509DescriptionDataType = '';
 
-  /**
-   * @param string[]
-   */
   public function setAiaIssuingCertificateUrls($aiaIssuingCertificateUrls)
   {
     $this->aiaIssuingCertificateUrls = $aiaIssuingCertificateUrls;
   }
-  /**
-   * @return string[]
-   */
   public function getAiaIssuingCertificateUrls()
   {
     return $this->aiaIssuingCertificateUrls;
@@ -87,16 +71,10 @@ class CertificateDescription extends \Google\Collection
   {
     return $this->certFingerprint;
   }
-  /**
-   * @param string[]
-   */
   public function setCrlDistributionPoints($crlDistributionPoints)
   {
     $this->crlDistributionPoints = $crlDistributionPoints;
   }
-  /**
-   * @return string[]
-   */
   public function getCrlDistributionPoints()
   {
     return $this->crlDistributionPoints;
@@ -142,20 +120,6 @@ class CertificateDescription extends \Google\Collection
   public function getSubjectKeyId()
   {
     return $this->subjectKeyId;
-  }
-  /**
-   * @param string
-   */
-  public function setTbsCertificateDigest($tbsCertificateDigest)
-  {
-    $this->tbsCertificateDigest = $tbsCertificateDigest;
-  }
-  /**
-   * @return string
-   */
-  public function getTbsCertificateDigest()
-  {
-    return $this->tbsCertificateDigest;
   }
   /**
    * @param X509Parameters

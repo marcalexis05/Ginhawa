@@ -26,7 +26,7 @@ use Google\Service\Apigee\GoogleProtobufEmpty;
  * Typical usage is:
  *  <code>
  *   $apigeeService = new Google\Service\Apigee(...);
- *   $overrides = $apigeeService->organizations_environments_traceConfig_overrides;
+ *   $overrides = $apigeeService->overrides;
  *  </code>
  */
 class OrganizationsEnvironmentsTraceConfigOverrides extends \Google\Service\Resource
@@ -43,7 +43,6 @@ class OrganizationsEnvironmentsTraceConfigOverrides extends \Google\Service\Reso
    * @param GoogleCloudApigeeV1TraceConfigOverride $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1TraceConfigOverride
-   * @throws \Google\Service\Exception
    */
   public function create($parent, GoogleCloudApigeeV1TraceConfigOverride $postBody, $optParams = [])
   {
@@ -59,7 +58,6 @@ class OrganizationsEnvironmentsTraceConfigOverrides extends \Google\Service\Reso
    * "organizations/environments/traceConfig/overrides".
    * @param array $optParams Optional parameters.
    * @return GoogleProtobufEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -75,7 +73,6 @@ class OrganizationsEnvironmentsTraceConfigOverrides extends \Google\Service\Reso
    * "organizations/environments/traceConfig/overrides".
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1TraceConfigOverride
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -101,7 +98,6 @@ class OrganizationsEnvironmentsTraceConfigOverrides extends \Google\Service\Reso
    * `ListTraceConfigOverrides` must match those specified in the call to obtain
    * the page token.
    * @return GoogleCloudApigeeV1ListTraceConfigOverridesResponse
-   * @throws \Google\Service\Exception
    */
   public function listOrganizationsEnvironmentsTraceConfigOverrides($parent, $optParams = [])
   {
@@ -123,7 +119,6 @@ class OrganizationsEnvironmentsTraceConfigOverrides extends \Google\Service\Reso
    *
    * @opt_param string updateMask List of fields to be updated.
    * @return GoogleCloudApigeeV1TraceConfigOverride
-   * @throws \Google\Service\Exception
    */
   public function patch($name, GoogleCloudApigeeV1TraceConfigOverride $postBody, $optParams = [])
   {

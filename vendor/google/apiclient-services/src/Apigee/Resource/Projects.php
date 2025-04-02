@@ -40,7 +40,6 @@ class Projects extends \Google\Service\Resource
    * @param GoogleCloudApigeeV1ProvisionOrganizationRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleLongrunningOperation
-   * @throws \Google\Service\Exception
    */
   public function provisionOrganization($project, GoogleCloudApigeeV1ProvisionOrganizationRequest $postBody, $optParams = [])
   {

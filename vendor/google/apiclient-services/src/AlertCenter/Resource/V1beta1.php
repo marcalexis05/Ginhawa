@@ -35,12 +35,9 @@ class V1beta1 extends \Google\Service\Resource
    * @param array $optParams Optional parameters.
    *
    * @opt_param string customerId Optional. The unique identifier of the Google
-   * Workspace account of the customer the alert settings are associated with. The
-   * `customer_id` must/ have the initial "C" stripped (for example, `046psxkn`).
-   * Inferred from the caller identity if not provided. [Find your customer
-   * ID](https://support.google.com/cloudidentity/answer/10070793).
+   * Workspace organization account of the customer the alert settings are
+   * associated with. Inferred from the caller identity if not provided.
    * @return Settings
-   * @throws \Google\Service\Exception
    */
   public function getSettings($optParams = [])
   {
@@ -55,12 +52,9 @@ class V1beta1 extends \Google\Service\Resource
    * @param array $optParams Optional parameters.
    *
    * @opt_param string customerId Optional. The unique identifier of the Google
-   * Workspace account of the customer the alert settings are associated with. The
-   * `customer_id` must have the initial "C" stripped (for example, `046psxkn`).
-   * Inferred from the caller identity if not provided. [Find your customer
-   * ID](https://support.google.com/cloudidentity/answer/10070793).
+   * Workspace organization account of the customer the alert settings are
+   * associated with. Inferred from the caller identity if not provided.
    * @return Settings
-   * @throws \Google\Service\Exception
    */
   public function updateSettings(Settings $postBody, $optParams = [])
   {

@@ -25,7 +25,7 @@ use Google\Service\AndroidPublisher\Variant;
  * Typical usage is:
  *  <code>
  *   $androidpublisherService = new Google\Service\AndroidPublisher(...);
- *   $variants = $androidpublisherService->systemapks_variants;
+ *   $variants = $androidpublisherService->variants;
  *  </code>
  */
 class SystemapksVariants extends \Google\Service\Resource
@@ -39,7 +39,6 @@ class SystemapksVariants extends \Google\Service\Resource
    * @param Variant $postBody
    * @param array $optParams Optional parameters.
    * @return Variant
-   * @throws \Google\Service\Exception
    */
   public function create($packageName, $versionCode, Variant $postBody, $optParams = [])
   {
@@ -55,7 +54,6 @@ class SystemapksVariants extends \Google\Service\Resource
    * @param string $versionCode The version code of the App Bundle.
    * @param string $variantId The ID of a previously created system APK variant.
    * @param array $optParams Optional parameters.
-   * @throws \Google\Service\Exception
    */
   public function download($packageName, $versionCode, $variantId, $optParams = [])
   {
@@ -71,7 +69,6 @@ class SystemapksVariants extends \Google\Service\Resource
    * @param string $variantId The ID of a previously created system APK variant.
    * @param array $optParams Optional parameters.
    * @return Variant
-   * @throws \Google\Service\Exception
    */
   public function get($packageName, $versionCode, $variantId, $optParams = [])
   {
@@ -87,7 +84,6 @@ class SystemapksVariants extends \Google\Service\Resource
    * @param string $versionCode The version code of the App Bundle.
    * @param array $optParams Optional parameters.
    * @return SystemApksListResponse
-   * @throws \Google\Service\Exception
    */
   public function listSystemapksVariants($packageName, $versionCode, $optParams = [])
   {

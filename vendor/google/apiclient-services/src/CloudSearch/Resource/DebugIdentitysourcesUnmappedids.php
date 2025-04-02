@@ -24,7 +24,7 @@ use Google\Service\CloudSearch\ListUnmappedIdentitiesResponse;
  * Typical usage is:
  *  <code>
  *   $cloudsearchService = new Google\Service\CloudSearch(...);
- *   $unmappedids = $cloudsearchService->debug_identitysources_unmappedids;
+ *   $unmappedids = $cloudsearchService->unmappedids;
  *  </code>
  */
 class DebugIdentitysourcesUnmappedids extends \Google\Service\Resource
@@ -46,7 +46,6 @@ class DebugIdentitysourcesUnmappedids extends \Google\Service\Resource
    * previous List request, if any.
    * @opt_param string resolutionStatusCode Limit users selection to this status.
    * @return ListUnmappedIdentitiesResponse
-   * @throws \Google\Service\Exception
    */
   public function listDebugIdentitysourcesUnmappedids($parent, $optParams = [])
   {

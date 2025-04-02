@@ -19,78 +19,58 @@ namespace Google\Service\Apigee;
 
 class GoogleCloudApigeeV1ApiCategory extends \Google\Model
 {
-  /**
-   * @var string
-   */
-  public $id;
-  /**
-   * @var string
-   */
-  public $name;
-  /**
-   * @var string
-   */
-  public $siteId;
-  /**
-   * @var string
-   */
-  public $updateTime;
+  protected $dataType = GoogleCloudApigeeV1ApiCategoryData::class;
+  protected $dataDataType = '';
+  public $errorCode;
+  public $message;
+  public $requestId;
+  public $status;
 
   /**
-   * @param string
+   * @param GoogleCloudApigeeV1ApiCategoryData
    */
-  public function setId($id)
+  public function setData(GoogleCloudApigeeV1ApiCategoryData $data)
   {
-    $this->id = $id;
+    $this->data = $data;
   }
   /**
-   * @return string
+   * @return GoogleCloudApigeeV1ApiCategoryData
    */
-  public function getId()
+  public function getData()
   {
-    return $this->id;
+    return $this->data;
   }
-  /**
-   * @param string
-   */
-  public function setName($name)
+  public function setErrorCode($errorCode)
   {
-    $this->name = $name;
+    $this->errorCode = $errorCode;
   }
-  /**
-   * @return string
-   */
-  public function getName()
+  public function getErrorCode()
   {
-    return $this->name;
+    return $this->errorCode;
   }
-  /**
-   * @param string
-   */
-  public function setSiteId($siteId)
+  public function setMessage($message)
   {
-    $this->siteId = $siteId;
+    $this->message = $message;
   }
-  /**
-   * @return string
-   */
-  public function getSiteId()
+  public function getMessage()
   {
-    return $this->siteId;
+    return $this->message;
   }
-  /**
-   * @param string
-   */
-  public function setUpdateTime($updateTime)
+  public function setRequestId($requestId)
   {
-    $this->updateTime = $updateTime;
+    $this->requestId = $requestId;
   }
-  /**
-   * @return string
-   */
-  public function getUpdateTime()
+  public function getRequestId()
   {
-    return $this->updateTime;
+    return $this->requestId;
+  }
+  public function setStatus($status)
+  {
+    $this->status = $status;
+  }
+  public function getStatus()
+  {
+    return $this->status;
   }
 }
 

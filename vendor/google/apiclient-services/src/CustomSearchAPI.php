@@ -38,7 +38,6 @@ class CustomSearchAPI extends \Google\Service
 
   public $cse;
   public $cse_siterestrict;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the CustomSearchAPI service.
@@ -51,7 +50,6 @@ class CustomSearchAPI extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://customsearch.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://customsearch.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1';
@@ -82,10 +80,6 @@ class CustomSearchAPI extends \Google\Service
                 'dateRestrict' => [
                   'location' => 'query',
                   'type' => 'string',
-                ],
-                'enableAlternateSearchHandler' => [
-                  'location' => 'query',
-                  'type' => 'boolean',
                 ],
                 'exactTerms' => [
                   'location' => 'query',
@@ -186,10 +180,6 @@ class CustomSearchAPI extends \Google\Service
                 'siteSearchFilter' => [
                   'location' => 'query',
                   'type' => 'string',
-                ],
-                'snippetLength' => [
-                  'location' => 'query',
-                  'type' => 'integer',
                 ],
                 'sort' => [
                   'location' => 'query',
@@ -230,10 +220,6 @@ class CustomSearchAPI extends \Google\Service
                   'location' => 'query',
                   'type' => 'string',
                 ],
-                'enableAlternateSearchHandler' => [
-                  'location' => 'query',
-                  'type' => 'boolean',
-                ],
                 'exactTerms' => [
                   'location' => 'query',
                   'type' => 'string',
@@ -333,10 +319,6 @@ class CustomSearchAPI extends \Google\Service
                 'siteSearchFilter' => [
                   'location' => 'query',
                   'type' => 'string',
-                ],
-                'snippetLength' => [
-                  'location' => 'query',
-                  'type' => 'integer',
                 ],
                 'sort' => [
                   'location' => 'query',

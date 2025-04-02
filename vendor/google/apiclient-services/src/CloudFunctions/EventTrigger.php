@@ -17,169 +17,51 @@
 
 namespace Google\Service\CloudFunctions;
 
-class EventTrigger extends \Google\Collection
+class EventTrigger extends \Google\Model
 {
-  protected $collection_key = 'eventFilters';
-  /**
-   * @var string
-   */
-  public $channel;
-  protected $eventFiltersType = EventFilter::class;
-  protected $eventFiltersDataType = 'array';
-  /**
-   * @var string
-   */
   public $eventType;
-  /**
-   * @var string
-   */
-  public $pubsubTopic;
-  /**
-   * @var string
-   */
-  public $retryPolicy;
-  /**
-   * @var string
-   */
+  protected $failurePolicyType = FailurePolicy::class;
+  protected $failurePolicyDataType = '';
+  public $resource;
   public $service;
-  /**
-   * @var string
-   */
-  public $serviceAccountEmail;
-  /**
-   * @var string
-   */
-  public $trigger;
-  /**
-   * @var string
-   */
-  public $triggerRegion;
 
-  /**
-   * @param string
-   */
-  public function setChannel($channel)
-  {
-    $this->channel = $channel;
-  }
-  /**
-   * @return string
-   */
-  public function getChannel()
-  {
-    return $this->channel;
-  }
-  /**
-   * @param EventFilter[]
-   */
-  public function setEventFilters($eventFilters)
-  {
-    $this->eventFilters = $eventFilters;
-  }
-  /**
-   * @return EventFilter[]
-   */
-  public function getEventFilters()
-  {
-    return $this->eventFilters;
-  }
-  /**
-   * @param string
-   */
   public function setEventType($eventType)
   {
     $this->eventType = $eventType;
   }
-  /**
-   * @return string
-   */
   public function getEventType()
   {
     return $this->eventType;
   }
   /**
-   * @param string
+   * @param FailurePolicy
    */
-  public function setPubsubTopic($pubsubTopic)
+  public function setFailurePolicy(FailurePolicy $failurePolicy)
   {
-    $this->pubsubTopic = $pubsubTopic;
+    $this->failurePolicy = $failurePolicy;
   }
   /**
-   * @return string
+   * @return FailurePolicy
    */
-  public function getPubsubTopic()
+  public function getFailurePolicy()
   {
-    return $this->pubsubTopic;
+    return $this->failurePolicy;
   }
-  /**
-   * @param string
-   */
-  public function setRetryPolicy($retryPolicy)
+  public function setResource($resource)
   {
-    $this->retryPolicy = $retryPolicy;
+    $this->resource = $resource;
   }
-  /**
-   * @return string
-   */
-  public function getRetryPolicy()
+  public function getResource()
   {
-    return $this->retryPolicy;
+    return $this->resource;
   }
-  /**
-   * @param string
-   */
   public function setService($service)
   {
     $this->service = $service;
   }
-  /**
-   * @return string
-   */
   public function getService()
   {
     return $this->service;
-  }
-  /**
-   * @param string
-   */
-  public function setServiceAccountEmail($serviceAccountEmail)
-  {
-    $this->serviceAccountEmail = $serviceAccountEmail;
-  }
-  /**
-   * @return string
-   */
-  public function getServiceAccountEmail()
-  {
-    return $this->serviceAccountEmail;
-  }
-  /**
-   * @param string
-   */
-  public function setTrigger($trigger)
-  {
-    $this->trigger = $trigger;
-  }
-  /**
-   * @return string
-   */
-  public function getTrigger()
-  {
-    return $this->trigger;
-  }
-  /**
-   * @param string
-   */
-  public function setTriggerRegion($triggerRegion)
-  {
-    $this->triggerRegion = $triggerRegion;
-  }
-  /**
-   * @return string
-   */
-  public function getTriggerRegion()
-  {
-    return $this->triggerRegion;
   }
 }
 

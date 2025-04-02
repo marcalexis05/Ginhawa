@@ -40,7 +40,6 @@ class Managedconfigurationsfordevice extends \Google\Service\Resource
    * @param string $managedConfigurationForDeviceId The ID of the managed
    * configuration (a product ID), e.g. "app:com.google.android.gm".
    * @param array $optParams Optional parameters.
-   * @throws \Google\Service\Exception
    */
   public function delete($enterpriseId, $userId, $deviceId, $managedConfigurationForDeviceId, $optParams = [])
   {
@@ -59,7 +58,6 @@ class Managedconfigurationsfordevice extends \Google\Service\Resource
    * configuration (a product ID), e.g. "app:com.google.android.gm".
    * @param array $optParams Optional parameters.
    * @return ManagedConfiguration
-   * @throws \Google\Service\Exception
    */
   public function get($enterpriseId, $userId, $deviceId, $managedConfigurationForDeviceId, $optParams = [])
   {
@@ -77,7 +75,6 @@ class Managedconfigurationsfordevice extends \Google\Service\Resource
    * @param string $deviceId The Android ID of the device.
    * @param array $optParams Optional parameters.
    * @return ManagedConfigurationsForDeviceListResponse
-   * @throws \Google\Service\Exception
    */
   public function listManagedconfigurationsfordevice($enterpriseId, $userId, $deviceId, $optParams = [])
   {
@@ -97,7 +94,6 @@ class Managedconfigurationsfordevice extends \Google\Service\Resource
    * @param ManagedConfiguration $postBody
    * @param array $optParams Optional parameters.
    * @return ManagedConfiguration
-   * @throws \Google\Service\Exception
    */
   public function update($enterpriseId, $userId, $deviceId, $managedConfigurationForDeviceId, ManagedConfiguration $postBody, $optParams = [])
   {

@@ -29,7 +29,7 @@ use Google\Service\AndroidProvisioningPartner\Device;
  * Typical usage is:
  *  <code>
  *   $androiddeviceprovisioningService = new Google\Service\AndroidProvisioningPartner(...);
- *   $devices = $androiddeviceprovisioningService->customers_devices;
+ *   $devices = $androiddeviceprovisioningService->devices;
  *  </code>
  */
 class CustomersDevices extends \Google\Service\Resource
@@ -45,7 +45,6 @@ class CustomersDevices extends \Google\Service\Resource
    * @param CustomerApplyConfigurationRequest $postBody
    * @param array $optParams Optional parameters.
    * @return AndroiddeviceprovisioningEmpty
-   * @throws \Google\Service\Exception
    */
   public function applyConfiguration($parent, CustomerApplyConfigurationRequest $postBody, $optParams = [])
   {
@@ -60,7 +59,6 @@ class CustomersDevices extends \Google\Service\Resource
    * format `customers/[CUSTOMER_ID]/devices/[DEVICE_ID]`.
    * @param array $optParams Optional parameters.
    * @return Device
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -75,11 +73,10 @@ class CustomersDevices extends \Google\Service\Resource
    * resource name in the format `customers/[CUSTOMER_ID]`.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string pageSize Required. The maximum number of devices to show in
-   * a page of results. Must be between 1 and 100 inclusive.
+   * @opt_param string pageSize The maximum number of devices to show in a page of
+   * results. Must be between 1 and 100 inclusive.
    * @opt_param string pageToken A token specifying which result page to return.
    * @return CustomerListDevicesResponse
-   * @throws \Google\Service\Exception
    */
   public function listCustomersDevices($parent, $optParams = [])
   {
@@ -95,7 +92,6 @@ class CustomersDevices extends \Google\Service\Resource
    * @param CustomerRemoveConfigurationRequest $postBody
    * @param array $optParams Optional parameters.
    * @return AndroiddeviceprovisioningEmpty
-   * @throws \Google\Service\Exception
    */
   public function removeConfiguration($parent, CustomerRemoveConfigurationRequest $postBody, $optParams = [])
   {
@@ -113,7 +109,6 @@ class CustomersDevices extends \Google\Service\Resource
    * @param CustomerUnclaimDeviceRequest $postBody
    * @param array $optParams Optional parameters.
    * @return AndroiddeviceprovisioningEmpty
-   * @throws \Google\Service\Exception
    */
   public function unclaim($parent, CustomerUnclaimDeviceRequest $postBody, $optParams = [])
   {

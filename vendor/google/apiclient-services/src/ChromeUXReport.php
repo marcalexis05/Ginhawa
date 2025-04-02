@@ -38,7 +38,6 @@ class ChromeUXReport extends \Google\Service
 
 
   public $records;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the ChromeUXReport service.
@@ -51,7 +50,6 @@ class ChromeUXReport extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://chromeuxreport.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://chromeuxreport.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1';
@@ -63,11 +61,7 @@ class ChromeUXReport extends \Google\Service
         'records',
         [
           'methods' => [
-            'queryHistoryRecord' => [
-              'path' => 'v1/records:queryHistoryRecord',
-              'httpMethod' => 'POST',
-              'parameters' => [],
-            ],'queryRecord' => [
+            'queryRecord' => [
               'path' => 'v1/records:queryRecord',
               'httpMethod' => 'POST',
               'parameters' => [],

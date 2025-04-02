@@ -26,7 +26,7 @@ use Google\Service\Apigee\GoogleCloudApigeeV1ListExportsResponse;
  * Typical usage is:
  *  <code>
  *   $apigeeService = new Google\Service\Apigee(...);
- *   $exports = $apigeeService->organizations_environments_analytics_exports;
+ *   $exports = $apigeeService->exports;
  *  </code>
  */
 class OrganizationsEnvironmentsAnalyticsExports extends \Google\Service\Resource
@@ -42,7 +42,6 @@ class OrganizationsEnvironmentsAnalyticsExports extends \Google\Service\Resource
    * @param GoogleCloudApigeeV1ExportRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1Export
-   * @throws \Google\Service\Exception
    */
   public function create($parent, GoogleCloudApigeeV1ExportRequest $postBody, $optParams = [])
   {
@@ -59,7 +58,6 @@ class OrganizationsEnvironmentsAnalyticsExports extends \Google\Service\Resource
    * @param string $name Required. Resource name of the export to get.
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1Export
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -76,7 +74,6 @@ class OrganizationsEnvironmentsAnalyticsExports extends \Google\Service\Resource
    * environment. Must be of the form `organizations/{org}/environments/{env}`.
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1ListExportsResponse
-   * @throws \Google\Service\Exception
    */
   public function listOrganizationsEnvironmentsAnalyticsExports($parent, $optParams = [])
   {

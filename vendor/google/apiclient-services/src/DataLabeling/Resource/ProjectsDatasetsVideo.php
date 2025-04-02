@@ -25,7 +25,7 @@ use Google\Service\DataLabeling\GoogleLongrunningOperation;
  * Typical usage is:
  *  <code>
  *   $datalabelingService = new Google\Service\DataLabeling(...);
- *   $video = $datalabelingService->projects_datasets_video;
+ *   $video = $datalabelingService->video;
  *  </code>
  */
 class ProjectsDatasetsVideo extends \Google\Service\Resource
@@ -39,7 +39,6 @@ class ProjectsDatasetsVideo extends \Google\Service\Resource
    * @param GoogleCloudDatalabelingV1beta1LabelVideoRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleLongrunningOperation
-   * @throws \Google\Service\Exception
    */
   public function label($parent, GoogleCloudDatalabelingV1beta1LabelVideoRequest $postBody, $optParams = [])
   {

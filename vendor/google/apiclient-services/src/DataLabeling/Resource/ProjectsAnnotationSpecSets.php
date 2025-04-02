@@ -27,7 +27,7 @@ use Google\Service\DataLabeling\GoogleProtobufEmpty;
  * Typical usage is:
  *  <code>
  *   $datalabelingService = new Google\Service\DataLabeling(...);
- *   $annotationSpecSets = $datalabelingService->projects_annotationSpecSets;
+ *   $annotationSpecSets = $datalabelingService->annotationSpecSets;
  *  </code>
  */
 class ProjectsAnnotationSpecSets extends \Google\Service\Resource
@@ -41,7 +41,6 @@ class ProjectsAnnotationSpecSets extends \Google\Service\Resource
    * @param GoogleCloudDatalabelingV1beta1CreateAnnotationSpecSetRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleCloudDatalabelingV1beta1AnnotationSpecSet
-   * @throws \Google\Service\Exception
    */
   public function create($parent, GoogleCloudDatalabelingV1beta1CreateAnnotationSpecSetRequest $postBody, $optParams = [])
   {
@@ -56,7 +55,6 @@ class ProjectsAnnotationSpecSets extends \Google\Service\Resource
    * `projects/{project_id}/annotationSpecSets/{annotation_spec_set_id}`.
    * @param array $optParams Optional parameters.
    * @return GoogleProtobufEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -71,7 +69,6 @@ class ProjectsAnnotationSpecSets extends \Google\Service\Resource
    * projects/{project_id}/annotationSpecSets/{annotation_spec_set_id}
    * @param array $optParams Optional parameters.
    * @return GoogleCloudDatalabelingV1beta1AnnotationSpecSet
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -96,7 +93,6 @@ class ProjectsAnnotationSpecSets extends \Google\Service\Resource
    * [DataLabelingService.ListAnnotationSpecSets] call. Return first page if
    * empty.
    * @return GoogleCloudDatalabelingV1beta1ListAnnotationSpecSetsResponse
-   * @throws \Google\Service\Exception
    */
   public function listProjectsAnnotationSpecSets($parent, $optParams = [])
   {

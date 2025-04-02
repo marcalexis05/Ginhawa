@@ -24,7 +24,7 @@ use Google\Service\AdExchangeBuyerII\ListBidResponseErrorsResponse;
  * Typical usage is:
  *  <code>
  *   $adexchangebuyer2Service = new Google\Service\AdExchangeBuyerII(...);
- *   $bidResponseErrors = $adexchangebuyer2Service->bidders_accounts_filterSets_bidResponseErrors;
+ *   $bidResponseErrors = $adexchangebuyer2Service->bidResponseErrors;
  *  </code>
  */
 class BiddersAccountsFilterSetsBidResponseErrors extends \Google\Service\Resource
@@ -51,7 +51,6 @@ class BiddersAccountsFilterSetsBidResponseErrors extends \Google\Service\Resourc
    * ListBidResponseErrorsResponse.nextPageToken returned from the previous call
    * to the bidResponseErrors.list method.
    * @return ListBidResponseErrorsResponse
-   * @throws \Google\Service\Exception
    */
   public function listBiddersAccountsFilterSetsBidResponseErrors($filterSetName, $optParams = [])
   {

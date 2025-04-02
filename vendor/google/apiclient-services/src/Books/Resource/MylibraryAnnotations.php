@@ -27,7 +27,7 @@ use Google\Service\Books\BooksEmpty;
  * Typical usage is:
  *  <code>
  *   $booksService = new Google\Service\Books(...);
- *   $annotations = $booksService->mylibrary_annotations;
+ *   $annotations = $booksService->annotations;
  *  </code>
  */
 class MylibraryAnnotations extends \Google\Service\Resource
@@ -40,7 +40,6 @@ class MylibraryAnnotations extends \Google\Service\Resource
    *
    * @opt_param string source String to identify the originator of this request.
    * @return BooksEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($annotationId, $optParams = [])
   {
@@ -60,7 +59,6 @@ class MylibraryAnnotations extends \Google\Service\Resource
    * the specified layer be provided in the response.
    * @opt_param string source String to identify the originator of this request.
    * @return Annotation
-   * @throws \Google\Service\Exception
    */
   public function insert(Annotation $postBody, $optParams = [])
   {
@@ -90,7 +88,6 @@ class MylibraryAnnotations extends \Google\Service\Resource
    * since this timestamp (inclusive).
    * @opt_param string volumeId The volume to restrict annotations to.
    * @return Annotations
-   * @throws \Google\Service\Exception
    */
   public function listMylibraryAnnotations($optParams = [])
   {
@@ -104,11 +101,7 @@ class MylibraryAnnotations extends \Google\Service\Resource
    * @param string|array $layerIds Array of layer IDs to get the summary for.
    * @param string $volumeId Volume id to get the summary for.
    * @param array $optParams Optional parameters.
-   *
-   * @opt_param string source Optional. String to identify the originator of this
-   * request.
    * @return AnnotationsSummary
-   * @throws \Google\Service\Exception
    */
   public function summary($layerIds, $volumeId, $optParams = [])
   {
@@ -125,7 +118,6 @@ class MylibraryAnnotations extends \Google\Service\Resource
    *
    * @opt_param string source String to identify the originator of this request.
    * @return Annotation
-   * @throws \Google\Service\Exception
    */
   public function update($annotationId, Annotation $postBody, $optParams = [])
   {

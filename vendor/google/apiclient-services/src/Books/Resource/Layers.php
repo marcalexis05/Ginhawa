@@ -41,7 +41,6 @@ class Layers extends \Google\Service\Resource
    * volume.
    * @opt_param string source String to identify the originator of this request.
    * @return Layersummary
-   * @throws \Google\Service\Exception
    */
   public function get($volumeId, $summaryId, $optParams = [])
   {
@@ -62,7 +61,6 @@ class Layers extends \Google\Service\Resource
    * page.
    * @opt_param string source String to identify the originator of this request.
    * @return Layersummaries
-   * @throws \Google\Service\Exception
    */
   public function listLayers($volumeId, $optParams = [])
   {

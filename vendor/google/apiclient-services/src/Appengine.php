@@ -37,10 +37,10 @@ class Appengine extends \Google\Service
   /** View and manage your applications deployed on Google App Engine. */
   const APPENGINE_ADMIN =
       "https://www.googleapis.com/auth/appengine.admin";
-  /** See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account.. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
-  /** View your data across Google Cloud services and see the email address of your Google Account. */
+  /** View your data across Google Cloud Platform services. */
   const CLOUD_PLATFORM_READ_ONLY =
       "https://www.googleapis.com/auth/cloud-platform.read-only";
 
@@ -54,10 +54,6 @@ class Appengine extends \Google\Service
   public $apps_services;
   public $apps_services_versions;
   public $apps_services_versions_instances;
-  public $projects_locations_applications_authorizedDomains;
-  public $projects_locations_applications_services;
-  public $projects_locations_applications_services_versions;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the Appengine service.
@@ -70,7 +66,6 @@ class Appengine extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://appengine.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://appengine.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1';
@@ -94,24 +89,6 @@ class Appengine extends \Google\Service
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
-                ],
-                'includeExtraData' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-              ],
-            ],'listRuntimes' => [
-              'path' => 'v1/apps/{appsId}:listRuntimes',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'appsId' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'environment' => [
-                  'location' => 'query',
-                  'type' => 'string',
                 ],
               ],
             ],'patch' => [
@@ -571,10 +548,6 @@ class Appengine extends \Google\Service
                   'type' => 'string',
                   'required' => true,
                 ],
-                'force' => [
-                  'location' => 'query',
-                  'type' => 'boolean',
-                ],
               ],
             ],'get' => [
               'path' => 'v1/apps/{appsId}/services/{servicesId}',
@@ -863,123 +836,6 @@ class Appengine extends \Google\Service
                 'pageToken' => [
                   'location' => 'query',
                   'type' => 'string',
-                ],
-              ],
-            ],
-          ]
-        ]
-    );
-    $this->projects_locations_applications_authorizedDomains = new Appengine\Resource\ProjectsLocationsApplicationsAuthorizedDomains(
-        $this,
-        $this->serviceName,
-        'authorizedDomains',
-        [
-          'methods' => [
-            'list' => [
-              'path' => 'v1/projects/{projectsId}/locations/{locationsId}/applications/{applicationsId}/authorizedDomains',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'projectsId' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'locationsId' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'applicationsId' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'pageSize' => [
-                  'location' => 'query',
-                  'type' => 'integer',
-                ],
-                'pageToken' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-              ],
-            ],
-          ]
-        ]
-    );
-    $this->projects_locations_applications_services = new Appengine\Resource\ProjectsLocationsApplicationsServices(
-        $this,
-        $this->serviceName,
-        'services',
-        [
-          'methods' => [
-            'delete' => [
-              'path' => 'v1/projects/{projectsId}/locations/{locationsId}/applications/{applicationsId}/services/{servicesId}',
-              'httpMethod' => 'DELETE',
-              'parameters' => [
-                'projectsId' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'locationsId' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'applicationsId' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'servicesId' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'force' => [
-                  'location' => 'query',
-                  'type' => 'boolean',
-                ],
-              ],
-            ],
-          ]
-        ]
-    );
-    $this->projects_locations_applications_services_versions = new Appengine\Resource\ProjectsLocationsApplicationsServicesVersions(
-        $this,
-        $this->serviceName,
-        'versions',
-        [
-          'methods' => [
-            'delete' => [
-              'path' => 'v1/projects/{projectsId}/locations/{locationsId}/applications/{applicationsId}/services/{servicesId}/versions/{versionsId}',
-              'httpMethod' => 'DELETE',
-              'parameters' => [
-                'projectsId' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'locationsId' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'applicationsId' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'servicesId' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'versionsId' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
                 ],
               ],
             ],

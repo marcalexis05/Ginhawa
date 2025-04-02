@@ -134,78 +134,86 @@
                                                 $stmt->bind_param("i", $id);
                                                 $stmt->execute();
                                                 $result = $stmt->get_result();
-                                                $row = $result->fetch_assoc();
-                                                $scheduleid = $row["scheduleid"];
-                                                $title = $row["title"];
-                                                $docname = $row["docname"];
-                                                $docemail = $row["docemail"];
-                                                $scheduledate = $row["scheduledate"];
-                                                $docid = $row["docid"];
-                                                $start_time = date('h:i A', strtotime($row["start_time"]));
-                                                $end_time = date('h:i A', strtotime($row["end_time"]));
+                                                if ($result->num_rows == 0) {
+                                                    echo "<tr><td colspan='2'>Schedule not found.</td></tr>";
+                                                } else {
+                                                    $row = $result->fetch_assoc();
+                                                    $scheduleid = $row["scheduleid"];
+                                                    $title = $row["title"];
+                                                    $docname = $row["docname"];
+                                                    $docemail = $row["docemail"];
+                                                    $scheduledate = $row["scheduledate"];
+                                                    $docid = $row["docid"];
+                                                    $start_time = date('h:i A', strtotime($row["start_time"]));
+                                                    $end_time = date('h:i A', strtotime($row["end_time"]));
 
-                                                // Calculate apponum as the number of prior bookings for this doctor on this scheduledate
-                                                $sql2 = "
-                                                    SELECT COUNT(*) + 1 AS apponum 
-                                                    FROM appointment 
-                                                    INNER JOIN schedule ON appointment.scheduleid = schedule.scheduleid 
-                                                    WHERE schedule.docid = ? 
-                                                    AND schedule.scheduledate = ? 
-                                                    AND appointment.appodate < ?
-                                                ";
-                                                $current_appodate = date('Y-m-d H:i:s'); // Current timestamp for new booking
-                                                $stmt2 = $database->prepare($sql2);
-                                                $stmt2->bind_param("iss", $docid, $scheduledate, $current_appodate);
-                                                $stmt2->execute();
-                                                $result2 = $stmt2->get_result();
-                                                $apponum_row = $result2->fetch_assoc();
-                                                $apponum = $apponum_row["apponum"] ?? 1; // Default to 1 if no prior bookings
+                                                    // Calculate apponum
+                                                    $sql2 = "
+                                                        SELECT COUNT(*) + 1 AS apponum 
+                                                        FROM appointment 
+                                                        INNER JOIN schedule ON appointment.scheduleid = schedule.scheduleid 
+                                                        WHERE schedule.docid = ? 
+                                                        AND schedule.scheduledate = ? 
+                                                        AND appointment.appodate < ?
+                                                    ";
+                                                    $current_appodate = date('Y-m-d H:i:s');
+                                                    $stmt2 = $database->prepare($sql2);
+                                                    $stmt2->bind_param("iss", $docid, $scheduledate, $current_appodate);
+                                                    $stmt2->execute();
+                                                    $result2 = $stmt2->get_result();
+                                                    $apponum_row = $result2->fetch_assoc();
+                                                    $apponum = $apponum_row["apponum"] ?? 1;
 
-                                                echo '
-                                                    <form action="booking-complete.php" method="post">
-                                                        <input type="hidden" name="scheduleid" value="' . $scheduleid . '" >
-                                                        <input type="hidden" name="apponum" value="' . $apponum . '" >
-                                                        <input type="hidden" name="date" value="' . $today . '" >
+                                                    echo '
+                                                        <form action="booking-complete.php" method="post">
+                                                            <input type="hidden" name="scheduleid" value="' . $scheduleid . '" >
+                                                            <input type="hidden" name="apponum" value="' . $apponum . '" >
+                                                            <input type="hidden" name="date" value="' . $today . '" >
                                                     ';
-                                                echo '
-                                                    <td style="width: 50%;" rowspan="2">
-                                                        <div class="dashboard-items search-items">
-                                                            <div style="width:100%">
-                                                                <div class="h1-search" style="font-size:25px;">Session Details</div><br><br>
-                                                                <div class="h3-search" style="font-size:18px;line-height:30px">
-                                                                    Doctor name:    <b>' . $docname . '</b><br>
-                                                                    Doctor Email:    <b>' . $docemail . '</b> 
+                                                    echo '
+                                                        <td style="width: 50%;" rowspan="2">
+                                                            <div class="dashboard-items search-items">
+                                                                <div style="width:100%">
+                                                                    <div class="h1-search" style="font-size:25px;">Session Details</div><br><br>
+                                                                    <div class="h3-search" style="font-size:18px;line-height:30px">
+                                                                        Doctor name:    <b>' . $docname . '</b><br>
+                                                                        Doctor Email:    <b>' . $docemail . '</b> 
+                                                                    </div>
+                                                                    <div class="h3-search" style="font-size:18px;"></div><br>
+                                                                    <div class="h3-search" style="font-size:18px;">
+                                                                        Session Title: ' . $title . '<br>
+                                                                        Session Scheduled Date: ' . $scheduledate . '<br>
+                                                                        Session Time: ' . $start_time . ' - ' . $end_time . '<br>
+                                                                        Channeling fee: <b>PHP2,000.00</b>
+                                                                    </div>
+                                                                    <br>
                                                                 </div>
-                                                                <div class="h3-search" style="font-size:18px;"></div><br>
-                                                                <div class="h3-search" style="font-size:18px;">
-                                                                    Session Title: ' . $title . '<br>
-                                                                    Session Scheduled Date: ' . $scheduledate . '<br>
-                                                                    Session Time: ' . $start_time . ' - ' . $end_time . '<br>
-                                                                    Channeling fee: <b>PHP2,000.00</b>
-                                                                </div>
-                                                                <br>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                    <td style="width: 25%;">
-                                                        <div class="dashboard-items search-items">
-                                                            <div style="width:100%;padding-top: 15px;padding-bottom: 15px;">
-                                                                <div class="h1-search" style="font-size:20px;line-height: 35px;margin-left:8px;text-align:center;">Your Appointment Number</div>
-                                                                <center>
-                                                                    <div class="dashboard-icons" style="margin-left: 0px;width:90%;font-size:70px;font-weight:800;text-align:center;color:var(--btnnictext);background-color: var(--btnice)">' . sprintf("%02d", $apponum) . '</div>
-                                                                </center>
-                                                            </div><br><br><br>
-                                                        </div>
-                                                    </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <input type="Submit" class="login-btn btn-primary btn btn-book" style="margin-left:10px;padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;width:95%;text-align: center;" value="Book now" name="booknow"></button>
-                                                        </form>
                                                         </td>
-                                                    </tr>
+                                                        <td style="width: 25%;">
+                                                            <div class="dashboard-items search-items">
+                                                                <div style="width:100%;padding-top: 15px;padding-bottom: 15px;">
+                                                                    <div class="h1-search" style="font-size:20px;line-height: 35px;margin-left:8px;text-align:center;">Your Appointment Number</div>
+                                                                    <center>
+                                                                        <div class="dashboard-icons" style="margin-left: 0px;width:90%;font-size:70px;font-weight:800;text-align:center;color:var(--btnnictext);background-color: var(--btnice)">' . sprintf("%02d", $apponum) . '</div>
+                                                                    </center>
+                                                                </div><br><br><br>
+                                                            </div>
+                                                        </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <input type="submit" class="login-btn btn-primary btn btn-book" style="margin-left:10px;padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;width:95%;text-align: center;" value="Book now" name="booknow">
+                                                            </form>
+                                                            </td>
+                                                        </tr>
                                                     ';
+                                                }
+                                            } else {
+                                                echo "<tr><td colspan='2'>No schedule ID provided.</td></tr>";
                                             }
+                                        } else {
+                                            echo "<tr><td colspan='2'>Invalid request.</td></tr>";
                                         }
                                         ?>
                                     </tbody>

@@ -26,7 +26,7 @@ use Google\Service\Adsense\ReportResult;
  * Typical usage is:
  *  <code>
  *   $adsenseService = new Google\Service\Adsense(...);
- *   $saved = $adsenseService->accounts_reports_saved;
+ *   $saved = $adsenseService->saved;
  *  </code>
  */
 class AccountsReportsSaved extends \Google\Service\Resource
@@ -67,7 +67,6 @@ class AccountsReportsSaved extends \Google\Service\Resource
    * @opt_param int startDate.year Year of the date. Must be from 1 to 9999, or 0
    * to specify a date without a year.
    * @return ReportResult
-   * @throws \Google\Service\Exception
    */
   public function generate($name, $optParams = [])
   {
@@ -111,7 +110,6 @@ class AccountsReportsSaved extends \Google\Service\Resource
    * @opt_param int startDate.year Year of the date. Must be from 1 to 9999, or 0
    * to specify a date without a year.
    * @return HttpBody
-   * @throws \Google\Service\Exception
    */
   public function generateCsv($name, $optParams = [])
   {
@@ -131,11 +129,10 @@ class AccountsReportsSaved extends \Google\Service\Resource
    * returned. The maximum value is 10000; values above 10000 will be coerced to
    * 10000.
    * @opt_param string pageToken A page token, received from a previous
-   * `ListSavedReports` call. Provide this to retrieve the subsequent page. When
-   * paginating, all other parameters provided to `ListSavedReports` must match
-   * the call that provided the page token.
+   * `ListPayments` call. Provide this to retrieve the subsequent page. When
+   * paginating, all other parameters provided to `ListPayments` must match the
+   * call that provided the page token.
    * @return ListSavedReportsResponse
-   * @throws \Google\Service\Exception
    */
   public function listAccountsReportsSaved($parent, $optParams = [])
   {

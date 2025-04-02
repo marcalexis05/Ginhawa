@@ -27,21 +27,19 @@ use Google\Client;
  *
  * <p>
  * For more information about this service, see the API
- * <a href="https://cloud.google.com/learnmoreurl" target="_blank">Documentation</a>
+ * <a href="https://cloud.google.com" target="_blank">Documentation</a>
  * </p>
  *
  * @author Google, Inc.
  */
 class Assuredworkloads extends \Google\Service
 {
-  /** See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account.. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
 
   public $organizations_locations_operations;
   public $organizations_locations_workloads;
-  public $organizations_locations_workloads_violations;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the Assuredworkloads service.
@@ -54,7 +52,6 @@ class Assuredworkloads extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://assuredworkloads.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://assuredworkloads.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1';
@@ -108,34 +105,7 @@ class Assuredworkloads extends \Google\Service
         'workloads',
         [
           'methods' => [
-            'analyzeWorkloadMove' => [
-              'path' => 'v1/{+target}:analyzeWorkloadMove',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'target' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'assetTypes' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                  'repeated' => true,
-                ],
-                'pageSize' => [
-                  'location' => 'query',
-                  'type' => 'integer',
-                ],
-                'pageToken' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-                'project' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-              ],
-            ],'create' => [
+            'create' => [
               'path' => 'v1/{+parent}/workloads',
               'httpMethod' => 'POST',
               'parameters' => [
@@ -163,16 +133,6 @@ class Assuredworkloads extends \Google\Service
                   'type' => 'string',
                 ],
               ],
-            ],'enableResourceMonitoring' => [
-              'path' => 'v1/{+name}:enableResourceMonitoring',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
             ],'get' => [
               'path' => 'v1/{+name}',
               'httpMethod' => 'GET',
@@ -205,16 +165,6 @@ class Assuredworkloads extends \Google\Service
                   'type' => 'string',
                 ],
               ],
-            ],'mutatePartnerPermissions' => [
-              'path' => 'v1/{+name}:mutatePartnerPermissions',
-              'httpMethod' => 'PATCH',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
             ],'patch' => [
               'path' => 'v1/{+name}',
               'httpMethod' => 'PATCH',
@@ -225,76 +175,6 @@ class Assuredworkloads extends \Google\Service
                   'required' => true,
                 ],
                 'updateMask' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-              ],
-            ],'restrictAllowedResources' => [
-              'path' => 'v1/{+name}:restrictAllowedResources',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],
-          ]
-        ]
-    );
-    $this->organizations_locations_workloads_violations = new Assuredworkloads\Resource\OrganizationsLocationsWorkloadsViolations(
-        $this,
-        $this->serviceName,
-        'violations',
-        [
-          'methods' => [
-            'acknowledge' => [
-              'path' => 'v1/{+name}:acknowledge',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'get' => [
-              'path' => 'v1/{+name}',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'list' => [
-              'path' => 'v1/{+parent}/violations',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'parent' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'filter' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-                'interval.endTime' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-                'interval.startTime' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-                'pageSize' => [
-                  'location' => 'query',
-                  'type' => 'integer',
-                ],
-                'pageToken' => [
                   'location' => 'query',
                   'type' => 'string',
                 ],

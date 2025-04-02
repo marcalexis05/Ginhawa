@@ -27,7 +27,7 @@ use Google\Service\Apigee\GoogleLongrunningOperation;
  * Typical usage is:
  *  <code>
  *   $apigeeService = new Google\Service\Apigee(...);
- *   $natAddresses = $apigeeService->organizations_instances_natAddresses;
+ *   $natAddresses = $apigeeService->natAddresses;
  *  </code>
  */
 class OrganizationsInstancesNatAddresses extends \Google\Service\Resource
@@ -43,7 +43,6 @@ class OrganizationsInstancesNatAddresses extends \Google\Service\Resource
    * @param GoogleCloudApigeeV1ActivateNatAddressRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleLongrunningOperation
-   * @throws \Google\Service\Exception
    */
   public function activate($name, GoogleCloudApigeeV1ActivateNatAddressRequest $postBody, $optParams = [])
   {
@@ -63,7 +62,6 @@ class OrganizationsInstancesNatAddresses extends \Google\Service\Resource
    * @param GoogleCloudApigeeV1NatAddress $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleLongrunningOperation
-   * @throws \Google\Service\Exception
    */
   public function create($parent, GoogleCloudApigeeV1NatAddress $postBody, $optParams = [])
   {
@@ -81,7 +79,6 @@ class OrganizationsInstancesNatAddresses extends \Google\Service\Resource
    * `organizations/{org}/instances/{instances}/natAddresses/{nataddress}``
    * @param array $optParams Optional parameters.
    * @return GoogleLongrunningOperation
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -98,7 +95,6 @@ class OrganizationsInstancesNatAddresses extends \Google\Service\Resource
    * `organizations/{org}/instances/{instances}/natAddresses/{nataddress}`
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1NatAddress
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -119,7 +115,6 @@ class OrganizationsInstancesNatAddresses extends \Google\Service\Resource
    * @opt_param string pageToken Page token, returned from a previous
    * ListNatAddresses call, that you can use to retrieve the next page of content.
    * @return GoogleCloudApigeeV1ListNatAddressesResponse
-   * @throws \Google\Service\Exception
    */
   public function listOrganizationsInstancesNatAddresses($parent, $optParams = [])
   {

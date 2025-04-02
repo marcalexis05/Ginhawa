@@ -38,7 +38,6 @@ class Systempolicy extends \Google\Service\Resource
    * project.
    * @param array $optParams Optional parameters.
    * @return Policy
-   * @throws \Google\Service\Exception
    */
   public function getPolicy($name, $optParams = [])
   {

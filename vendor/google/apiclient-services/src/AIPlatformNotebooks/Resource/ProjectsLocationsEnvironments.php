@@ -26,7 +26,7 @@ use Google\Service\AIPlatformNotebooks\Operation;
  * Typical usage is:
  *  <code>
  *   $notebooksService = new Google\Service\AIPlatformNotebooks(...);
- *   $environments = $notebooksService->projects_locations_environments;
+ *   $environments = $notebooksService->environments;
  *  </code>
  */
 class ProjectsLocationsEnvironments extends \Google\Service\Resource

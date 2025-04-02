@@ -24,7 +24,7 @@ use Google\Service\Analytics\Accounts;
  * Typical usage is:
  *  <code>
  *   $analyticsService = new Google\Service\Analytics(...);
- *   $accounts = $analyticsService->management_accounts;
+ *   $accounts = $analyticsService->accounts;
  *  </code>
  */
 class ManagementAccounts extends \Google\Service\Resource
@@ -41,7 +41,6 @@ class ManagementAccounts extends \Google\Service\Resource
    * this parameter as a pagination mechanism along with the max-results
    * parameter.
    * @return Accounts
-   * @throws \Google\Service\Exception
    */
   public function listManagementAccounts($optParams = [])
   {

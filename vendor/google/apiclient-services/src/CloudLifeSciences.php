@@ -35,14 +35,13 @@ use Google\Client;
  */
 class CloudLifeSciences extends \Google\Service
 {
-  /** See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account.. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
 
   public $projects_locations;
   public $projects_locations_operations;
   public $projects_locations_pipelines;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the CloudLifeSciences service.
@@ -55,7 +54,6 @@ class CloudLifeSciences extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://lifesciences.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://lifesciences.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v2beta';

@@ -21,7 +21,6 @@ class UpdateInstanceConfigRequest extends \Google\Model
 {
   protected $configType = InstanceConfig::class;
   protected $configDataType = '';
-  public $config;
 
   /**
    * @param InstanceConfig

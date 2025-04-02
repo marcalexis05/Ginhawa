@@ -24,25 +24,14 @@ class RunRealtimeReportRequest extends \Google\Collection
   protected $dimensionFilterDataType = '';
   protected $dimensionsType = Dimension::class;
   protected $dimensionsDataType = 'array';
-  /**
-   * @var string
-   */
   public $limit;
-  /**
-   * @var string[]
-   */
   public $metricAggregations;
   protected $metricFilterType = FilterExpression::class;
   protected $metricFilterDataType = '';
   protected $metricsType = Metric::class;
   protected $metricsDataType = 'array';
-  protected $minuteRangesType = MinuteRange::class;
-  protected $minuteRangesDataType = 'array';
   protected $orderBysType = OrderBy::class;
   protected $orderBysDataType = 'array';
-  /**
-   * @var bool
-   */
   public $returnPropertyQuota;
 
   /**
@@ -73,30 +62,18 @@ class RunRealtimeReportRequest extends \Google\Collection
   {
     return $this->dimensions;
   }
-  /**
-   * @param string
-   */
   public function setLimit($limit)
   {
     $this->limit = $limit;
   }
-  /**
-   * @return string
-   */
   public function getLimit()
   {
     return $this->limit;
   }
-  /**
-   * @param string[]
-   */
   public function setMetricAggregations($metricAggregations)
   {
     $this->metricAggregations = $metricAggregations;
   }
-  /**
-   * @return string[]
-   */
   public function getMetricAggregations()
   {
     return $this->metricAggregations;
@@ -130,20 +107,6 @@ class RunRealtimeReportRequest extends \Google\Collection
     return $this->metrics;
   }
   /**
-   * @param MinuteRange[]
-   */
-  public function setMinuteRanges($minuteRanges)
-  {
-    $this->minuteRanges = $minuteRanges;
-  }
-  /**
-   * @return MinuteRange[]
-   */
-  public function getMinuteRanges()
-  {
-    return $this->minuteRanges;
-  }
-  /**
    * @param OrderBy[]
    */
   public function setOrderBys($orderBys)
@@ -157,16 +120,10 @@ class RunRealtimeReportRequest extends \Google\Collection
   {
     return $this->orderBys;
   }
-  /**
-   * @param bool
-   */
   public function setReturnPropertyQuota($returnPropertyQuota)
   {
     $this->returnPropertyQuota = $returnPropertyQuota;
   }
-  /**
-   * @return bool
-   */
   public function getReturnPropertyQuota()
   {
     return $this->returnPropertyQuota;

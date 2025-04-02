@@ -48,7 +48,6 @@ class Representatives extends \Google\Service\Resource
    * fulfilling one of these roles will be returned. Divisions that don't contain
    * a matching office will not be returned.
    * @return RepresentativeInfoResponse
-   * @throws \Google\Service\Exception
    */
   public function representativeInfoByAddress($optParams = [])
   {
@@ -75,7 +74,6 @@ class Representatives extends \Google\Service\Resource
    * fulfilling one of these roles will be returned. Divisions that don't contain
    * a matching office will not be returned.
    * @return RepresentativeInfoData
-   * @throws \Google\Service\Exception
    */
   public function representativeInfoByDivision($ocdId, $optParams = [])
   {

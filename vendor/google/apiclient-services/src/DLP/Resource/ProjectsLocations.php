@@ -22,7 +22,7 @@ namespace Google\Service\DLP\Resource;
  * Typical usage is:
  *  <code>
  *   $dlpService = new Google\Service\DLP(...);
- *   $locations = $dlpService->projects_locations;
+ *   $locations = $dlpService->locations;
  *  </code>
  */
 class ProjectsLocations extends \Google\Service\Resource

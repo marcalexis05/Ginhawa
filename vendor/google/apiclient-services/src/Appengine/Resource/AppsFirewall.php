@@ -22,7 +22,7 @@ namespace Google\Service\Appengine\Resource;
  * Typical usage is:
  *  <code>
  *   $appengineService = new Google\Service\Appengine(...);
- *   $firewall = $appengineService->apps_firewall;
+ *   $firewall = $appengineService->firewall;
  *  </code>
  */
 class AppsFirewall extends \Google\Service\Resource

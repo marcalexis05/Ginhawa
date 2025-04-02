@@ -36,7 +36,6 @@ class Accounts extends \Google\Service\Resource
    * @param string $accountId Account to get information about.
    * @param array $optParams Optional parameters.
    * @return Account
-   * @throws \Google\Service\Exception
    */
   public function get($accountId, $optParams = [])
   {
@@ -51,7 +50,6 @@ class Accounts extends \Google\Service\Resource
    * @param string|array $filterAdClientId Ad clients to list accounts for.
    * @param array $optParams Optional parameters.
    * @return AccountsModel
-   * @throws \Google\Service\Exception
    */
   public function listAccounts($filterAdClientId, $optParams = [])
   {

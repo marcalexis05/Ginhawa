@@ -24,7 +24,7 @@ use Google\Service\Adsense\ListPaymentsResponse;
  * Typical usage is:
  *  <code>
  *   $adsenseService = new Google\Service\Adsense(...);
- *   $payments = $adsenseService->accounts_payments;
+ *   $payments = $adsenseService->payments;
  *  </code>
  */
 class AccountsPayments extends \Google\Service\Resource
@@ -37,7 +37,6 @@ class AccountsPayments extends \Google\Service\Resource
    * payments. Format: accounts/{account}
    * @param array $optParams Optional parameters.
    * @return ListPaymentsResponse
-   * @throws \Google\Service\Exception
    */
   public function listAccountsPayments($parent, $optParams = [])
   {

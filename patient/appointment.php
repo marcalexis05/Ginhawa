@@ -13,24 +13,6 @@
     <style>
         .popup { animation: transitionIn-Y-bottom 0.5s; }
         .sub-table { animation: transitionIn-Y-bottom 0.5s; }
-        .gmeet-link {
-            display: inline-block;
-            padding: 8px 15px;
-            background-color: #4CAF50;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 14px;
-            margin-top: 10px;
-            transition: background-color 0.3s;
-        }
-        .gmeet-link:hover {
-            background-color: #45a049;
-        }
-        .gmeet-link.unavailable {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
     </style>
 </head>
 <body>
@@ -127,7 +109,7 @@
                         <p style="font-size: 14px; color: rgb(119, 119, 119); padding: 0; margin: 0; text-align: right;">Today's Date</p>
                         <p class="heading-sub12" style="padding: 0; margin: 0;">
                             <?php 
-                            date_default_timezone_set('Asia/Kolkata');
+                            date_default_timezone_set('Asia/Manila');
                             $today = date('Y-m-d');
                             echo $today;
                             ?>
@@ -137,6 +119,17 @@
                         <button class="btn-label" style="display: flex; justify-content: center; align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
                     </td>
                 </tr>
+                <?php
+                // Display error message if booking failed with a retry option (kept for compatibility, though redirected to schedule.php now)
+                if (isset($_GET['action']) && $_GET['action'] == 'booking-failed' && isset($_GET['error'])) {
+                    echo '<tr>
+                        <td colspan="4">
+                            <p style="color: red; text-align: center; font-size: 16px; padding: 10px;">' . htmlspecialchars(urldecode($_GET['error'])) . '</p>
+                            <p style="text-align: center;"><a href="schedule.php" class="non-style-link"><button class="btn-primary btn" style="padding: 10px;">Retry Booking</button></a></p>
+                        </td>
+                    </tr>';
+                }
+                ?>
                 <tr>
                     <td colspan="4" style="padding-top: 10px; width: 100%;">
                         <p class="heading-main12" style="margin-left: 45px; font-size: 18px; color: rgb(49, 49, 49)">My Bookings (<?php echo $result->num_rows; ?>)</p>
@@ -196,10 +189,9 @@
                                                     $scheduledate = $row["scheduledate"];
                                                     $start_time = date('h:i A', strtotime($row["start_time"]));
                                                     $end_time = date('h:i A', strtotime($row["end_time"]));
-                                                    $apponum = $row["apponum"]; // Now correctly counts per doctor per day
+                                                    $apponum = $row["apponum"];
                                                     $appodate = $row["appodate"];
                                                     $appoid = $row["appoid"];
-                                                    $gmeet_link = $row["gmeet_link"] ?? 'Not yet generated';
 
                                                     if (empty($scheduleid)) {
                                                         break;
@@ -224,13 +216,7 @@
                                                                     </div>
                                                                     <div class="h4-search">
                                                                         Scheduled Date: ' . $scheduledate . '<br>Time: <b>' . $start_time . ' - ' . $end_time . '</b>
-                                                                    </div>';
-                                                    if ($gmeet_link === 'Not yet generated') {
-                                                        echo '<div><a class="gmeet-link unavailable">' . $gmeet_link . '</a></div>';
-                                                    } else {
-                                                        echo '<div><a href="' . $gmeet_link . '" target="_blank" class="gmeet-link">Join Google Meet</a></div>';
-                                                    }
-                                                    echo '
+                                                                    </div>
                                                                     <br>
                                                                     <a href="?action=drop&id=' . $appoid . '&title=' . urlencode($title) . '&doc=' . urlencode($docname) . '"><button class="login-btn btn-primary-soft btn" style="padding: 11px; width: 100%"><font class="tn-in-text">Cancel Booking</font></button></a>
                                                                 </div>
@@ -252,48 +238,56 @@
     </div>
 
     <?php
-    if ($_GET) {
-        $id = $_GET["id"];
+    if (!empty($_GET) && isset($_GET["action"])) {
         $action = $_GET["action"];
-        if ($action == 'booking-added') {
-            echo '
-            <div id="popup1" class="overlay">
-                <div class="popup">
-                    <center>
-                        <br><br>
-                        <h2>Booking Successfully.</h2>
-                        <a class="close" href="appointment.php">×</a>
-                        <div class="content">
-                            Your Appointment number is ' . $id . '.<br><br>
-                        </div>
-                        <div style="display: flex; justify-content: center;">
-                            <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text">  OK  </font></button></a>
-                            <br><br><br><br>
-                        </div>
-                    </center>
-                </div>
-            </div>';
-        } elseif ($action == 'drop') {
-            $title = urldecode($_GET["title"]);
-            $docname = urldecode($_GET["doc"]);
-            echo '
-            <div id="popup1" class="overlay">
-                <div class="popup">
-                    <center>
-                        <h2>Are you sure?</h2>
-                        <a class="close" href="appointment.php">×</a>
-                        <div class="content">
-                            You want to Cancel this Appointment?<br><br>
-                            Session Name:  <b>' . substr($title, 0, 40) . '</b><br>
-                            Doctor name : <b>' . substr($docname, 0, 40) . '</b><br><br>
-                        </div>
-                        <div style="display: flex; justify-content: center;">
-                            <a href="delete-appointment.php?id=' . $id . '" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text"> Yes </font></button></a>   
-                            <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text">  No  </font></button></a>
-                        </div>
-                    </center>
-                </div>
-            </div>';
+        
+        if ($action == 'booking-added' || $action == 'drop') {
+            if (!isset($_GET["id"]) || empty($_GET["id"])) {
+                header("location: appointment.php");
+                exit;
+            }
+            $id = $_GET["id"];
+
+            if ($action == 'booking-added') {
+                echo '
+                <div id="popup1" class="overlay">
+                    <div class="popup">
+                        <center>
+                            <br><br>
+                            <h2>Booking Successfully.</h2>
+                            <a class="close" href="appointment.php">×</a>
+                            <div class="content">
+                                Your Appointment number is ' . htmlspecialchars($id) . '.<br><br>
+                            </div>
+                            <div style="display: flex; justify-content: center;">
+                                <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text">  OK  </font></button></a>
+                                <br><br><br><br>
+                            </div>
+                        </center>
+                    </div>
+                </div>';
+            } elseif ($action == 'drop') {
+                $title = isset($_GET["title"]) ? urldecode($_GET["title"]) : 'Unknown Session';
+                $docname = isset($_GET["doc"]) ? urldecode($_GET["doc"]) : 'Unknown Doctor';
+                echo '
+                <div id="popup1" class="overlay">
+                    <div class="popup">
+                        <center>
+                            <h2>Are you sure?</h2>
+                            <a class="close" href="appointment.php">×</a>
+                            <div class="content">
+                                You want to Cancel this Appointment?<br><br>
+                                Session Name:  <b>' . htmlspecialchars(substr($title, 0, 40)) . '</b><br>
+                                Doctor name : <b>' . htmlspecialchars(substr($docname, 0, 40)) . '</b><br><br>
+                            </div>
+                            <div style="display: flex; justify-content: center;">
+                                <a href="delete-appointment.php?id=' . htmlspecialchars($id) . '" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text"> Yes </font></button></a>   
+                                <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text">  No  </font></button></a>
+                            </div>
+                        </center>
+                    </div>
+                </div>';
+            }
         }
     }
     ?>

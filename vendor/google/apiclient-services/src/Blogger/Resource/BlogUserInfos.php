@@ -38,7 +38,6 @@ class BlogUserInfos extends \Google\Service\Resource
    *
    * @opt_param string maxPosts
    * @return BlogUserInfo
-   * @throws \Google\Service\Exception
    */
   public function get($userId, $blogId, $optParams = [])
   {

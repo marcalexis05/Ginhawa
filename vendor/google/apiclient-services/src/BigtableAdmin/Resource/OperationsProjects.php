@@ -22,7 +22,7 @@ namespace Google\Service\BigtableAdmin\Resource;
  * Typical usage is:
  *  <code>
  *   $bigtableadminService = new Google\Service\BigtableAdmin(...);
- *   $projects = $bigtableadminService->operations_projects;
+ *   $projects = $bigtableadminService->projects;
  *  </code>
  */
 class OperationsProjects extends \Google\Service\Resource

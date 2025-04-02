@@ -22,11 +22,6 @@ class StreamConfig extends \Google\Collection
   protected $collection_key = 'resourceTypes';
   protected $bigqueryDestinationType = GoogleCloudHealthcareV1FhirBigQueryDestination::class;
   protected $bigqueryDestinationDataType = '';
-  protected $deidentifiedStoreDestinationType = DeidentifiedStoreDestination::class;
-  protected $deidentifiedStoreDestinationDataType = '';
-  /**
-   * @var string[]
-   */
   public $resourceTypes;
 
   /**
@@ -43,30 +38,10 @@ class StreamConfig extends \Google\Collection
   {
     return $this->bigqueryDestination;
   }
-  /**
-   * @param DeidentifiedStoreDestination
-   */
-  public function setDeidentifiedStoreDestination(DeidentifiedStoreDestination $deidentifiedStoreDestination)
-  {
-    $this->deidentifiedStoreDestination = $deidentifiedStoreDestination;
-  }
-  /**
-   * @return DeidentifiedStoreDestination
-   */
-  public function getDeidentifiedStoreDestination()
-  {
-    return $this->deidentifiedStoreDestination;
-  }
-  /**
-   * @param string[]
-   */
   public function setResourceTypes($resourceTypes)
   {
     $this->resourceTypes = $resourceTypes;
   }
-  /**
-   * @return string[]
-   */
   public function getResourceTypes()
   {
     return $this->resourceTypes;

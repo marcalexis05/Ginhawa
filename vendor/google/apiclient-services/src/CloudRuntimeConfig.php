@@ -37,7 +37,7 @@ use Google\Client;
  */
 class CloudRuntimeConfig extends \Google\Service
 {
-  /** See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account.. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
   /** Manage your Google Cloud Platform services' runtime configuration. */
@@ -45,7 +45,6 @@ class CloudRuntimeConfig extends \Google\Service
       "https://www.googleapis.com/auth/cloudruntimeconfig";
 
   public $operations;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the CloudRuntimeConfig service.
@@ -58,7 +57,6 @@ class CloudRuntimeConfig extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://runtimeconfig.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://runtimeconfig.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1';

@@ -28,14 +28,14 @@ use Google\Client;
  *
  * <p>
  * For more information about this service, see the API
- * <a href="https://cloud.google.com/kubernetes-engine/docs/" target="_blank">Documentation</a>
+ * <a href="https://cloud.google.com/container-engine/" target="_blank">Documentation</a>
  * </p>
  *
  * @author Google, Inc.
  */
 class Container extends \Google\Service
 {
-  /** See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account.. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
 
@@ -49,7 +49,6 @@ class Container extends \Google\Service
   public $projects_zones_clusters;
   public $projects_zones_clusters_nodePools;
   public $projects_zones_operations;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the Container service.
@@ -62,7 +61,6 @@ class Container extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://container.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://container.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1';
@@ -134,17 +132,7 @@ class Container extends \Google\Service
         'clusters',
         [
           'methods' => [
-            'checkAutopilotCompatibility' => [
-              'path' => 'v1/{+name}:checkAutopilotCompatibility',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'completeIpRotation' => [
+            'completeIpRotation' => [
               'path' => 'v1/{+name}:completeIpRotation',
               'httpMethod' => 'POST',
               'parameters' => [
@@ -366,17 +354,7 @@ class Container extends \Google\Service
         'nodePools',
         [
           'methods' => [
-            'completeUpgrade' => [
-              'path' => 'v1/{+name}:completeUpgrade',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'create' => [
+            'create' => [
               'path' => 'v1/{+parent}/nodePools',
               'httpMethod' => 'POST',
               'parameters' => [

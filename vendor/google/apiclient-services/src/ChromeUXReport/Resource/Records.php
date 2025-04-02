@@ -17,8 +17,6 @@
 
 namespace Google\Service\ChromeUXReport\Resource;
 
-use Google\Service\ChromeUXReport\QueryHistoryRequest;
-use Google\Service\ChromeUXReport\QueryHistoryResponse;
 use Google\Service\ChromeUXReport\QueryRequest;
 use Google\Service\ChromeUXReport\QueryResponse;
 
@@ -33,23 +31,6 @@ use Google\Service\ChromeUXReport\QueryResponse;
 class Records extends \Google\Service\Resource
 {
   /**
-   * Queries the Chrome User Experience Report for a timeseries `history record`
-   * for a given site. Returns a `history record` that contains one or more
-   * `metric timeseries` corresponding to performance data about the requested
-   * site. (records.queryHistoryRecord)
-   *
-   * @param QueryHistoryRequest $postBody
-   * @param array $optParams Optional parameters.
-   * @return QueryHistoryResponse
-   * @throws \Google\Service\Exception
-   */
-  public function queryHistoryRecord(QueryHistoryRequest $postBody, $optParams = [])
-  {
-    $params = ['postBody' => $postBody];
-    $params = array_merge($params, $optParams);
-    return $this->call('queryHistoryRecord', [$params], QueryHistoryResponse::class);
-  }
-  /**
    * Queries the Chrome User Experience for a single `record` for a given site.
    * Returns a `record` that contains one or more `metrics` corresponding to
    * performance data about the requested site. (records.queryRecord)
@@ -57,7 +38,6 @@ class Records extends \Google\Service\Resource
    * @param QueryRequest $postBody
    * @param array $optParams Optional parameters.
    * @return QueryResponse
-   * @throws \Google\Service\Exception
    */
   public function queryRecord(QueryRequest $postBody, $optParams = [])
   {

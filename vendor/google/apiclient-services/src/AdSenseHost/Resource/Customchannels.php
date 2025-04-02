@@ -38,7 +38,6 @@ class Customchannels extends \Google\Service\Resource
    * @param string $customChannelId Custom channel to delete.
    * @param array $optParams Optional parameters.
    * @return CustomChannel
-   * @throws \Google\Service\Exception
    */
   public function delete($adClientId, $customChannelId, $optParams = [])
   {
@@ -54,7 +53,6 @@ class Customchannels extends \Google\Service\Resource
    * @param string $customChannelId Custom channel to get.
    * @param array $optParams Optional parameters.
    * @return CustomChannel
-   * @throws \Google\Service\Exception
    */
   public function get($adClientId, $customChannelId, $optParams = [])
   {
@@ -70,7 +68,6 @@ class Customchannels extends \Google\Service\Resource
    * @param CustomChannel $postBody
    * @param array $optParams Optional parameters.
    * @return CustomChannel
-   * @throws \Google\Service\Exception
    */
   public function insert($adClientId, CustomChannel $postBody, $optParams = [])
   {
@@ -91,7 +88,6 @@ class Customchannels extends \Google\Service\Resource
    * channels. To retrieve the next page, set this parameter to the value of
    * "nextPageToken" from the previous response.
    * @return CustomChannelsModel
-   * @throws \Google\Service\Exception
    */
   public function listCustomchannels($adClientId, $optParams = [])
   {
@@ -109,7 +105,6 @@ class Customchannels extends \Google\Service\Resource
    * @param CustomChannel $postBody
    * @param array $optParams Optional parameters.
    * @return CustomChannel
-   * @throws \Google\Service\Exception
    */
   public function patch($adClientId, $customChannelId, CustomChannel $postBody, $optParams = [])
   {
@@ -125,7 +120,6 @@ class Customchannels extends \Google\Service\Resource
    * @param CustomChannel $postBody
    * @param array $optParams Optional parameters.
    * @return CustomChannel
-   * @throws \Google\Service\Exception
    */
   public function update($adClientId, CustomChannel $postBody, $optParams = [])
   {

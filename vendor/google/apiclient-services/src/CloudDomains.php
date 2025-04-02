@@ -20,7 +20,7 @@ namespace Google\Service;
 use Google\Client;
 
 /**
- * Service definition for CloudDomains (v1).
+ * Service definition for CloudDomains (v1beta1).
  *
  * <p>
  * Enables management and configuration of domain names.</p>
@@ -34,14 +34,13 @@ use Google\Client;
  */
 class CloudDomains extends \Google\Service
 {
-  /** See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account.. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
 
   public $projects_locations;
   public $projects_locations_operations;
   public $projects_locations_registrations;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the CloudDomains service.
@@ -54,10 +53,9 @@ class CloudDomains extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://domains.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://domains.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
-    $this->version = 'v1';
+    $this->version = 'v1beta1';
     $this->serviceName = 'domains';
 
     $this->projects_locations = new CloudDomains\Resource\ProjectsLocations(
@@ -67,7 +65,7 @@ class CloudDomains extends \Google\Service
         [
           'methods' => [
             'get' => [
-              'path' => 'v1/{+name}',
+              'path' => 'v1beta1/{+name}',
               'httpMethod' => 'GET',
               'parameters' => [
                 'name' => [
@@ -77,7 +75,7 @@ class CloudDomains extends \Google\Service
                 ],
               ],
             ],'list' => [
-              'path' => 'v1/{+name}/locations',
+              'path' => 'v1beta1/{+name}/locations',
               'httpMethod' => 'GET',
               'parameters' => [
                 'name' => [
@@ -109,7 +107,7 @@ class CloudDomains extends \Google\Service
         [
           'methods' => [
             'get' => [
-              'path' => 'v1/{+name}',
+              'path' => 'v1beta1/{+name}',
               'httpMethod' => 'GET',
               'parameters' => [
                 'name' => [
@@ -119,7 +117,7 @@ class CloudDomains extends \Google\Service
                 ],
               ],
             ],'list' => [
-              'path' => 'v1/{+name}/operations',
+              'path' => 'v1beta1/{+name}/operations',
               'httpMethod' => 'GET',
               'parameters' => [
                 'name' => [
@@ -151,7 +149,7 @@ class CloudDomains extends \Google\Service
         [
           'methods' => [
             'configureContactSettings' => [
-              'path' => 'v1/{+registration}:configureContactSettings',
+              'path' => 'v1beta1/{+registration}:configureContactSettings',
               'httpMethod' => 'POST',
               'parameters' => [
                 'registration' => [
@@ -161,7 +159,7 @@ class CloudDomains extends \Google\Service
                 ],
               ],
             ],'configureDnsSettings' => [
-              'path' => 'v1/{+registration}:configureDnsSettings',
+              'path' => 'v1beta1/{+registration}:configureDnsSettings',
               'httpMethod' => 'POST',
               'parameters' => [
                 'registration' => [
@@ -171,7 +169,7 @@ class CloudDomains extends \Google\Service
                 ],
               ],
             ],'configureManagementSettings' => [
-              'path' => 'v1/{+registration}:configureManagementSettings',
+              'path' => 'v1beta1/{+registration}:configureManagementSettings',
               'httpMethod' => 'POST',
               'parameters' => [
                 'registration' => [
@@ -181,7 +179,7 @@ class CloudDomains extends \Google\Service
                 ],
               ],
             ],'delete' => [
-              'path' => 'v1/{+name}',
+              'path' => 'v1beta1/{+name}',
               'httpMethod' => 'DELETE',
               'parameters' => [
                 'name' => [
@@ -191,7 +189,7 @@ class CloudDomains extends \Google\Service
                 ],
               ],
             ],'export' => [
-              'path' => 'v1/{+name}:export',
+              'path' => 'v1beta1/{+name}:export',
               'httpMethod' => 'POST',
               'parameters' => [
                 'name' => [
@@ -201,7 +199,7 @@ class CloudDomains extends \Google\Service
                 ],
               ],
             ],'get' => [
-              'path' => 'v1/{+name}',
+              'path' => 'v1beta1/{+name}',
               'httpMethod' => 'GET',
               'parameters' => [
                 'name' => [
@@ -211,7 +209,7 @@ class CloudDomains extends \Google\Service
                 ],
               ],
             ],'getIamPolicy' => [
-              'path' => 'v1/{+resource}:getIamPolicy',
+              'path' => 'v1beta1/{+resource}:getIamPolicy',
               'httpMethod' => 'GET',
               'parameters' => [
                 'resource' => [
@@ -224,28 +222,8 @@ class CloudDomains extends \Google\Service
                   'type' => 'integer',
                 ],
               ],
-            ],'import' => [
-              'path' => 'v1/{+parent}/registrations:import',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'parent' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'initiatePushTransfer' => [
-              'path' => 'v1/{+registration}:initiatePushTransfer',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'registration' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
             ],'list' => [
-              'path' => 'v1/{+parent}/registrations',
+              'path' => 'v1beta1/{+parent}/registrations',
               'httpMethod' => 'GET',
               'parameters' => [
                 'parent' => [
@@ -267,7 +245,7 @@ class CloudDomains extends \Google\Service
                 ],
               ],
             ],'patch' => [
-              'path' => 'v1/{+name}',
+              'path' => 'v1beta1/{+name}',
               'httpMethod' => 'PATCH',
               'parameters' => [
                 'name' => [
@@ -281,7 +259,7 @@ class CloudDomains extends \Google\Service
                 ],
               ],
             ],'register' => [
-              'path' => 'v1/{+parent}/registrations:register',
+              'path' => 'v1beta1/{+parent}/registrations:register',
               'httpMethod' => 'POST',
               'parameters' => [
                 'parent' => [
@@ -290,18 +268,8 @@ class CloudDomains extends \Google\Service
                   'required' => true,
                 ],
               ],
-            ],'renewDomain' => [
-              'path' => 'v1/{+registration}:renewDomain',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'registration' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
             ],'resetAuthorizationCode' => [
-              'path' => 'v1/{+registration}:resetAuthorizationCode',
+              'path' => 'v1beta1/{+registration}:resetAuthorizationCode',
               'httpMethod' => 'POST',
               'parameters' => [
                 'registration' => [
@@ -311,77 +279,17 @@ class CloudDomains extends \Google\Service
                 ],
               ],
             ],'retrieveAuthorizationCode' => [
-              'path' => 'v1/{+registration}:retrieveAuthorizationCode',
+              'path' => 'v1beta1/{+registration}:retrieveAuthorizationCode',
               'httpMethod' => 'GET',
               'parameters' => [
                 'registration' => [
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
-                ],
-              ],
-            ],'retrieveGoogleDomainsDnsRecords' => [
-              'path' => 'v1/{+registration}:retrieveGoogleDomainsDnsRecords',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'registration' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'pageSize' => [
-                  'location' => 'query',
-                  'type' => 'integer',
-                ],
-                'pageToken' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-              ],
-            ],'retrieveGoogleDomainsForwardingConfig' => [
-              'path' => 'v1/{+registration}:retrieveGoogleDomainsForwardingConfig',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'registration' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'retrieveImportableDomains' => [
-              'path' => 'v1/{+location}/registrations:retrieveImportableDomains',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'location' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'pageSize' => [
-                  'location' => 'query',
-                  'type' => 'integer',
-                ],
-                'pageToken' => [
-                  'location' => 'query',
-                  'type' => 'string',
                 ],
               ],
             ],'retrieveRegisterParameters' => [
-              'path' => 'v1/{+location}/registrations:retrieveRegisterParameters',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'location' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'domainName' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-              ],
-            ],'retrieveTransferParameters' => [
-              'path' => 'v1/{+location}/registrations:retrieveTransferParameters',
+              'path' => 'v1beta1/{+location}/registrations:retrieveRegisterParameters',
               'httpMethod' => 'GET',
               'parameters' => [
                 'location' => [
@@ -395,7 +303,7 @@ class CloudDomains extends \Google\Service
                 ],
               ],
             ],'searchDomains' => [
-              'path' => 'v1/{+location}/registrations:searchDomains',
+              'path' => 'v1beta1/{+location}/registrations:searchDomains',
               'httpMethod' => 'GET',
               'parameters' => [
                 'location' => [
@@ -409,7 +317,7 @@ class CloudDomains extends \Google\Service
                 ],
               ],
             ],'setIamPolicy' => [
-              'path' => 'v1/{+resource}:setIamPolicy',
+              'path' => 'v1beta1/{+resource}:setIamPolicy',
               'httpMethod' => 'POST',
               'parameters' => [
                 'resource' => [
@@ -419,20 +327,10 @@ class CloudDomains extends \Google\Service
                 ],
               ],
             ],'testIamPermissions' => [
-              'path' => 'v1/{+resource}:testIamPermissions',
+              'path' => 'v1beta1/{+resource}:testIamPermissions',
               'httpMethod' => 'POST',
               'parameters' => [
                 'resource' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'transfer' => [
-              'path' => 'v1/{+parent}/registrations:transfer',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'parent' => [
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,

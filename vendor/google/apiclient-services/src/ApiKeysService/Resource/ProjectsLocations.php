@@ -22,7 +22,7 @@ namespace Google\Service\ApiKeysService\Resource;
  * Typical usage is:
  *  <code>
  *   $apikeysService = new Google\Service\ApiKeysService(...);
- *   $locations = $apikeysService->projects_locations;
+ *   $locations = $apikeysService->locations;
  *  </code>
  */
 class ProjectsLocations extends \Google\Service\Resource

@@ -32,7 +32,7 @@ use Google\Service\AdExchangeBuyerII\ResumeProposalRequest;
  * Typical usage is:
  *  <code>
  *   $adexchangebuyer2Service = new Google\Service\AdExchangeBuyerII(...);
- *   $proposals = $adexchangebuyer2Service->accounts_proposals;
+ *   $proposals = $adexchangebuyer2Service->proposals;
  *  </code>
  */
 class AccountsProposals extends \Google\Service\Resource
@@ -50,7 +50,6 @@ class AccountsProposals extends \Google\Service\Resource
    * @param AcceptProposalRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Proposal
-   * @throws \Google\Service\Exception
    */
   public function accept($accountId, $proposalId, AcceptProposalRequest $postBody, $optParams = [])
   {
@@ -68,7 +67,6 @@ class AccountsProposals extends \Google\Service\Resource
    * @param AddNoteRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Note
-   * @throws \Google\Service\Exception
    */
   public function addNote($accountId, $proposalId, AddNoteRequest $postBody, $optParams = [])
   {
@@ -86,7 +84,6 @@ class AccountsProposals extends \Google\Service\Resource
    * @param CancelNegotiationRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Proposal
-   * @throws \Google\Service\Exception
    */
   public function cancelNegotiation($accountId, $proposalId, CancelNegotiationRequest $postBody, $optParams = [])
   {
@@ -95,23 +92,18 @@ class AccountsProposals extends \Google\Service\Resource
     return $this->call('cancelNegotiation', [$params], Proposal::class);
   }
   /**
-   * You can opt-in to manually update proposals to indicate that setup is
-   * complete. By default, proposal setup is automatically completed after their
-   * deals are finalized. Contact your Technical Account Manager to opt in. Buyers
-   * can call this method when the proposal has been finalized, and all the
-   * required creatives have been uploaded using the Creatives API. This call
-   * updates the `is_setup_completed` field on the deals in the proposal, and
-   * notifies the seller. The server then advances the revision number of the most
-   * recent proposal. To mark an individual deal as ready to serve, call
-   * `buyers.finalizedDeals.setReadyToServe` in the Marketplace API.
-   * (proposals.completeSetup)
+   * Update the given proposal to indicate that setup has been completed. This
+   * method is called by the buyer when the line items have been created on their
+   * end for a finalized proposal and all the required creatives have been
+   * uploaded using the creatives API. This call updates the `is_setup_completed`
+   * bit on the proposal and also notifies the seller. The server will advance the
+   * revision number of the most recent proposal. (proposals.completeSetup)
    *
    * @param string $accountId Account ID of the buyer.
    * @param string $proposalId The ID of the proposal to mark as setup completed.
    * @param CompleteSetupRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Proposal
-   * @throws \Google\Service\Exception
    */
   public function completeSetup($accountId, $proposalId, CompleteSetupRequest $postBody, $optParams = [])
   {
@@ -127,7 +119,6 @@ class AccountsProposals extends \Google\Service\Resource
    * @param Proposal $postBody
    * @param array $optParams Optional parameters.
    * @return Proposal
-   * @throws \Google\Service\Exception
    */
   public function create($accountId, Proposal $postBody, $optParams = [])
   {
@@ -143,7 +134,6 @@ class AccountsProposals extends \Google\Service\Resource
    * @param string $proposalId The unique ID of the proposal
    * @param array $optParams Optional parameters.
    * @return Proposal
-   * @throws \Google\Service\Exception
    */
   public function get($accountId, $proposalId, $optParams = [])
   {
@@ -173,7 +163,6 @@ class AccountsProposals extends \Google\Service\Resource
    * @opt_param string pageToken The page token as returned from
    * ListProposalsResponse.
    * @return ListProposalsResponse
-   * @throws \Google\Service\Exception
    */
   public function listAccountsProposals($accountId, $optParams = [])
   {
@@ -193,7 +182,6 @@ class AccountsProposals extends \Google\Service\Resource
    * @param PauseProposalRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Proposal
-   * @throws \Google\Service\Exception
    */
   public function pause($accountId, $proposalId, PauseProposalRequest $postBody, $optParams = [])
   {
@@ -214,7 +202,6 @@ class AccountsProposals extends \Google\Service\Resource
    * @param ResumeProposalRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Proposal
-   * @throws \Google\Service\Exception
    */
   public function resume($accountId, $proposalId, ResumeProposalRequest $postBody, $optParams = [])
   {
@@ -239,7 +226,6 @@ class AccountsProposals extends \Google\Service\Resource
    * @param Proposal $postBody
    * @param array $optParams Optional parameters.
    * @return Proposal
-   * @throws \Google\Service\Exception
    */
   public function update($accountId, $proposalId, Proposal $postBody, $optParams = [])
   {

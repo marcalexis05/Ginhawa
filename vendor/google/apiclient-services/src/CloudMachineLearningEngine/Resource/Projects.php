@@ -41,7 +41,6 @@ class Projects extends \Google\Service\Resource
    * @param GoogleCloudMlV1ExplainRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleApiHttpBody
-   * @throws \Google\Service\Exception
    */
   public function explain($name, GoogleCloudMlV1ExplainRequest $postBody, $optParams = [])
   {
@@ -58,7 +57,6 @@ class Projects extends \Google\Service\Resource
    * @param string $name Required. The project name.
    * @param array $optParams Optional parameters.
    * @return GoogleCloudMlV1GetConfigResponse
-   * @throws \Google\Service\Exception
    */
   public function getConfig($name, $optParams = [])
   {
@@ -75,7 +73,6 @@ class Projects extends \Google\Service\Resource
    * @param GoogleCloudMlV1PredictRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleApiHttpBody
-   * @throws \Google\Service\Exception
    */
   public function predict($name, GoogleCloudMlV1PredictRequest $postBody, $optParams = [])
   {

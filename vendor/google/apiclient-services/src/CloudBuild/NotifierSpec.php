@@ -22,10 +22,8 @@ class NotifierSpec extends \Google\Collection
   protected $collection_key = 'secrets';
   protected $notificationType = Notification::class;
   protected $notificationDataType = '';
-  public $notification;
   protected $secretsType = NotifierSecret::class;
   protected $secretsDataType = 'array';
-  public $secrets;
 
   /**
    * @param Notification

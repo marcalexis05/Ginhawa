@@ -21,11 +21,6 @@ class Variant extends \Google\Model
 {
   protected $deviceSpecType = DeviceSpec::class;
   protected $deviceSpecDataType = '';
-  protected $optionsType = SystemApkOptions::class;
-  protected $optionsDataType = '';
-  /**
-   * @var string
-   */
   public $variantId;
 
   /**
@@ -42,30 +37,10 @@ class Variant extends \Google\Model
   {
     return $this->deviceSpec;
   }
-  /**
-   * @param SystemApkOptions
-   */
-  public function setOptions(SystemApkOptions $options)
-  {
-    $this->options = $options;
-  }
-  /**
-   * @return SystemApkOptions
-   */
-  public function getOptions()
-  {
-    return $this->options;
-  }
-  /**
-   * @param string
-   */
   public function setVariantId($variantId)
   {
     $this->variantId = $variantId;
   }
-  /**
-   * @return string
-   */
   public function getVariantId()
   {
     return $this->variantId;

@@ -24,7 +24,7 @@ use Google\Service\AndroidProvisioningPartner\ListVendorCustomersResponse;
  * Typical usage is:
  *  <code>
  *   $androiddeviceprovisioningService = new Google\Service\AndroidProvisioningPartner(...);
- *   $customers = $androiddeviceprovisioningService->partners_vendors_customers;
+ *   $customers = $androiddeviceprovisioningService->customers;
  *  </code>
  */
 class PartnersVendorsCustomers extends \Google\Service\Resource
@@ -40,7 +40,6 @@ class PartnersVendorsCustomers extends \Google\Service\Resource
    * @opt_param string pageToken A token identifying a page of results returned by
    * the server.
    * @return ListVendorCustomersResponse
-   * @throws \Google\Service\Exception
    */
   public function listPartnersVendorsCustomers($parent, $optParams = [])
   {

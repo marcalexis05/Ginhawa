@@ -22,7 +22,7 @@ namespace Google\Service\CloudVideoIntelligence\Resource;
  * Typical usage is:
  *  <code>
  *   $videointelligenceService = new Google\Service\CloudVideoIntelligence(...);
- *   $locations = $videointelligenceService->operations_projects_locations;
+ *   $locations = $videointelligenceService->locations;
  *  </code>
  */
 class OperationsProjectsLocations extends \Google\Service\Resource

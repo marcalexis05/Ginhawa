@@ -26,7 +26,7 @@ use Google\Service\Apigee\GoogleProtobufEmpty;
  * Typical usage is:
  *  <code>
  *   $apigeeService = new Google\Service\Apigee(...);
- *   $datacollectors = $apigeeService->organizations_datacollectors;
+ *   $datacollectors = $apigeeService->datacollectors;
  *  </code>
  */
 class OrganizationsDatacollectors extends \Google\Service\Resource
@@ -40,10 +40,8 @@ class OrganizationsDatacollectors extends \Google\Service\Resource
    * @param array $optParams Optional parameters.
    *
    * @opt_param string dataCollectorId ID of the data collector. Overrides any ID
-   * in the data collector resource. Must be a string beginning with `dc_` that
-   * contains only letters, numbers, and underscores.
+   * in the data collector resource. Must begin with `dc_`.
    * @return GoogleCloudApigeeV1DataCollector
-   * @throws \Google\Service\Exception
    */
   public function create($parent, GoogleCloudApigeeV1DataCollector $postBody, $optParams = [])
   {
@@ -58,7 +56,6 @@ class OrganizationsDatacollectors extends \Google\Service\Resource
    * format: `organizations/{org}/datacollectors/{data_collector_id}`.
    * @param array $optParams Optional parameters.
    * @return GoogleProtobufEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -73,7 +70,6 @@ class OrganizationsDatacollectors extends \Google\Service\Resource
    * format: `organizations/{org}/datacollectors/{data_collector_id}`.
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1DataCollector
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -93,7 +89,6 @@ class OrganizationsDatacollectors extends \Google\Service\Resource
    * @opt_param string pageToken Page token, returned from a previous
    * ListDataCollectors call, that you can use to retrieve the next page.
    * @return GoogleCloudApigeeV1ListDataCollectorsResponse
-   * @throws \Google\Service\Exception
    */
   public function listOrganizationsDatacollectors($parent, $optParams = [])
   {
@@ -111,7 +106,6 @@ class OrganizationsDatacollectors extends \Google\Service\Resource
    *
    * @opt_param string updateMask List of fields to be updated.
    * @return GoogleCloudApigeeV1DataCollector
-   * @throws \Google\Service\Exception
    */
   public function patch($name, GoogleCloudApigeeV1DataCollector $postBody, $optParams = [])
   {

@@ -36,7 +36,6 @@ class Webapps extends \Google\Service\Resource
    * @param string $enterpriseId The ID of the enterprise.
    * @param string $webAppId The ID of the web app.
    * @param array $optParams Optional parameters.
-   * @throws \Google\Service\Exception
    */
   public function delete($enterpriseId, $webAppId, $optParams = [])
   {
@@ -51,7 +50,6 @@ class Webapps extends \Google\Service\Resource
    * @param string $webAppId The ID of the web app.
    * @param array $optParams Optional parameters.
    * @return WebApp
-   * @throws \Google\Service\Exception
    */
   public function get($enterpriseId, $webAppId, $optParams = [])
   {
@@ -66,7 +64,6 @@ class Webapps extends \Google\Service\Resource
    * @param WebApp $postBody
    * @param array $optParams Optional parameters.
    * @return WebApp
-   * @throws \Google\Service\Exception
    */
   public function insert($enterpriseId, WebApp $postBody, $optParams = [])
   {
@@ -81,7 +78,6 @@ class Webapps extends \Google\Service\Resource
    * @param string $enterpriseId The ID of the enterprise.
    * @param array $optParams Optional parameters.
    * @return WebAppsListResponse
-   * @throws \Google\Service\Exception
    */
   public function listWebapps($enterpriseId, $optParams = [])
   {
@@ -97,7 +93,6 @@ class Webapps extends \Google\Service\Resource
    * @param WebApp $postBody
    * @param array $optParams Optional parameters.
    * @return WebApp
-   * @throws \Google\Service\Exception
    */
   public function update($enterpriseId, $webAppId, WebApp $postBody, $optParams = [])
   {

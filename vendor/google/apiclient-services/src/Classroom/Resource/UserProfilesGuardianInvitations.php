@@ -25,7 +25,7 @@ use Google\Service\Classroom\ListGuardianInvitationsResponse;
  * Typical usage is:
  *  <code>
  *   $classroomService = new Google\Service\Classroom(...);
- *   $guardianInvitations = $classroomService->userProfiles_guardianInvitations;
+ *   $guardianInvitations = $classroomService->guardianInvitations;
  *  </code>
  */
 class UserProfilesGuardianInvitations extends \Google\Service\Resource
@@ -58,7 +58,6 @@ class UserProfilesGuardianInvitations extends \Google\Service\Resource
    * @param GuardianInvitation $postBody
    * @param array $optParams Optional parameters.
    * @return GuardianInvitation
-   * @throws \Google\Service\Exception
    */
   public function create($studentId, GuardianInvitation $postBody, $optParams = [])
   {
@@ -84,7 +83,6 @@ class UserProfilesGuardianInvitations extends \Google\Service\Resource
    * requested.
    * @param array $optParams Optional parameters.
    * @return GuardianInvitation
-   * @throws \Google\Service\Exception
    */
   public function get($studentId, $invitationId, $optParams = [])
   {
@@ -128,7 +126,6 @@ class UserProfilesGuardianInvitations extends \Google\Service\Resource
    * `state` values are returned. Otherwise, results with a `state` of `PENDING`
    * are returned.
    * @return ListGuardianInvitationsResponse
-   * @throws \Google\Service\Exception
    */
   public function listUserProfilesGuardianInvitations($studentId, $optParams = [])
   {
@@ -164,7 +161,6 @@ class UserProfilesGuardianInvitations extends \Google\Service\Resource
    * set in a query parameter, this field should be specified as
    * `updateMask=,,...`
    * @return GuardianInvitation
-   * @throws \Google\Service\Exception
    */
   public function patch($studentId, $invitationId, GuardianInvitation $postBody, $optParams = [])
   {

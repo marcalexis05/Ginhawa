@@ -50,7 +50,6 @@ class Blogger extends \Google\Service
   public $postUserInfos;
   public $posts;
   public $users;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the Blogger service.
@@ -63,7 +62,6 @@ class Blogger extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://blogger.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://blogger.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v3';
@@ -405,10 +403,6 @@ class Blogger extends \Google\Service
                   'type' => 'string',
                   'required' => true,
                 ],
-                'useTrash' => [
-                  'location' => 'query',
-                  'type' => 'boolean',
-                ],
               ],
             ],'get' => [
               'path' => 'v3/blogs/{blogId}/pages/{pageId}',
@@ -660,10 +654,6 @@ class Blogger extends \Google\Service
                   'type' => 'string',
                   'required' => true,
                 ],
-                'useTrash' => [
-                  'location' => 'query',
-                  'type' => 'boolean',
-                ],
               ],
             ],'get' => [
               'path' => 'v3/blogs/{blogId}/posts/{postId}',
@@ -775,10 +765,6 @@ class Blogger extends \Google\Service
                   'type' => 'string',
                 ],
                 'pageToken' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-                'sortOption' => [
                   'location' => 'query',
                   'type' => 'string',
                 ],

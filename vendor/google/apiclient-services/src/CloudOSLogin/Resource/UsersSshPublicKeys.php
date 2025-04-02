@@ -25,27 +25,11 @@ use Google\Service\CloudOSLogin\SshPublicKey;
  * Typical usage is:
  *  <code>
  *   $osloginService = new Google\Service\CloudOSLogin(...);
- *   $sshPublicKeys = $osloginService->users_sshPublicKeys;
+ *   $sshPublicKeys = $osloginService->sshPublicKeys;
  *  </code>
  */
 class UsersSshPublicKeys extends \Google\Service\Resource
 {
-  /**
-   * Create an SSH public key (sshPublicKeys.create)
-   *
-   * @param string $parent Required. The unique ID for the user in format
-   * `users/{user}`.
-   * @param SshPublicKey $postBody
-   * @param array $optParams Optional parameters.
-   * @return SshPublicKey
-   * @throws \Google\Service\Exception
-   */
-  public function create($parent, SshPublicKey $postBody, $optParams = [])
-  {
-    $params = ['parent' => $parent, 'postBody' => $postBody];
-    $params = array_merge($params, $optParams);
-    return $this->call('create', [$params], SshPublicKey::class);
-  }
   /**
    * Deletes an SSH public key. (sshPublicKeys.delete)
    *
@@ -54,7 +38,6 @@ class UsersSshPublicKeys extends \Google\Service\Resource
    * the public key is in format `users/{user}/sshPublicKeys/{fingerprint}`.
    * @param array $optParams Optional parameters.
    * @return OsloginEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -70,7 +53,6 @@ class UsersSshPublicKeys extends \Google\Service\Resource
    * the public key is in format `users/{user}/sshPublicKeys/{fingerprint}`.
    * @param array $optParams Optional parameters.
    * @return SshPublicKey
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -91,7 +73,6 @@ class UsersSshPublicKeys extends \Google\Service\Resource
    * @opt_param string updateMask Mask to control which fields get updated.
    * Updates all if not present.
    * @return SshPublicKey
-   * @throws \Google\Service\Exception
    */
   public function patch($name, SshPublicKey $postBody, $optParams = [])
   {

@@ -37,7 +37,6 @@ class AmpUrls extends \Google\Service\Resource
    * @param BatchGetAmpUrlsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return BatchGetAmpUrlsResponse
-   * @throws \Google\Service\Exception
    */
   public function batchGet(BatchGetAmpUrlsRequest $postBody, $optParams = [])
   {

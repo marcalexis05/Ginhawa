@@ -21,13 +21,8 @@ class StandardSqlDataType extends \Google\Model
 {
   protected $arrayElementTypeType = StandardSqlDataType::class;
   protected $arrayElementTypeDataType = '';
-  protected $rangeElementTypeType = StandardSqlDataType::class;
-  protected $rangeElementTypeDataType = '';
   protected $structTypeType = StandardSqlStructType::class;
   protected $structTypeDataType = '';
-  /**
-   * @var string
-   */
   public $typeKind;
 
   /**
@@ -45,20 +40,6 @@ class StandardSqlDataType extends \Google\Model
     return $this->arrayElementType;
   }
   /**
-   * @param StandardSqlDataType
-   */
-  public function setRangeElementType(StandardSqlDataType $rangeElementType)
-  {
-    $this->rangeElementType = $rangeElementType;
-  }
-  /**
-   * @return StandardSqlDataType
-   */
-  public function getRangeElementType()
-  {
-    return $this->rangeElementType;
-  }
-  /**
    * @param StandardSqlStructType
    */
   public function setStructType(StandardSqlStructType $structType)
@@ -72,16 +53,10 @@ class StandardSqlDataType extends \Google\Model
   {
     return $this->structType;
   }
-  /**
-   * @param string
-   */
   public function setTypeKind($typeKind)
   {
     $this->typeKind = $typeKind;
   }
-  /**
-   * @return string
-   */
   public function getTypeKind()
   {
     return $this->typeKind;

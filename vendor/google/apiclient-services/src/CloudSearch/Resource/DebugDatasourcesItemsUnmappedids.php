@@ -24,7 +24,7 @@ use Google\Service\CloudSearch\ListUnmappedIdentitiesResponse;
  * Typical usage is:
  *  <code>
  *   $cloudsearchService = new Google\Service\CloudSearch(...);
- *   $unmappedids = $cloudsearchService->debug_datasources_items_unmappedids;
+ *   $unmappedids = $cloudsearchService->unmappedids;
  *  </code>
  */
 class DebugDatasourcesItemsUnmappedids extends \Google\Service\Resource
@@ -45,7 +45,6 @@ class DebugDatasourcesItemsUnmappedids extends \Google\Service\Resource
    * @opt_param string pageToken The next_page_token value returned from a
    * previous List request, if any.
    * @return ListUnmappedIdentitiesResponse
-   * @throws \Google\Service\Exception
    */
   public function listDebugDatasourcesItemsUnmappedids($parent, $optParams = [])
   {

@@ -28,7 +28,7 @@ use Google\Service\DataLabeling\GoogleProtobufEmpty;
  * Typical usage is:
  *  <code>
  *   $datalabelingService = new Google\Service\DataLabeling(...);
- *   $instructions = $datalabelingService->projects_instructions;
+ *   $instructions = $datalabelingService->instructions;
  *  </code>
  */
 class ProjectsInstructions extends \Google\Service\Resource
@@ -41,7 +41,6 @@ class ProjectsInstructions extends \Google\Service\Resource
    * @param GoogleCloudDatalabelingV1beta1CreateInstructionRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleLongrunningOperation
-   * @throws \Google\Service\Exception
    */
   public function create($parent, GoogleCloudDatalabelingV1beta1CreateInstructionRequest $postBody, $optParams = [])
   {
@@ -56,7 +55,6 @@ class ProjectsInstructions extends \Google\Service\Resource
    * projects/{project_id}/instructions/{instruction_id}
    * @param array $optParams Optional parameters.
    * @return GoogleProtobufEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -71,7 +69,6 @@ class ProjectsInstructions extends \Google\Service\Resource
    * projects/{project_id}/instructions/{instruction_id}
    * @param array $optParams Optional parameters.
    * @return GoogleCloudDatalabelingV1beta1Instruction
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -95,7 +92,6 @@ class ProjectsInstructions extends \Google\Service\Resource
    * ListInstructionsResponse.next_page_token of the previous
    * [DataLabelingService.ListInstructions] call. Return first page if empty.
    * @return GoogleCloudDatalabelingV1beta1ListInstructionsResponse
-   * @throws \Google\Service\Exception
    */
   public function listProjectsInstructions($parent, $optParams = [])
   {

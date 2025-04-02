@@ -27,7 +27,7 @@ use Google\Service\CloudLifeSciences\Operation;
  * Typical usage is:
  *  <code>
  *   $lifesciencesService = new Google\Service\CloudLifeSciences(...);
- *   $operations = $lifesciencesService->projects_locations_operations;
+ *   $operations = $lifesciencesService->operations;
  *  </code>
  */
 class ProjectsLocationsOperations extends \Google\Service\Resource
@@ -45,7 +45,6 @@ class ProjectsLocationsOperations extends \Google\Service\Resource
    * @param CancelOperationRequest $postBody
    * @param array $optParams Optional parameters.
    * @return LifesciencesEmpty
-   * @throws \Google\Service\Exception
    */
   public function cancel($name, CancelOperationRequest $postBody, $optParams = [])
   {
@@ -63,7 +62,6 @@ class ProjectsLocationsOperations extends \Google\Service\Resource
    * @param string $name The name of the operation resource.
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -93,7 +91,6 @@ class ProjectsLocationsOperations extends \Google\Service\Resource
    * value is 256.
    * @opt_param string pageToken The standard list page token.
    * @return ListOperationsResponse
-   * @throws \Google\Service\Exception
    */
   public function listProjectsLocationsOperations($name, $optParams = [])
   {

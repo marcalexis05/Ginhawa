@@ -35,17 +35,16 @@ use Google\Client;
  */
 class BigQueryDataTransfer extends \Google\Service
 {
-  /** View and manage your data in Google BigQuery and see the email address for your Google Account. */
+  /** View and manage your data in Google BigQuery. */
   const BIGQUERY =
       "https://www.googleapis.com/auth/bigquery";
-  /** See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account.. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
-  /** View your data across Google Cloud services and see the email address of your Google Account. */
+  /** View your data across Google Cloud Platform services. */
   const CLOUD_PLATFORM_READ_ONLY =
       "https://www.googleapis.com/auth/cloud-platform.read-only";
 
-  public $projects;
   public $projects_dataSources;
   public $projects_locations;
   public $projects_locations_dataSources;
@@ -55,7 +54,6 @@ class BigQueryDataTransfer extends \Google\Service
   public $projects_transferConfigs;
   public $projects_transferConfigs_runs;
   public $projects_transferConfigs_runs_transferLogs;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the BigQueryDataTransfer service.
@@ -68,32 +66,11 @@ class BigQueryDataTransfer extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://bigquerydatatransfer.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://bigquerydatatransfer.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1';
     $this->serviceName = 'bigquerydatatransfer';
 
-    $this->projects = new BigQueryDataTransfer\Resource\Projects(
-        $this,
-        $this->serviceName,
-        'projects',
-        [
-          'methods' => [
-            'enrollDataSources' => [
-              'path' => 'v1/{+name}:enrollDataSources',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],
-          ]
-        ]
-    );
     $this->projects_dataSources = new BigQueryDataTransfer\Resource\ProjectsDataSources(
         $this,
         $this->serviceName,
@@ -148,17 +125,7 @@ class BigQueryDataTransfer extends \Google\Service
         'locations',
         [
           'methods' => [
-            'enrollDataSources' => [
-              'path' => 'v1/{+name}:enrollDataSources',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-              ],
-            ],'get' => [
+            'get' => [
               'path' => 'v1/{+name}',
               'httpMethod' => 'GET',
               'parameters' => [
@@ -188,16 +155,6 @@ class BigQueryDataTransfer extends \Google\Service
                 'pageToken' => [
                   'location' => 'query',
                   'type' => 'string',
-                ],
-              ],
-            ],'unenrollDataSources' => [
-              'path' => 'v1/{+name}:unenrollDataSources',
-              'httpMethod' => 'POST',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
                 ],
               ],
             ],

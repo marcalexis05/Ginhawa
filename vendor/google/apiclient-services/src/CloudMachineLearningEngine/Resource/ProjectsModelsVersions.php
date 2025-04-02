@@ -27,7 +27,7 @@ use Google\Service\CloudMachineLearningEngine\GoogleLongrunningOperation;
  * Typical usage is:
  *  <code>
  *   $mlService = new Google\Service\CloudMachineLearningEngine(...);
- *   $versions = $mlService->projects_models_versions;
+ *   $versions = $mlService->versions;
  *  </code>
  */
 class ProjectsModelsVersions extends \Google\Service\Resource
@@ -45,7 +45,6 @@ class ProjectsModelsVersions extends \Google\Service\Resource
    * @param GoogleCloudMlV1Version $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleLongrunningOperation
-   * @throws \Google\Service\Exception
    */
   public function create($parent, GoogleCloudMlV1Version $postBody, $optParams = [])
   {
@@ -63,7 +62,6 @@ class ProjectsModelsVersions extends \Google\Service\Resource
    * of all the versions of a model by calling projects.models.versions.list.
    * @param array $optParams Optional parameters.
    * @return GoogleLongrunningOperation
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -79,7 +77,6 @@ class ProjectsModelsVersions extends \Google\Service\Resource
    * @param string $name Required. The name of the version.
    * @param array $optParams Optional parameters.
    * @return GoogleCloudMlV1Version
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -109,7 +106,6 @@ class ProjectsModelsVersions extends \Google\Service\Resource
    * of results. You get the token from the `next_page_token` field of the
    * response from the previous call.
    * @return GoogleCloudMlV1ListVersionsResponse
-   * @throws \Google\Service\Exception
    */
   public function listProjectsModelsVersions($parent, $optParams = [])
   {
@@ -137,7 +133,6 @@ class ProjectsModelsVersions extends \Google\Service\Resource
    * [Compute Engine (N1) machine type](/ml-engine/docs/machine-types-online-
    * prediction).
    * @return GoogleLongrunningOperation
-   * @throws \Google\Service\Exception
    */
   public function patch($name, GoogleCloudMlV1Version $postBody, $optParams = [])
   {
@@ -158,7 +153,6 @@ class ProjectsModelsVersions extends \Google\Service\Resource
    * @param GoogleCloudMlV1SetDefaultVersionRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleCloudMlV1Version
-   * @throws \Google\Service\Exception
    */
   public function setDefault($name, GoogleCloudMlV1SetDefaultVersionRequest $postBody, $optParams = [])
   {

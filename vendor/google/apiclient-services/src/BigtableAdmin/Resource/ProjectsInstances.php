@@ -33,24 +33,19 @@ use Google\Service\BigtableAdmin\TestIamPermissionsResponse;
  * Typical usage is:
  *  <code>
  *   $bigtableadminService = new Google\Service\BigtableAdmin(...);
- *   $instances = $bigtableadminService->projects_instances;
+ *   $instances = $bigtableadminService->instances;
  *  </code>
  */
 class ProjectsInstances extends \Google\Service\Resource
 {
   /**
-   * Create an instance within a project. Note that exactly one of
-   * Cluster.serve_nodes and Cluster.cluster_config.cluster_autoscaling_config can
-   * be set. If serve_nodes is set to non-zero, then the cluster is manually
-   * scaled. If cluster_config.cluster_autoscaling_config is non-empty, then
-   * autoscaling is enabled. (instances.create)
+   * Create an instance within a project. (instances.create)
    *
    * @param string $parent Required. The unique name of the project in which to
    * create the new instance. Values are of the form `projects/{project}`.
    * @param CreateInstanceRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function create($parent, CreateInstanceRequest $postBody, $optParams = [])
   {
@@ -65,7 +60,6 @@ class ProjectsInstances extends \Google\Service\Resource
    * Values are of the form `projects/{project}/instances/{instance}`.
    * @param array $optParams Optional parameters.
    * @return BigtableadminEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -80,7 +74,6 @@ class ProjectsInstances extends \Google\Service\Resource
    * Values are of the form `projects/{project}/instances/{instance}`.
    * @param array $optParams Optional parameters.
    * @return Instance
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -94,13 +87,11 @@ class ProjectsInstances extends \Google\Service\Resource
    * (instances.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See [Resource
-   * names](https://cloud.google.com/apis/design/resource_names) for the
-   * appropriate value for this field.
+   * requested. See the operation documentation for the appropriate value for this
+   * field.
    * @param GetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
-   * @throws \Google\Service\Exception
    */
   public function getIamPolicy($resource, GetIamPolicyRequest $postBody, $optParams = [])
   {
@@ -118,7 +109,6 @@ class ProjectsInstances extends \Google\Service\Resource
    *
    * @opt_param string pageToken DEPRECATED: This field is unused and ignored.
    * @return ListInstancesResponse
-   * @throws \Google\Service\Exception
    */
   public function listProjectsInstances($parent, $optParams = [])
   {
@@ -139,7 +129,6 @@ class ProjectsInstances extends \Google\Service\Resource
    * @opt_param string updateMask Required. The subset of Instance fields which
    * should be replaced. Must be explicitly set.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function partialUpdateInstance($name, Instance $postBody, $optParams = [])
   {
@@ -152,13 +141,11 @@ class ProjectsInstances extends \Google\Service\Resource
    * policy. (instances.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See [Resource
-   * names](https://cloud.google.com/apis/design/resource_names) for the
-   * appropriate value for this field.
+   * specified. See the operation documentation for the appropriate value for this
+   * field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
-   * @throws \Google\Service\Exception
    */
   public function setIamPolicy($resource, SetIamPolicyRequest $postBody, $optParams = [])
   {
@@ -171,13 +158,11 @@ class ProjectsInstances extends \Google\Service\Resource
    * (instances.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See [Resource
-   * names](https://cloud.google.com/apis/design/resource_names) for the
-   * appropriate value for this field.
+   * being requested. See the operation documentation for the appropriate value
+   * for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse
-   * @throws \Google\Service\Exception
    */
   public function testIamPermissions($resource, TestIamPermissionsRequest $postBody, $optParams = [])
   {
@@ -195,7 +180,6 @@ class ProjectsInstances extends \Google\Service\Resource
    * @param Instance $postBody
    * @param array $optParams Optional parameters.
    * @return Instance
-   * @throws \Google\Service\Exception
    */
   public function update($name, Instance $postBody, $optParams = [])
   {

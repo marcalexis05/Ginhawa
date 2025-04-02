@@ -27,8 +27,6 @@ use Google\Service\AndroidProvisioningPartner\FindDevicesByDeviceIdentifierReque
 use Google\Service\AndroidProvisioningPartner\FindDevicesByDeviceIdentifierResponse;
 use Google\Service\AndroidProvisioningPartner\FindDevicesByOwnerRequest;
 use Google\Service\AndroidProvisioningPartner\FindDevicesByOwnerResponse;
-use Google\Service\AndroidProvisioningPartner\GetDeviceSimLockStateRequest;
-use Google\Service\AndroidProvisioningPartner\GetDeviceSimLockStateResponse;
 use Google\Service\AndroidProvisioningPartner\Operation;
 use Google\Service\AndroidProvisioningPartner\UnclaimDeviceRequest;
 use Google\Service\AndroidProvisioningPartner\UnclaimDevicesRequest;
@@ -40,7 +38,7 @@ use Google\Service\AndroidProvisioningPartner\UpdateDeviceMetadataRequest;
  * Typical usage is:
  *  <code>
  *   $androiddeviceprovisioningService = new Google\Service\AndroidProvisioningPartner(...);
- *   $devices = $androiddeviceprovisioningService->partners_devices;
+ *   $devices = $androiddeviceprovisioningService->devices;
  *  </code>
  */
 class PartnersDevices extends \Google\Service\Resource
@@ -54,7 +52,6 @@ class PartnersDevices extends \Google\Service\Resource
    * @param ClaimDeviceRequest $postBody
    * @param array $optParams Optional parameters.
    * @return ClaimDeviceResponse
-   * @throws \Google\Service\Exception
    */
   public function claim($partnerId, ClaimDeviceRequest $postBody, $optParams = [])
   {
@@ -64,14 +61,13 @@ class PartnersDevices extends \Google\Service\Resource
   }
   /**
    * Claims a batch of devices for a customer asynchronously. Adds the devices to
-   * zero-touch enrollment. To learn more, read [Long‑running batch
-   * operations](/zero-touch/guides/how-it-works#operations). (devices.claimAsync)
+   * zero-touch enrollment. To learn more, read [Long‑running batch operations
+   * ](/zero-touch/guides/how-it-works#operations). (devices.claimAsync)
    *
    * @param string $partnerId Required. The ID of the reseller partner.
    * @param ClaimDevicesRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function claimAsync($partnerId, ClaimDevicesRequest $postBody, $optParams = [])
   {
@@ -87,7 +83,6 @@ class PartnersDevices extends \Google\Service\Resource
    * @param FindDevicesByDeviceIdentifierRequest $postBody
    * @param array $optParams Optional parameters.
    * @return FindDevicesByDeviceIdentifierResponse
-   * @throws \Google\Service\Exception
    */
   public function findByIdentifier($partnerId, FindDevicesByDeviceIdentifierRequest $postBody, $optParams = [])
   {
@@ -105,7 +100,6 @@ class PartnersDevices extends \Google\Service\Resource
    * @param FindDevicesByOwnerRequest $postBody
    * @param array $optParams Optional parameters.
    * @return FindDevicesByOwnerResponse
-   * @throws \Google\Service\Exception
    */
   public function findByOwner($partnerId, FindDevicesByOwnerRequest $postBody, $optParams = [])
   {
@@ -120,7 +114,6 @@ class PartnersDevices extends \Google\Service\Resource
    * `partners/[PARTNER_ID]/devices/[DEVICE_ID]`.
    * @param array $optParams Optional parameters.
    * @return Device
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -129,23 +122,7 @@ class PartnersDevices extends \Google\Service\Resource
     return $this->call('get', [$params], Device::class);
   }
   /**
-   * Gets a device's SIM lock state. (devices.getSimLockState)
-   *
-   * @param string $partnerId Required. The ID of the partner.
-   * @param GetDeviceSimLockStateRequest $postBody
-   * @param array $optParams Optional parameters.
-   * @return GetDeviceSimLockStateResponse
-   * @throws \Google\Service\Exception
-   */
-  public function getSimLockState($partnerId, GetDeviceSimLockStateRequest $postBody, $optParams = [])
-  {
-    $params = ['partnerId' => $partnerId, 'postBody' => $postBody];
-    $params = array_merge($params, $optParams);
-    return $this->call('getSimLockState', [$params], GetDeviceSimLockStateResponse::class);
-  }
-  /**
-   * Updates reseller metadata associated with the device. Android devices only.
-   * (devices.metadata)
+   * Updates reseller metadata associated with the device. (devices.metadata)
    *
    * @param string $metadataOwnerId Required. The owner of the newly set metadata.
    * Set this to the partner ID.
@@ -153,7 +130,6 @@ class PartnersDevices extends \Google\Service\Resource
    * @param UpdateDeviceMetadataRequest $postBody
    * @param array $optParams Optional parameters.
    * @return DeviceMetadata
-   * @throws \Google\Service\Exception
    */
   public function metadata($metadataOwnerId, $deviceId, UpdateDeviceMetadataRequest $postBody, $optParams = [])
   {
@@ -169,7 +145,6 @@ class PartnersDevices extends \Google\Service\Resource
    * @param UnclaimDeviceRequest $postBody
    * @param array $optParams Optional parameters.
    * @return AndroiddeviceprovisioningEmpty
-   * @throws \Google\Service\Exception
    */
   public function unclaim($partnerId, UnclaimDeviceRequest $postBody, $optParams = [])
   {
@@ -187,7 +162,6 @@ class PartnersDevices extends \Google\Service\Resource
    * @param UnclaimDevicesRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function unclaimAsync($partnerId, UnclaimDevicesRequest $postBody, $optParams = [])
   {
@@ -199,13 +173,12 @@ class PartnersDevices extends \Google\Service\Resource
    * Updates the reseller metadata attached to a batch of devices. This method
    * updates devices asynchronously and returns an `Operation` that can be used to
    * track progress. Read [Long‑running batch operations](/zero-touch/guides/how-
-   * it-works#operations). Android Devices only. (devices.updateMetadataAsync)
+   * it-works#operations). (devices.updateMetadataAsync)
    *
    * @param string $partnerId Required. The reseller partner ID.
    * @param UpdateDeviceMetadataInBatchRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function updateMetadataAsync($partnerId, UpdateDeviceMetadataInBatchRequest $postBody, $optParams = [])
   {

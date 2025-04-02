@@ -23,8 +23,7 @@ use Google\Client;
  * Service definition for AlertCenter (v1beta1).
  *
  * <p>
- * Manages alerts on issues affecting your domain. Note: The current version of
- * this API (v1beta1) is available to all Google Workspace customers.</p>
+ * Manages alerts on issues affecting your domain.</p>
  *
  * <p>
  * For more information about this service, see the API
@@ -42,7 +41,6 @@ class AlertCenter extends \Google\Service
   public $alerts;
   public $alerts_feedback;
   public $v1beta1;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the AlertCenter service.
@@ -55,7 +53,6 @@ class AlertCenter extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://alertcenter.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://alertcenter.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1beta1';

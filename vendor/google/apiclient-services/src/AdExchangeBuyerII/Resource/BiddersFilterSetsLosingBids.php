@@ -24,7 +24,7 @@ use Google\Service\AdExchangeBuyerII\ListLosingBidsResponse;
  * Typical usage is:
  *  <code>
  *   $adexchangebuyer2Service = new Google\Service\AdExchangeBuyerII(...);
- *   $losingBids = $adexchangebuyer2Service->bidders_filterSets_losingBids;
+ *   $losingBids = $adexchangebuyer2Service->losingBids;
  *  </code>
  */
 class BiddersFilterSetsLosingBids extends \Google\Service\Resource
@@ -50,7 +50,6 @@ class BiddersFilterSetsLosingBids extends \Google\Service\Resource
    * ListLosingBidsResponse.nextPageToken returned from the previous call to the
    * losingBids.list method.
    * @return ListLosingBidsResponse
-   * @throws \Google\Service\Exception
    */
   public function listBiddersFilterSetsLosingBids($filterSetName, $optParams = [])
   {

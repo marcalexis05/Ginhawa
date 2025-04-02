@@ -33,20 +33,17 @@ class Courses extends \Google\Service\Resource
 {
   /**
    * Creates a course. The user specified in `ownerId` is the owner of the created
-   * course and added as a teacher. A non-admin requesting user can only create a
-   * course with themselves as the owner. Domain admins can create courses owned
-   * by any user within their domain. This method returns the following error
-   * codes: * `PERMISSION_DENIED` if the requesting user is not permitted to
-   * create courses or for access errors. * `NOT_FOUND` if the primary teacher is
-   * not a valid user. * `FAILED_PRECONDITION` if the course owner's account is
-   * disabled or for the following request errors: * UserCannotOwnCourse *
-   * UserGroupsMembershipLimitReached * `ALREADY_EXISTS` if an alias was specified
-   * in the `id` and already exists. (courses.create)
+   * course and added as a teacher. This method returns the following error codes:
+   * * `PERMISSION_DENIED` if the requesting user is not permitted to create
+   * courses or for access errors. * `NOT_FOUND` if the primary teacher is not a
+   * valid user. * `FAILED_PRECONDITION` if the course owner's account is disabled
+   * or for the following request errors: * UserGroupsMembershipLimitReached *
+   * `ALREADY_EXISTS` if an alias was specified in the `id` and already exists.
+   * (courses.create)
    *
    * @param Course $postBody
    * @param array $optParams Optional parameters.
    * @return Course
-   * @throws \Google\Service\Exception
    */
   public function create(Course $postBody, $optParams = [])
   {
@@ -64,7 +61,6 @@ class Courses extends \Google\Service\Resource
    * either the Classroom-assigned identifier or an alias.
    * @param array $optParams Optional parameters.
    * @return ClassroomEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($id, $optParams = [])
   {
@@ -82,7 +78,6 @@ class Courses extends \Google\Service\Resource
    * either the Classroom-assigned identifier or an alias.
    * @param array $optParams Optional parameters.
    * @return Course
-   * @throws \Google\Service\Exception
    */
   public function get($id, $optParams = [])
   {
@@ -119,7 +114,6 @@ class Courses extends \Google\Service\Resource
    * following: * the numeric identifier for the user * the email address of the
    * user * the string literal `"me"`, indicating the requesting user
    * @return ListCoursesResponse
-   * @throws \Google\Service\Exception
    */
   public function listCourses($optParams = [])
   {
@@ -134,7 +128,7 @@ class Courses extends \Google\Service\Resource
    * exists with the requested ID. * `INVALID_ARGUMENT` if invalid fields are
    * specified in the update mask or if no update mask is supplied. *
    * `FAILED_PRECONDITION` for the following request errors: * CourseNotModifiable
-   * * InactiveCourseOwner * IneligibleOwner (courses.patch)
+   * (courses.patch)
    *
    * @param string $id Identifier of the course to update. This identifier can be
    * either the Classroom-assigned identifier or an alias.
@@ -150,7 +144,6 @@ class Courses extends \Google\Service\Resource
    * of all affected resources to complete. When set in a query parameter, this
    * field should be specified as `updateMask=,,...`
    * @return Course
-   * @throws \Google\Service\Exception
    */
   public function patch($id, Course $postBody, $optParams = [])
   {
@@ -170,7 +163,6 @@ class Courses extends \Google\Service\Resource
    * @param Course $postBody
    * @param array $optParams Optional parameters.
    * @return Course
-   * @throws \Google\Service\Exception
    */
   public function update($id, Course $postBody, $optParams = [])
   {

@@ -38,7 +38,6 @@ class Familysharing extends \Google\Service\Resource
    *
    * @opt_param string source String to identify the originator of this request.
    * @return FamilyInfo
-   * @throws \Google\Service\Exception
    */
   public function getFamilyInfo($optParams = [])
   {
@@ -56,7 +55,6 @@ class Familysharing extends \Google\Service\Resource
    * @opt_param string source String to identify the originator of this request.
    * @opt_param string volumeId The volume to share.
    * @return BooksEmpty
-   * @throws \Google\Service\Exception
    */
   public function share($optParams = [])
   {
@@ -74,7 +72,6 @@ class Familysharing extends \Google\Service\Resource
    * @opt_param string source String to identify the originator of this request.
    * @opt_param string volumeId The volume to unshare.
    * @return BooksEmpty
-   * @throws \Google\Service\Exception
    */
   public function unshare($optParams = [])
   {

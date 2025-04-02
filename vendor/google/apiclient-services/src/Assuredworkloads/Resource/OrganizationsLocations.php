@@ -22,7 +22,7 @@ namespace Google\Service\Assuredworkloads\Resource;
  * Typical usage is:
  *  <code>
  *   $assuredworkloadsService = new Google\Service\Assuredworkloads(...);
- *   $locations = $assuredworkloadsService->organizations_locations;
+ *   $locations = $assuredworkloadsService->locations;
  *  </code>
  */
 class OrganizationsLocations extends \Google\Service\Resource

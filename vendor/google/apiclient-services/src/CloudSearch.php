@@ -23,9 +23,8 @@ use Google\Client;
  * Service definition for CloudSearch (v1).
  *
  * <p>
- * Cloud Search provides cloud-based search capabilities over Google Workspace
- * data. The Cloud Search API allows indexing of non-Google Workspace data into
- * Cloud Search.</p>
+ * Cloud Search provides cloud-based search capabilities over G Suite data. The
+ * Cloud Search API allows indexing of non-G Suite data into Cloud Search.</p>
  *
  * <p>
  * For more information about this service, see the API
@@ -83,8 +82,6 @@ class CloudSearch extends \Google\Service
   public $stats_query_searchapplications;
   public $stats_session_searchapplications;
   public $stats_user_searchapplications;
-  public $v1;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the CloudSearch service.
@@ -97,7 +94,6 @@ class CloudSearch extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://cloudsearch.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://cloudsearch.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1';
@@ -515,15 +511,7 @@ class CloudSearch extends \Google\Service
         'query',
         [
           'methods' => [
-            'debugSearch' => [
-              'path' => 'v1/query:debugSearch',
-              'httpMethod' => 'POST',
-              'parameters' => [],
-            ],'removeActivity' => [
-              'path' => 'v1/query:removeActivity',
-              'httpMethod' => 'POST',
-              'parameters' => [],
-            ],'search' => [
+            'search' => [
               'path' => 'v1/query/search',
               'httpMethod' => 'POST',
               'parameters' => [],
@@ -648,24 +636,6 @@ class CloudSearch extends \Google\Service
                   'type' => 'string',
                 ],
               ],
-            ],'patch' => [
-              'path' => 'v1/settings/{+name}',
-              'httpMethod' => 'PATCH',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'debugOptions.enableDebugging' => [
-                  'location' => 'query',
-                  'type' => 'boolean',
-                ],
-                'updateMask' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-              ],
             ],'update' => [
               'path' => 'v1/settings/{+name}',
               'httpMethod' => 'PUT',
@@ -735,20 +705,6 @@ class CloudSearch extends \Google\Service
                   'type' => 'string',
                 ],
               ],
-            ],'patch' => [
-              'path' => 'v1/settings/{+name}',
-              'httpMethod' => 'PATCH',
-              'parameters' => [
-                'name' => [
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ],
-                'updateMask' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-              ],
             ],'reset' => [
               'path' => 'v1/settings/{+name}:reset',
               'httpMethod' => 'POST',
@@ -767,10 +723,6 @@ class CloudSearch extends \Google\Service
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
-                ],
-                'updateMask' => [
-                  'location' => 'query',
-                  'type' => 'string',
                 ],
               ],
             ],
@@ -837,35 +789,6 @@ class CloudSearch extends \Google\Service
                   'type' => 'integer',
                 ],
                 'toDate.year' => [
-                  'location' => 'query',
-                  'type' => 'integer',
-                ],
-              ],
-            ],'getSearchapplication' => [
-              'path' => 'v1/stats/searchapplication',
-              'httpMethod' => 'GET',
-              'parameters' => [
-                'endDate.day' => [
-                  'location' => 'query',
-                  'type' => 'integer',
-                ],
-                'endDate.month' => [
-                  'location' => 'query',
-                  'type' => 'integer',
-                ],
-                'endDate.year' => [
-                  'location' => 'query',
-                  'type' => 'integer',
-                ],
-                'startDate.day' => [
-                  'location' => 'query',
-                  'type' => 'integer',
-                ],
-                'startDate.month' => [
-                  'location' => 'query',
-                  'type' => 'integer',
-                ],
-                'startDate.year' => [
                   'location' => 'query',
                   'type' => 'integer',
                 ],
@@ -1104,20 +1027,6 @@ class CloudSearch extends \Google\Service
                   'type' => 'integer',
                 ],
               ],
-            ],
-          ]
-        ]
-    );
-    $this->v1 = new CloudSearch\Resource\V1(
-        $this,
-        $this->serviceName,
-        'v1',
-        [
-          'methods' => [
-            'initializeCustomer' => [
-              'path' => 'v1:initializeCustomer',
-              'httpMethod' => 'POST',
-              'parameters' => [],
             ],
           ]
         ]

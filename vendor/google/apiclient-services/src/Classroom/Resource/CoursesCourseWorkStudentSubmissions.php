@@ -30,7 +30,7 @@ use Google\Service\Classroom\TurnInStudentSubmissionRequest;
  * Typical usage is:
  *  <code>
  *   $classroomService = new Google\Service\Classroom(...);
- *   $studentSubmissions = $classroomService->courses_courseWork_studentSubmissions;
+ *   $studentSubmissions = $classroomService->studentSubmissions;
  *  </code>
  */
 class CoursesCourseWorkStudentSubmissions extends \Google\Service\Resource
@@ -48,7 +48,6 @@ class CoursesCourseWorkStudentSubmissions extends \Google\Service\Resource
    * @param string $id Identifier of the student submission.
    * @param array $optParams Optional parameters.
    * @return StudentSubmission
-   * @throws \Google\Service\Exception
    */
   public function get($courseId, $courseWorkId, $id, $optParams = [])
   {
@@ -93,7 +92,6 @@ class CoursesCourseWorkStudentSubmissions extends \Google\Service\Resource
    * email address of the user * the string literal `"me"`, indicating the
    * requesting user
    * @return ListStudentSubmissionsResponse
-   * @throws \Google\Service\Exception
    */
   public function listCoursesCourseWorkStudentSubmissions($courseId, $courseWorkId, $optParams = [])
   {
@@ -121,7 +119,6 @@ class CoursesCourseWorkStudentSubmissions extends \Google\Service\Resource
    * @param ModifyAttachmentsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return StudentSubmission
-   * @throws \Google\Service\Exception
    */
   public function modifyAttachments($courseId, $courseWorkId, $id, ModifyAttachmentsRequest $postBody, $optParams = [])
   {
@@ -155,7 +152,6 @@ class CoursesCourseWorkStudentSubmissions extends \Google\Service\Resource
    * fails if invalid fields are specified. The following fields may be specified
    * by teachers: * `draft_grade` * `assigned_grade`
    * @return StudentSubmission
-   * @throws \Google\Service\Exception
    */
   public function patch($courseId, $courseWorkId, $id, StudentSubmission $postBody, $optParams = [])
   {
@@ -186,7 +182,6 @@ class CoursesCourseWorkStudentSubmissions extends \Google\Service\Resource
    * @param ReclaimStudentSubmissionRequest $postBody
    * @param array $optParams Optional parameters.
    * @return ClassroomEmpty
-   * @throws \Google\Service\Exception
    */
   public function reclaim($courseId, $courseWorkId, $id, ReclaimStudentSubmissionRequest $postBody, $optParams = [])
   {
@@ -217,7 +212,6 @@ class CoursesCourseWorkStudentSubmissions extends \Google\Service\Resource
    * @param ReturnStudentSubmissionRequest $postBody
    * @param array $optParams Optional parameters.
    * @return ClassroomEmpty
-   * @throws \Google\Service\Exception
    */
   public function returnCoursesCourseWorkStudentSubmissions($courseId, $courseWorkId, $id, ReturnStudentSubmissionRequest $postBody, $optParams = [])
   {
@@ -246,7 +240,6 @@ class CoursesCourseWorkStudentSubmissions extends \Google\Service\Resource
    * @param TurnInStudentSubmissionRequest $postBody
    * @param array $optParams Optional parameters.
    * @return ClassroomEmpty
-   * @throws \Google\Service\Exception
    */
   public function turnIn($courseId, $courseWorkId, $id, TurnInStudentSubmissionRequest $postBody, $optParams = [])
   {

@@ -19,8 +19,8 @@ namespace Google\Service\DataCatalog\Resource;
 
 use Google\Service\DataCatalog\DatacatalogEmpty;
 use Google\Service\DataCatalog\GetIamPolicyRequest;
-use Google\Service\DataCatalog\GoogleCloudDatacatalogV1ListPolicyTagsResponse;
-use Google\Service\DataCatalog\GoogleCloudDatacatalogV1PolicyTag;
+use Google\Service\DataCatalog\GoogleCloudDatacatalogV1beta1ListPolicyTagsResponse;
+use Google\Service\DataCatalog\GoogleCloudDatacatalogV1beta1PolicyTag;
 use Google\Service\DataCatalog\Policy;
 use Google\Service\DataCatalog\SetIamPolicyRequest;
 use Google\Service\DataCatalog\TestIamPermissionsRequest;
@@ -31,38 +31,34 @@ use Google\Service\DataCatalog\TestIamPermissionsResponse;
  * Typical usage is:
  *  <code>
  *   $datacatalogService = new Google\Service\DataCatalog(...);
- *   $policyTags = $datacatalogService->projects_locations_taxonomies_policyTags;
+ *   $policyTags = $datacatalogService->policyTags;
  *  </code>
  */
 class ProjectsLocationsTaxonomiesPolicyTags extends \Google\Service\Resource
 {
   /**
-   * Creates a policy tag in a taxonomy. (policyTags.create)
+   * Creates a policy tag in the specified taxonomy. (policyTags.create)
    *
    * @param string $parent Required. Resource name of the taxonomy that the policy
    * tag will belong to.
-   * @param GoogleCloudDatacatalogV1PolicyTag $postBody
+   * @param GoogleCloudDatacatalogV1beta1PolicyTag $postBody
    * @param array $optParams Optional parameters.
-   * @return GoogleCloudDatacatalogV1PolicyTag
-   * @throws \Google\Service\Exception
+   * @return GoogleCloudDatacatalogV1beta1PolicyTag
    */
-  public function create($parent, GoogleCloudDatacatalogV1PolicyTag $postBody, $optParams = [])
+  public function create($parent, GoogleCloudDatacatalogV1beta1PolicyTag $postBody, $optParams = [])
   {
     $params = ['parent' => $parent, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
-    return $this->call('create', [$params], GoogleCloudDatacatalogV1PolicyTag::class);
+    return $this->call('create', [$params], GoogleCloudDatacatalogV1beta1PolicyTag::class);
   }
   /**
-   * Deletes a policy tag together with the following: * All of its descendant
-   * policy tags, if any * Policies associated with the policy tag and its
-   * descendants * References from BigQuery table schema of the policy tag and its
-   * descendants (policyTags.delete)
+   * Deletes a policy tag. Also deletes all of its descendant policy tags.
+   * (policyTags.delete)
    *
-   * @param string $name Required. Resource name of the policy tag to delete.
-   * Note: All of its descendant policy tags are also deleted.
+   * @param string $name Required. Resource name of the policy tag to be deleted.
+   * All of its descendant policy tags will also be deleted.
    * @param array $optParams Optional parameters.
    * @return DatacatalogEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -73,28 +69,25 @@ class ProjectsLocationsTaxonomiesPolicyTags extends \Google\Service\Resource
   /**
    * Gets a policy tag. (policyTags.get)
    *
-   * @param string $name Required. Resource name of the policy tag.
+   * @param string $name Required. Resource name of the requested policy tag.
    * @param array $optParams Optional parameters.
-   * @return GoogleCloudDatacatalogV1PolicyTag
-   * @throws \Google\Service\Exception
+   * @return GoogleCloudDatacatalogV1beta1PolicyTag
    */
   public function get($name, $optParams = [])
   {
     $params = ['name' => $name];
     $params = array_merge($params, $optParams);
-    return $this->call('get', [$params], GoogleCloudDatacatalogV1PolicyTag::class);
+    return $this->call('get', [$params], GoogleCloudDatacatalogV1beta1PolicyTag::class);
   }
   /**
-   * Gets the IAM policy for a policy tag or a taxonomy. (policyTags.getIamPolicy)
+   * Gets the IAM policy for a taxonomy or a policy tag. (policyTags.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. See [Resource
-   * names](https://cloud.google.com/apis/design/resource_names) for the
-   * appropriate value for this field.
+   * requested. See the operation documentation for the appropriate value for this
+   * field.
    * @param GetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
-   * @throws \Google\Service\Exception
    */
   public function getIamPolicy($resource, GetIamPolicyRequest $postBody, $optParams = [])
   {
@@ -111,54 +104,51 @@ class ProjectsLocationsTaxonomiesPolicyTags extends \Google\Service\Resource
    * @param array $optParams Optional parameters.
    *
    * @opt_param int pageSize The maximum number of items to return. Must be a
-   * value between 1 and 1000 inclusively. If not set, defaults to 50.
-   * @opt_param string pageToken The pagination token of the next results page. If
-   * not set, returns the first page. The token is returned in the response to a
-   * previous list request.
-   * @return GoogleCloudDatacatalogV1ListPolicyTagsResponse
-   * @throws \Google\Service\Exception
+   * value between 1 and 1000. If not set, defaults to 50.
+   * @opt_param string pageToken The next_page_token value returned from a
+   * previous List request, if any. If not set, defaults to an empty string.
+   * @return GoogleCloudDatacatalogV1beta1ListPolicyTagsResponse
    */
   public function listProjectsLocationsTaxonomiesPolicyTags($parent, $optParams = [])
   {
     $params = ['parent' => $parent];
     $params = array_merge($params, $optParams);
-    return $this->call('list', [$params], GoogleCloudDatacatalogV1ListPolicyTagsResponse::class);
+    return $this->call('list', [$params], GoogleCloudDatacatalogV1beta1ListPolicyTagsResponse::class);
   }
   /**
-   * Updates a policy tag, including its display name, description, and parent
-   * policy tag. (policyTags.patch)
+   * Updates a policy tag. (policyTags.patch)
    *
-   * @param string $name Identifier. Resource name of this policy tag in the URL
-   * format. The policy tag manager generates unique taxonomy IDs and policy tag
-   * IDs.
-   * @param GoogleCloudDatacatalogV1PolicyTag $postBody
+   * @param string $name Output only. Resource name of this policy tag, whose
+   * format is: "projects/{project_number}/locations/{location_id}/taxonomies/{tax
+   * onomy_id}/policyTags/{id}".
+   * @param GoogleCloudDatacatalogV1beta1PolicyTag $postBody
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string updateMask Specifies the fields to update. You can update
-   * only display name, description, and parent policy tag. If not set, defaults
-   * to all updatable fields. For more information, see [FieldMask]
-   * (https://developers.google.com/protocol-
-   * buffers/docs/reference/google.protobuf#fieldmask).
-   * @return GoogleCloudDatacatalogV1PolicyTag
-   * @throws \Google\Service\Exception
+   * @opt_param string updateMask The update mask applies to the resource. Only
+   * display_name, description and parent_policy_tag can be updated and thus can
+   * be listed in the mask. If update_mask is not provided, all allowed fields
+   * (i.e. display_name, description and parent) will be updated. For more
+   * information including the `FieldMask` definition, see
+   * https://developers.google.com/protocol-
+   * buffers/docs/reference/google.protobuf#fieldmask If not set, defaults to all
+   * of the fields that are allowed to update.
+   * @return GoogleCloudDatacatalogV1beta1PolicyTag
    */
-  public function patch($name, GoogleCloudDatacatalogV1PolicyTag $postBody, $optParams = [])
+  public function patch($name, GoogleCloudDatacatalogV1beta1PolicyTag $postBody, $optParams = [])
   {
     $params = ['name' => $name, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
-    return $this->call('patch', [$params], GoogleCloudDatacatalogV1PolicyTag::class);
+    return $this->call('patch', [$params], GoogleCloudDatacatalogV1beta1PolicyTag::class);
   }
   /**
-   * Sets the IAM policy for a policy tag or a taxonomy. (policyTags.setIamPolicy)
+   * Sets the IAM policy for a taxonomy or a policy tag. (policyTags.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. See [Resource
-   * names](https://cloud.google.com/apis/design/resource_names) for the
-   * appropriate value for this field.
+   * specified. See the operation documentation for the appropriate value for this
+   * field.
    * @param SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Policy
-   * @throws \Google\Service\Exception
    */
   public function setIamPolicy($resource, SetIamPolicyRequest $postBody, $optParams = [])
   {
@@ -167,17 +157,15 @@ class ProjectsLocationsTaxonomiesPolicyTags extends \Google\Service\Resource
     return $this->call('setIamPolicy', [$params], Policy::class);
   }
   /**
-   * Returns your permissions on a specified policy tag or taxonomy.
-   * (policyTags.testIamPermissions)
+   * Returns the permissions that a caller has on the specified taxonomy or policy
+   * tag. (policyTags.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. See [Resource
-   * names](https://cloud.google.com/apis/design/resource_names) for the
-   * appropriate value for this field.
+   * being requested. See the operation documentation for the appropriate value
+   * for this field.
    * @param TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return TestIamPermissionsResponse
-   * @throws \Google\Service\Exception
    */
   public function testIamPermissions($resource, TestIamPermissionsRequest $postBody, $optParams = [])
   {

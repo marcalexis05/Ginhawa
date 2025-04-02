@@ -24,18 +24,18 @@ use Google\Service\DLP\GooglePrivacyDlpV2ListInfoTypesResponse;
  * Typical usage is:
  *  <code>
  *   $dlpService = new Google\Service\DLP(...);
- *   $infoTypes = $dlpService->locations_infoTypes;
+ *   $infoTypes = $dlpService->infoTypes;
  *  </code>
  */
 class LocationsInfoTypes extends \Google\Service\Resource
 {
   /**
    * Returns a list of the sensitive information types that the DLP API supports.
-   * See https://cloud.google.com/sensitive-data-protection/docs/infotypes-
-   * reference to learn more. (infoTypes.listLocationsInfoTypes)
+   * See https://cloud.google.com/dlp/docs/infotypes-reference to learn more.
+   * (infoTypes.listLocationsInfoTypes)
    *
    * @param string $parent The parent resource name. The format of this value is
-   * as follows: `locations/{location_id}`
+   * as follows: locations/ LOCATION_ID
    * @param array $optParams Optional parameters.
    *
    * @opt_param string filter filter to only return infoTypes supported by certain
@@ -45,7 +45,6 @@ class LocationsInfoTypes extends \Google\Service\Resource
    * strings will be returned.
    * @opt_param string locationId Deprecated. This field has no effect.
    * @return GooglePrivacyDlpV2ListInfoTypesResponse
-   * @throws \Google\Service\Exception
    */
   public function listLocationsInfoTypes($parent, $optParams = [])
   {

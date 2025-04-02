@@ -24,7 +24,7 @@ use Google\Service\Apigee\GoogleCloudApigeeV1DeveloperAppKey;
  * Typical usage is:
  *  <code>
  *   $apigeeService = new Google\Service\Apigee(...);
- *   $keys = $apigeeService->organizations_developers_apps_keys;
+ *   $keys = $apigeeService->keys;
  *  </code>
  */
 class OrganizationsDevelopersAppsKeys extends \Google\Service\Resource
@@ -40,17 +40,14 @@ class OrganizationsDevelopersAppsKeys extends \Google\Service\Resource
    * associated API products in your request. Instead, use the
    * UpdateDeveloperAppKey API to make the association after the consumer key and
    * secret are created. If a consumer key and secret already exist, you can keep
-   * them or delete them using the DeleteDeveloperAppKey API. **Note**: All keys
-   * start out with status=approved, even if status=revoked is passed when the key
-   * is created. To revoke a key, use the UpdateDeveloperAppKey API. (keys.create)
+   * them or delete them using the DeleteDeveloperAppKey API. (keys.create)
    *
    * @param string $parent Parent of the developer app key. Use the following
    * structure in your request:
-   * 'organizations/{org}/developers/{developerEmail}/apps/{appName}'
+   * `organizations/{org}/developers/{developer_email}/apps`
    * @param GoogleCloudApigeeV1DeveloperAppKey $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1DeveloperAppKey
-   * @throws \Google\Service\Exception
    */
   public function create($parent, GoogleCloudApigeeV1DeveloperAppKey $postBody, $optParams = [])
   {
@@ -72,7 +69,6 @@ class OrganizationsDevelopersAppsKeys extends \Google\Service\Resource
    * `organizations/{org}/developers/{developer_email}/apps/{app}/keys/{key}`
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1DeveloperAppKey
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -89,7 +85,6 @@ class OrganizationsDevelopersAppsKeys extends \Google\Service\Resource
    * `organizations/{org}/developers/{developer_email}/apps/{app}/keys/{key}`
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1DeveloperAppKey
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -111,7 +106,6 @@ class OrganizationsDevelopersAppsKeys extends \Google\Service\Resource
    * @param GoogleCloudApigeeV1DeveloperAppKey $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1DeveloperAppKey
-   * @throws \Google\Service\Exception
    */
   public function replaceDeveloperAppKey($name, GoogleCloudApigeeV1DeveloperAppKey $postBody, $optParams = [])
   {
@@ -135,10 +129,8 @@ class OrganizationsDevelopersAppsKeys extends \Google\Service\Resource
    * @param array $optParams Optional parameters.
    *
    * @opt_param string action Approve or revoke the consumer key by setting this
-   * value to `approve` or `revoke`, respectively. The `Content-Type` header must
-   * be set to `application/octet-stream`.
+   * value to `approve` or `revoke`, respectively.
    * @return GoogleCloudApigeeV1DeveloperAppKey
-   * @throws \Google\Service\Exception
    */
   public function updateDeveloperAppKey($name, GoogleCloudApigeeV1DeveloperAppKey $postBody, $optParams = [])
   {

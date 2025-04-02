@@ -38,7 +38,6 @@ class Users extends \Google\Service\Resource
    * @param string $enterpriseId The ID of the enterprise.
    * @param string $userId The ID of the user.
    * @param array $optParams Optional parameters.
-   * @throws \Google\Service\Exception
    */
   public function delete($enterpriseId, $userId, $optParams = [])
   {
@@ -57,7 +56,6 @@ class Users extends \Google\Service\Resource
    * @param string $userId The ID of the user.
    * @param array $optParams Optional parameters.
    * @return AuthenticationToken
-   * @throws \Google\Service\Exception
    */
   public function generateAuthenticationToken($enterpriseId, $userId, $optParams = [])
   {
@@ -72,7 +70,6 @@ class Users extends \Google\Service\Resource
    * @param string $userId The ID of the user.
    * @param array $optParams Optional parameters.
    * @return User
-   * @throws \Google\Service\Exception
    */
   public function get($enterpriseId, $userId, $optParams = [])
   {
@@ -81,15 +78,13 @@ class Users extends \Google\Service\Resource
     return $this->call('get', [$params], User::class);
   }
   /**
-   * Retrieves the set of products a user is entitled to access. **Note:** This
-   * item has been deprecated. New integrations cannot use this method and can
-   * refer to our new recommendations. (users.getAvailableProductSet)
+   * Retrieves the set of products a user is entitled to access.
+   * (users.getAvailableProductSet)
    *
    * @param string $enterpriseId The ID of the enterprise.
    * @param string $userId The ID of the user.
    * @param array $optParams Optional parameters.
    * @return ProductSet
-   * @throws \Google\Service\Exception
    */
   public function getAvailableProductSet($enterpriseId, $userId, $optParams = [])
   {
@@ -108,7 +103,6 @@ class Users extends \Google\Service\Resource
    * @param User $postBody
    * @param array $optParams Optional parameters.
    * @return User
-   * @throws \Google\Service\Exception
    */
   public function insert($enterpriseId, User $postBody, $optParams = [])
   {
@@ -127,7 +121,6 @@ class Users extends \Google\Service\Resource
    * look up.
    * @param array $optParams Optional parameters.
    * @return UsersListResponse
-   * @throws \Google\Service\Exception
    */
   public function listUsers($enterpriseId, $email, $optParams = [])
   {
@@ -144,7 +137,6 @@ class Users extends \Google\Service\Resource
    * @param string $enterpriseId The ID of the enterprise.
    * @param string $userId The ID of the user.
    * @param array $optParams Optional parameters.
-   * @throws \Google\Service\Exception
    */
   public function revokeDeviceAccess($enterpriseId, $userId, $optParams = [])
   {
@@ -156,8 +148,6 @@ class Users extends \Google\Service\Resource
    * Modifies the set of products that a user is entitled to access (referred to
    * as *whitelisted* products). Only products that are approved or products that
    * were previously approved (products with revoked approval) can be whitelisted.
-   * **Note:** This item has been deprecated. New integrations cannot use this
-   * method and can refer to our new recommendations.
    * (users.setAvailableProductSet)
    *
    * @param string $enterpriseId The ID of the enterprise.
@@ -165,7 +155,6 @@ class Users extends \Google\Service\Resource
    * @param ProductSet $postBody
    * @param array $optParams Optional parameters.
    * @return ProductSet
-   * @throws \Google\Service\Exception
    */
   public function setAvailableProductSet($enterpriseId, $userId, ProductSet $postBody, $optParams = [])
   {
@@ -185,7 +174,6 @@ class Users extends \Google\Service\Resource
    * @param User $postBody
    * @param array $optParams Optional parameters.
    * @return User
-   * @throws \Google\Service\Exception
    */
   public function update($enterpriseId, $userId, User $postBody, $optParams = [])
   {

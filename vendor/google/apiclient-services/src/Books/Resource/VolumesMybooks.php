@@ -24,7 +24,7 @@ use Google\Service\Books\Volumes as VolumesModel;
  * Typical usage is:
  *  <code>
  *   $booksService = new Google\Service\Books(...);
- *   $mybooks = $booksService->volumes_mybooks;
+ *   $mybooks = $booksService->mybooks;
  *  </code>
  */
 class VolumesMybooks extends \Google\Service\Resource
@@ -45,8 +45,7 @@ class VolumesMybooks extends \Google\Service\Resource
    * @opt_param string source String to identify the originator of this request.
    * @opt_param string startIndex Index of the first result to return (starts at
    * 0)
-   * @return VolumesModel
-   * @throws \Google\Service\Exception
+   * @return Volumes
    */
   public function listVolumesMybooks($optParams = [])
   {

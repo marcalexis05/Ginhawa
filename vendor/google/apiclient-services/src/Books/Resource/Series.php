@@ -35,7 +35,6 @@ class Series extends \Google\Service\Resource
    * @param string|array $seriesId String that identifies the series
    * @param array $optParams Optional parameters.
    * @return SeriesModel
-   * @throws \Google\Service\Exception
    */
   public function get($seriesId, $optParams = [])
   {

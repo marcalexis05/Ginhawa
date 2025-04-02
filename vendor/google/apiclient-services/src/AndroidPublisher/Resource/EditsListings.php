@@ -25,7 +25,7 @@ use Google\Service\AndroidPublisher\ListingsListResponse;
  * Typical usage is:
  *  <code>
  *   $androidpublisherService = new Google\Service\AndroidPublisher(...);
- *   $listings = $androidpublisherService->edits_listings;
+ *   $listings = $androidpublisherService->listings;
  *  </code>
  */
 class EditsListings extends \Google\Service\Resource
@@ -38,7 +38,6 @@ class EditsListings extends \Google\Service\Resource
    * @param string $language Language localization code (a BCP-47 language tag;
    * for example, "de-AT" for Austrian German).
    * @param array $optParams Optional parameters.
-   * @throws \Google\Service\Exception
    */
   public function delete($packageName, $editId, $language, $optParams = [])
   {
@@ -52,7 +51,6 @@ class EditsListings extends \Google\Service\Resource
    * @param string $packageName Package name of the app.
    * @param string $editId Identifier of the edit.
    * @param array $optParams Optional parameters.
-   * @throws \Google\Service\Exception
    */
   public function deleteall($packageName, $editId, $optParams = [])
   {
@@ -69,7 +67,6 @@ class EditsListings extends \Google\Service\Resource
    * for example, "de-AT" for Austrian German).
    * @param array $optParams Optional parameters.
    * @return Listing
-   * @throws \Google\Service\Exception
    */
   public function get($packageName, $editId, $language, $optParams = [])
   {
@@ -84,7 +81,6 @@ class EditsListings extends \Google\Service\Resource
    * @param string $editId Identifier of the edit.
    * @param array $optParams Optional parameters.
    * @return ListingsListResponse
-   * @throws \Google\Service\Exception
    */
   public function listEditsListings($packageName, $editId, $optParams = [])
   {
@@ -102,7 +98,6 @@ class EditsListings extends \Google\Service\Resource
    * @param Listing $postBody
    * @param array $optParams Optional parameters.
    * @return Listing
-   * @throws \Google\Service\Exception
    */
   public function patch($packageName, $editId, $language, Listing $postBody, $optParams = [])
   {
@@ -120,7 +115,6 @@ class EditsListings extends \Google\Service\Resource
    * @param Listing $postBody
    * @param array $optParams Optional parameters.
    * @return Listing
-   * @throws \Google\Service\Exception
    */
   public function update($packageName, $editId, $language, Listing $postBody, $optParams = [])
   {

@@ -25,7 +25,7 @@ use Google\Service\Apigee\GoogleCloudApigeeV1Attributes;
  * Typical usage is:
  *  <code>
  *   $apigeeService = new Google\Service\Apigee(...);
- *   $attributes = $apigeeService->organizations_developers_attributes;
+ *   $attributes = $apigeeService->attributes;
  *  </code>
  */
 class OrganizationsDevelopersAttributes extends \Google\Service\Resource
@@ -38,7 +38,6 @@ class OrganizationsDevelopersAttributes extends \Google\Service\Resource
    * `organizations/{org}/developers/{developer_email}/attributes/{attribute}`
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1Attribute
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -54,7 +53,6 @@ class OrganizationsDevelopersAttributes extends \Google\Service\Resource
    * `organizations/{org}/developers/{developer_email}/attributes/{attribute}`
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1Attribute
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -67,11 +65,10 @@ class OrganizationsDevelopersAttributes extends \Google\Service\Resource
    * (attributes.listOrganizationsDevelopersAttributes)
    *
    * @param string $parent Required. Email address of the developer for which
-   * attributes are being listed. Use the following structure in your request:
+   * attributes are being listed in the following format:
    * `organizations/{org}/developers/{developer_email}`
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1Attributes
-   * @throws \Google\Service\Exception
    */
   public function listOrganizationsDevelopersAttributes($parent, $optParams = [])
   {
@@ -94,7 +91,6 @@ class OrganizationsDevelopersAttributes extends \Google\Service\Resource
    * @param GoogleCloudApigeeV1Attribute $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1Attribute
-   * @throws \Google\Service\Exception
    */
   public function updateDeveloperAttribute($name, GoogleCloudApigeeV1Attribute $postBody, $optParams = [])
   {

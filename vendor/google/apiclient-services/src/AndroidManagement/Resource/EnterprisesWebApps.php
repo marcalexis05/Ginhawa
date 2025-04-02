@@ -26,7 +26,7 @@ use Google\Service\AndroidManagement\WebApp;
  * Typical usage is:
  *  <code>
  *   $androidmanagementService = new Google\Service\AndroidManagement(...);
- *   $webApps = $androidmanagementService->enterprises_webApps;
+ *   $webApps = $androidmanagementService->webApps;
  *  </code>
  */
 class EnterprisesWebApps extends \Google\Service\Resource
@@ -39,7 +39,6 @@ class EnterprisesWebApps extends \Google\Service\Resource
    * @param WebApp $postBody
    * @param array $optParams Optional parameters.
    * @return WebApp
-   * @throws \Google\Service\Exception
    */
   public function create($parent, WebApp $postBody, $optParams = [])
   {
@@ -54,7 +53,6 @@ class EnterprisesWebApps extends \Google\Service\Resource
    * enterprises/{enterpriseId}/webApps/{packageName}.
    * @param array $optParams Optional parameters.
    * @return AndroidmanagementEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -69,7 +67,6 @@ class EnterprisesWebApps extends \Google\Service\Resource
    * enterprises/{enterpriseId}/webApp/{packageName}.
    * @param array $optParams Optional parameters.
    * @return WebApp
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -84,12 +81,11 @@ class EnterprisesWebApps extends \Google\Service\Resource
    * enterprises/{enterpriseId}.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param int pageSize The requested page size. This is a hint and the
-   * actual page size in the response may be different.
+   * @opt_param int pageSize The requested page size. The actual page size may be
+   * fixed to a min or max value.
    * @opt_param string pageToken A token identifying a page of results returned by
    * the server.
    * @return ListWebAppsResponse
-   * @throws \Google\Service\Exception
    */
   public function listEnterprisesWebApps($parent, $optParams = [])
   {
@@ -108,7 +104,6 @@ class EnterprisesWebApps extends \Google\Service\Resource
    * @opt_param string updateMask The field mask indicating the fields to update.
    * If not set, all modifiable fields will be modified.
    * @return WebApp
-   * @throws \Google\Service\Exception
    */
   public function patch($name, WebApp $postBody, $optParams = [])
   {

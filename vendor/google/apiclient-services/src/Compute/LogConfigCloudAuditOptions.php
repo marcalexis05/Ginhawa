@@ -19,21 +19,28 @@ namespace Google\Service\Compute;
 
 class LogConfigCloudAuditOptions extends \Google\Model
 {
-  /**
-   * @var string
-   */
+  protected $authorizationLoggingOptionsType = AuthorizationLoggingOptions::class;
+  protected $authorizationLoggingOptionsDataType = '';
   public $logName;
 
   /**
-   * @param string
+   * @param AuthorizationLoggingOptions
    */
+  public function setAuthorizationLoggingOptions(AuthorizationLoggingOptions $authorizationLoggingOptions)
+  {
+    $this->authorizationLoggingOptions = $authorizationLoggingOptions;
+  }
+  /**
+   * @return AuthorizationLoggingOptions
+   */
+  public function getAuthorizationLoggingOptions()
+  {
+    return $this->authorizationLoggingOptions;
+  }
   public function setLogName($logName)
   {
     $this->logName = $logName;
   }
-  /**
-   * @return string
-   */
   public function getLogName()
   {
     return $this->logName;

@@ -40,7 +40,6 @@ class Keys extends \Google\Service\Resource
    * @opt_param string keyString Required. Finds the project that owns the key
    * string value.
    * @return V2LookupKeyResponse
-   * @throws \Google\Service\Exception
    */
   public function lookupKey($optParams = [])
   {

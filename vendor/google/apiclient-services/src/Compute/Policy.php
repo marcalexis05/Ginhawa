@@ -19,18 +19,15 @@ namespace Google\Service\Compute;
 
 class Policy extends \Google\Collection
 {
-  protected $collection_key = 'bindings';
+  protected $collection_key = 'rules';
   protected $auditConfigsType = AuditConfig::class;
   protected $auditConfigsDataType = 'array';
   protected $bindingsType = Binding::class;
   protected $bindingsDataType = 'array';
-  /**
-   * @var string
-   */
   public $etag;
-  /**
-   * @var int
-   */
+  public $iamOwned;
+  protected $rulesType = Rule::class;
+  protected $rulesDataType = 'array';
   public $version;
 
   /**
@@ -61,30 +58,40 @@ class Policy extends \Google\Collection
   {
     return $this->bindings;
   }
-  /**
-   * @param string
-   */
   public function setEtag($etag)
   {
     $this->etag = $etag;
   }
-  /**
-   * @return string
-   */
   public function getEtag()
   {
     return $this->etag;
   }
+  public function setIamOwned($iamOwned)
+  {
+    $this->iamOwned = $iamOwned;
+  }
+  public function getIamOwned()
+  {
+    return $this->iamOwned;
+  }
   /**
-   * @param int
+   * @param Rule[]
    */
+  public function setRules($rules)
+  {
+    $this->rules = $rules;
+  }
+  /**
+   * @return Rule[]
+   */
+  public function getRules()
+  {
+    return $this->rules;
+  }
   public function setVersion($version)
   {
     $this->version = $version;
   }
-  /**
-   * @return int
-   */
   public function getVersion()
   {
     return $this->version;

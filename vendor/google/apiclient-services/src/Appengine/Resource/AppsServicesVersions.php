@@ -26,7 +26,7 @@ use Google\Service\Appengine\Version;
  * Typical usage is:
  *  <code>
  *   $appengineService = new Google\Service\Appengine(...);
- *   $versions = $appengineService->apps_services_versions;
+ *   $versions = $appengineService->versions;
  *  </code>
  */
 class AppsServicesVersions extends \Google\Service\Resource
@@ -40,7 +40,6 @@ class AppsServicesVersions extends \Google\Service\Resource
    * @param Version $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function create($appsId, $servicesId, Version $postBody, $optParams = [])
   {
@@ -57,7 +56,6 @@ class AppsServicesVersions extends \Google\Service\Resource
    * @param string $versionsId Part of `name`. See documentation of `appsId`.
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function delete($appsId, $servicesId, $versionsId, $optParams = [])
   {
@@ -79,7 +77,6 @@ class AppsServicesVersions extends \Google\Service\Resource
    * @opt_param string view Controls the set of fields returned in the Get
    * response.
    * @return Version
-   * @throws \Google\Service\Exception
    */
   public function get($appsId, $servicesId, $versionsId, $optParams = [])
   {
@@ -101,7 +98,6 @@ class AppsServicesVersions extends \Google\Service\Resource
    * @opt_param string view Controls the set of fields returned in the List
    * response.
    * @return ListVersionsResponse
-   * @throws \Google\Service\Exception
    */
   public function listAppsServicesVersions($appsId, $servicesId, $optParams = [])
   {
@@ -118,10 +114,9 @@ class AppsServicesVersions extends \Google\Service\Resource
    * standard environment: automatic_scaling.min_idle_instances
    * (https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.ser
    * vices.versions#Version.FIELDS.automatic_scaling)
-   * automatic_scaling.max_idle_instances
-   * (https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1/apps.ser
-   * vices.versions#Version.FIELDS.automatic_scaling)
-   * automaticScaling.standard_scheduler_settings.max_instances
+   * automatic_scaling.max_idle_instances (https://cloud.google.com/appengine/docs
+   * /admin-api/reference/rest/v1/apps.services.versions#Version.FIELDS.automatic_
+   * scaling) automaticScaling.standard_scheduler_settings.max_instances
    * (https://cloud.google.com/appengine/docs/admin-
    * api/reference/rest/v1/apps.services.versions#StandardSchedulerSettings)
    * automaticScaling.standard_scheduler_settings.min_instances
@@ -167,7 +162,6 @@ class AppsServicesVersions extends \Google\Service\Resource
    * @opt_param string updateMask Standard field mask for the set of fields to be
    * updated.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function patch($appsId, $servicesId, $versionsId, Version $postBody, $optParams = [])
   {

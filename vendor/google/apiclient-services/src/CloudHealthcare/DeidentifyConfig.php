@@ -27,10 +27,6 @@ class DeidentifyConfig extends \Google\Model
   protected $imageDataType = '';
   protected $textType = TextConfig::class;
   protected $textDataType = '';
-  /**
-   * @var bool
-   */
-  public $useRegionalDataProcessing;
 
   /**
    * @param DicomConfig
@@ -87,20 +83,6 @@ class DeidentifyConfig extends \Google\Model
   public function getText()
   {
     return $this->text;
-  }
-  /**
-   * @param bool
-   */
-  public function setUseRegionalDataProcessing($useRegionalDataProcessing)
-  {
-    $this->useRegionalDataProcessing = $useRegionalDataProcessing;
-  }
-  /**
-   * @return bool
-   */
-  public function getUseRegionalDataProcessing()
-  {
-    return $this->useRegionalDataProcessing;
   }
 }
 

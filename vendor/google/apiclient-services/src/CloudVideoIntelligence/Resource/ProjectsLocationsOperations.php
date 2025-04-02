@@ -27,7 +27,7 @@ use Google\Service\CloudVideoIntelligence\GoogleProtobufEmpty;
  * Typical usage is:
  *  <code>
  *   $videointelligenceService = new Google\Service\CloudVideoIntelligence(...);
- *   $operations = $videointelligenceService->projects_locations_operations;
+ *   $operations = $videointelligenceService->operations;
  *  </code>
  */
 class ProjectsLocationsOperations extends \Google\Service\Resource
@@ -40,14 +40,13 @@ class ProjectsLocationsOperations extends \Google\Service\Resource
    * other methods to check whether the cancellation succeeded or whether the
    * operation completed despite cancellation. On successful cancellation, the
    * operation is not deleted; instead, it becomes an operation with an
-   * Operation.error value with a google.rpc.Status.code of `1`, corresponding to
+   * Operation.error value with a google.rpc.Status.code of 1, corresponding to
    * `Code.CANCELLED`. (operations.cancel)
    *
    * @param string $name The name of the operation resource to be cancelled.
    * @param GoogleLongrunningCancelOperationRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleProtobufEmpty
-   * @throws \Google\Service\Exception
    */
   public function cancel($name, GoogleLongrunningCancelOperationRequest $postBody, $optParams = [])
   {
@@ -64,7 +63,6 @@ class ProjectsLocationsOperations extends \Google\Service\Resource
    * @param string $name The name of the operation resource to be deleted.
    * @param array $optParams Optional parameters.
    * @return GoogleProtobufEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -80,7 +78,6 @@ class ProjectsLocationsOperations extends \Google\Service\Resource
    * @param string $name The name of the operation resource.
    * @param array $optParams Optional parameters.
    * @return GoogleLongrunningOperation
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -90,8 +87,14 @@ class ProjectsLocationsOperations extends \Google\Service\Resource
   }
   /**
    * Lists operations that match the specified filter in the request. If the
-   * server doesn't support this method, it returns `UNIMPLEMENTED`.
-   * (operations.listProjectsLocationsOperations)
+   * server doesn't support this method, it returns `UNIMPLEMENTED`. NOTE: the
+   * `name` binding allows API services to override the binding to use different
+   * resource name schemes, such as `users/operations`. To override the binding,
+   * API services can add a binding such as `"/v1/{name=users}/operations"` to
+   * their service configuration. For backwards compatibility, the default name
+   * includes the operations collection id, however overriding users must ensure
+   * the name binding is the parent resource, without the operations collection
+   * id. (operations.listProjectsLocationsOperations)
    *
    * @param string $name The name of the operation's parent resource.
    * @param array $optParams Optional parameters.
@@ -100,7 +103,6 @@ class ProjectsLocationsOperations extends \Google\Service\Resource
    * @opt_param int pageSize The standard list page size.
    * @opt_param string pageToken The standard list page token.
    * @return GoogleLongrunningListOperationsResponse
-   * @throws \Google\Service\Exception
    */
   public function listProjectsLocationsOperations($name, $optParams = [])
   {

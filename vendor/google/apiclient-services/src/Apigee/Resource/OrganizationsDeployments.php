@@ -24,7 +24,7 @@ use Google\Service\Apigee\GoogleCloudApigeeV1ListDeploymentsResponse;
  * Typical usage is:
  *  <code>
  *   $apigeeService = new Google\Service\Apigee(...);
- *   $deployments = $apigeeService->organizations_deployments;
+ *   $deployments = $apigeeService->deployments;
  *  </code>
  */
 class OrganizationsDeployments extends \Google\Service\Resource
@@ -42,7 +42,6 @@ class OrganizationsDeployments extends \Google\Service\Resource
    * deployments; set to `false` to return API proxy deployments. Defaults to
    * `false`.
    * @return GoogleCloudApigeeV1ListDeploymentsResponse
-   * @throws \Google\Service\Exception
    */
   public function listOrganizationsDeployments($parent, $optParams = [])
   {

@@ -17,9 +17,6 @@
 
 namespace Google\Service\BigQueryDataTransfer\Resource;
 
-use Google\Service\BigQueryDataTransfer\BigquerydatatransferEmpty;
-use Google\Service\BigQueryDataTransfer\EnrollDataSourcesRequest;
-
 /**
  * The "projects" collection of methods.
  * Typical usage is:
@@ -30,29 +27,6 @@ use Google\Service\BigQueryDataTransfer\EnrollDataSourcesRequest;
  */
 class Projects extends \Google\Service\Resource
 {
-  /**
-   * Enroll data sources in a user project. This allows users to create transfer
-   * configurations for these data sources. They will also appear in the
-   * ListDataSources RPC and as such, will appear in the [BigQuery
-   * UI](https://console.cloud.google.com/bigquery), and the documents can be
-   * found in the public guide for [BigQuery Web
-   * UI](https://cloud.google.com/bigquery/bigquery-web-ui) and [Data Transfer
-   * Service](https://cloud.google.com/bigquery/docs/working-with-transfers).
-   * (projects.enrollDataSources)
-   *
-   * @param string $name Required. The name of the project resource in the form:
-   * `projects/{project_id}`
-   * @param EnrollDataSourcesRequest $postBody
-   * @param array $optParams Optional parameters.
-   * @return BigquerydatatransferEmpty
-   * @throws \Google\Service\Exception
-   */
-  public function enrollDataSources($name, EnrollDataSourcesRequest $postBody, $optParams = [])
-  {
-    $params = ['name' => $name, 'postBody' => $postBody];
-    $params = array_merge($params, $optParams);
-    return $this->call('enrollDataSources', [$params], BigquerydatatransferEmpty::class);
-  }
 }
 
 // Adding a class alias for backwards compatibility with the previous class name.

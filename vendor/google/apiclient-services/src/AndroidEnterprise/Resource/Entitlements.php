@@ -31,16 +31,13 @@ use Google\Service\AndroidEnterprise\EntitlementsListResponse;
 class Entitlements extends \Google\Service\Resource
 {
   /**
-   * Removes an entitlement to an app for a user. **Note:** This item has been
-   * deprecated. New integrations cannot use this method and can refer to our new
-   * recommendations. (entitlements.delete)
+   * Removes an entitlement to an app for a user. (entitlements.delete)
    *
    * @param string $enterpriseId The ID of the enterprise.
    * @param string $userId The ID of the user.
    * @param string $entitlementId The ID of the entitlement (a product ID), e.g.
    * "app:com.google.android.gm".
    * @param array $optParams Optional parameters.
-   * @throws \Google\Service\Exception
    */
   public function delete($enterpriseId, $userId, $entitlementId, $optParams = [])
   {
@@ -49,9 +46,7 @@ class Entitlements extends \Google\Service\Resource
     return $this->call('delete', [$params]);
   }
   /**
-   * Retrieves details of an entitlement. **Note:** This item has been deprecated.
-   * New integrations cannot use this method and can refer to our new
-   * recommendations. (entitlements.get)
+   * Retrieves details of an entitlement. (entitlements.get)
    *
    * @param string $enterpriseId The ID of the enterprise.
    * @param string $userId The ID of the user.
@@ -59,7 +54,6 @@ class Entitlements extends \Google\Service\Resource
    * "app:com.google.android.gm".
    * @param array $optParams Optional parameters.
    * @return Entitlement
-   * @throws \Google\Service\Exception
    */
   public function get($enterpriseId, $userId, $entitlementId, $optParams = [])
   {
@@ -68,15 +62,13 @@ class Entitlements extends \Google\Service\Resource
     return $this->call('get', [$params], Entitlement::class);
   }
   /**
-   * Lists all entitlements for the specified user. Only the ID is set. **Note:**
-   * This item has been deprecated. New integrations cannot use this method and
-   * can refer to our new recommendations. (entitlements.listEntitlements)
+   * Lists all entitlements for the specified user. Only the ID is set.
+   * (entitlements.listEntitlements)
    *
    * @param string $enterpriseId The ID of the enterprise.
    * @param string $userId The ID of the user.
    * @param array $optParams Optional parameters.
    * @return EntitlementsListResponse
-   * @throws \Google\Service\Exception
    */
   public function listEntitlements($enterpriseId, $userId, $optParams = [])
   {
@@ -85,9 +77,7 @@ class Entitlements extends \Google\Service\Resource
     return $this->call('list', [$params], EntitlementsListResponse::class);
   }
   /**
-   * Adds or updates an entitlement to an app for a user. **Note:** This item has
-   * been deprecated. New integrations cannot use this method and can refer to our
-   * new recommendations. (entitlements.update)
+   * Adds or updates an entitlement to an app for a user. (entitlements.update)
    *
    * @param string $enterpriseId The ID of the enterprise.
    * @param string $userId The ID of the user.
@@ -101,7 +91,6 @@ class Entitlements extends \Google\Service\Resource
    * not prevent this operation from returning successfully, as long as the
    * entitlement was successfully assigned to the user.
    * @return Entitlement
-   * @throws \Google\Service\Exception
    */
   public function update($enterpriseId, $userId, $entitlementId, Entitlement $postBody, $optParams = [])
   {

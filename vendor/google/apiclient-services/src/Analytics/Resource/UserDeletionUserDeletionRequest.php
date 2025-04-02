@@ -24,7 +24,7 @@ use Google\Service\Analytics\UserDeletionRequest;
  * Typical usage is:
  *  <code>
  *   $analyticsService = new Google\Service\Analytics(...);
- *   $userDeletionRequest = $analyticsService->userDeletion_userDeletionRequest;
+ *   $userDeletionRequest = $analyticsService->userDeletionRequest;
  *  </code>
  */
 class UserDeletionUserDeletionRequest extends \Google\Service\Resource
@@ -35,7 +35,6 @@ class UserDeletionUserDeletionRequest extends \Google\Service\Resource
    * @param UserDeletionRequest $postBody
    * @param array $optParams Optional parameters.
    * @return UserDeletionRequest
-   * @throws \Google\Service\Exception
    */
   public function upsert(UserDeletionRequest $postBody, $optParams = [])
   {

@@ -45,7 +45,6 @@ class Invitations extends \Google\Service\Resource
    * @param string $id Identifier of the invitation to accept.
    * @param array $optParams Optional parameters.
    * @return ClassroomEmpty
-   * @throws \Google\Service\Exception
    */
   public function accept($id, $optParams = [])
   {
@@ -59,16 +58,14 @@ class Invitations extends \Google\Service\Resource
    * returns the following error codes: * `PERMISSION_DENIED` if the requesting
    * user is not permitted to create invitations for this course or for access
    * errors. * `NOT_FOUND` if the course or the user does not exist. *
-   * `FAILED_PRECONDITION`: * if the requested user's account is disabled. * if
-   * the user already has this role or a role with greater permissions. * for the
-   * following request errors: * IneligibleOwner * `ALREADY_EXISTS` if an
-   * invitation for the specified user and course already exists.
-   * (invitations.create)
+   * `FAILED_PRECONDITION` if the requested user's account is disabled or if the
+   * user already has this role or a role with greater permissions. *
+   * `ALREADY_EXISTS` if an invitation for the specified user and course already
+   * exists. (invitations.create)
    *
    * @param Invitation $postBody
    * @param array $optParams Optional parameters.
    * @return Invitation
-   * @throws \Google\Service\Exception
    */
   public function create(Invitation $postBody, $optParams = [])
   {
@@ -85,7 +82,6 @@ class Invitations extends \Google\Service\Resource
    * @param string $id Identifier of the invitation to delete.
    * @param array $optParams Optional parameters.
    * @return ClassroomEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($id, $optParams = [])
   {
@@ -102,7 +98,6 @@ class Invitations extends \Google\Service\Resource
    * @param string $id Identifier of the invitation to return.
    * @param array $optParams Optional parameters.
    * @return Invitation
-   * @throws \Google\Service\Exception
    */
   public function get($id, $optParams = [])
   {
@@ -133,7 +128,6 @@ class Invitations extends \Google\Service\Resource
    * identifier for the user * the email address of the user * the string literal
    * `"me"`, indicating the requesting user
    * @return ListInvitationsResponse
-   * @throws \Google\Service\Exception
    */
   public function listInvitations($optParams = [])
   {

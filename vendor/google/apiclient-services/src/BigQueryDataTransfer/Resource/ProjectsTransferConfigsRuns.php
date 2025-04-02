@@ -26,7 +26,7 @@ use Google\Service\BigQueryDataTransfer\TransferRun;
  * Typical usage is:
  *  <code>
  *   $bigquerydatatransferService = new Google\Service\BigQueryDataTransfer(...);
- *   $runs = $bigquerydatatransferService->projects_transferConfigs_runs;
+ *   $runs = $bigquerydatatransferService->runs;
  *  </code>
  */
 class ProjectsTransferConfigsRuns extends \Google\Service\Resource
@@ -41,7 +41,6 @@ class ProjectsTransferConfigsRuns extends \Google\Service\Resource
    * id}`
    * @param array $optParams Optional parameters.
    * @return BigquerydatatransferEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -59,7 +58,6 @@ class ProjectsTransferConfigsRuns extends \Google\Service\Resource
    * id}`
    * @param array $optParams Optional parameters.
    * @return TransferRun
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -68,7 +66,7 @@ class ProjectsTransferConfigsRuns extends \Google\Service\Resource
     return $this->call('get', [$params], TransferRun::class);
   }
   /**
-   * Returns information about running and completed transfer runs.
+   * Returns information about running and completed jobs.
    * (runs.listProjectsTransferConfigsRuns)
    *
    * @param string $parent Required. Name of transfer configuration for which
@@ -87,7 +85,6 @@ class ProjectsTransferConfigsRuns extends \Google\Service\Resource
    * @opt_param string states When specified, only transfer runs with requested
    * states are returned.
    * @return ListTransferRunsResponse
-   * @throws \Google\Service\Exception
    */
   public function listProjectsTransferConfigsRuns($parent, $optParams = [])
   {

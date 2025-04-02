@@ -26,7 +26,7 @@ use Google\Service\AndroidProvisioningPartner\ListCustomersResponse;
  * Typical usage is:
  *  <code>
  *   $androiddeviceprovisioningService = new Google\Service\AndroidProvisioningPartner(...);
- *   $customers = $androiddeviceprovisioningService->partners_customers;
+ *   $customers = $androiddeviceprovisioningService->customers;
  *  </code>
  */
 class PartnersCustomers extends \Google\Service\Resource
@@ -43,7 +43,6 @@ class PartnersCustomers extends \Google\Service\Resource
    * @param CreateCustomerRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Company
-   * @throws \Google\Service\Exception
    */
   public function create($parent, CreateCustomerRequest $postBody, $optParams = [])
   {
@@ -65,7 +64,6 @@ class PartnersCustomers extends \Google\Service\Resource
    * @opt_param string pageToken A token identifying a page of results returned by
    * the server.
    * @return ListCustomersResponse
-   * @throws \Google\Service\Exception
    */
   public function listPartnersCustomers($partnerId, $optParams = [])
   {

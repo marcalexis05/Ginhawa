@@ -18,11 +18,9 @@
 namespace Google\Service\CloudMemorystoreforMemcached\Resource;
 
 use Google\Service\CloudMemorystoreforMemcached\ApplyParametersRequest;
-use Google\Service\CloudMemorystoreforMemcached\GoogleCloudMemcacheV1UpgradeInstanceRequest;
 use Google\Service\CloudMemorystoreforMemcached\Instance;
 use Google\Service\CloudMemorystoreforMemcached\ListInstancesResponse;
 use Google\Service\CloudMemorystoreforMemcached\Operation;
-use Google\Service\CloudMemorystoreforMemcached\RescheduleMaintenanceRequest;
 use Google\Service\CloudMemorystoreforMemcached\UpdateParametersRequest;
 
 /**
@@ -30,7 +28,7 @@ use Google\Service\CloudMemorystoreforMemcached\UpdateParametersRequest;
  * Typical usage is:
  *  <code>
  *   $memcacheService = new Google\Service\CloudMemorystoreforMemcached(...);
- *   $instances = $memcacheService->projects_locations_instances;
+ *   $instances = $memcacheService->instances;
  *  </code>
  */
 class ProjectsLocationsInstances extends \Google\Service\Resource
@@ -45,7 +43,6 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
    * @param ApplyParametersRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function applyParameters($name, ApplyParametersRequest $postBody, $optParams = [])
   {
@@ -69,7 +66,6 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
    * be unique within the user project / location. If any of the above are not
    * met, the API raises an invalid argument error.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function create($parent, Instance $postBody, $optParams = [])
   {
@@ -85,7 +81,6 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
    * `location_id` refers to a GCP region
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -101,7 +96,6 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
    * `location_id` refers to a GCP region
    * @param array $optParams Optional parameters.
    * @return Instance
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -130,7 +124,6 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
    * @opt_param string pageToken The `next_page_token` value returned from a
    * previous List request, if any.
    * @return ListInstancesResponse
-   * @throws \Google\Service\Exception
    */
   public function listProjectsLocationsInstances($parent, $optParams = [])
   {
@@ -155,30 +148,12 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
    * @opt_param string updateMask Required. Mask of fields to update. *
    * `displayName`
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function patch($name, Instance $postBody, $optParams = [])
   {
     $params = ['name' => $name, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('patch', [$params], Operation::class);
-  }
-  /**
-   * Reschedules upcoming maintenance event. (instances.rescheduleMaintenance)
-   *
-   * @param string $instance Required. Memcache instance resource name using the
-   * form: `projects/{project_id}/locations/{location_id}/instances/{instance_id}`
-   * where `location_id` refers to a GCP region.
-   * @param RescheduleMaintenanceRequest $postBody
-   * @param array $optParams Optional parameters.
-   * @return Operation
-   * @throws \Google\Service\Exception
-   */
-  public function rescheduleMaintenance($instance, RescheduleMaintenanceRequest $postBody, $optParams = [])
-  {
-    $params = ['instance' => $instance, 'postBody' => $postBody];
-    $params = array_merge($params, $optParams);
-    return $this->call('rescheduleMaintenance', [$params], Operation::class);
   }
   /**
    * Updates the defined Memcached parameters for an existing instance. This
@@ -191,31 +166,12 @@ class ProjectsLocationsInstances extends \Google\Service\Resource
    * @param UpdateParametersRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function updateParameters($name, UpdateParametersRequest $postBody, $optParams = [])
   {
     $params = ['name' => $name, 'postBody' => $postBody];
     $params = array_merge($params, $optParams);
     return $this->call('updateParameters', [$params], Operation::class);
-  }
-  /**
-   * Upgrades the Memcache instance to a newer memcached engine version specified
-   * in the request. (instances.upgrade)
-   *
-   * @param string $name Required. Memcache instance resource name using the form:
-   * `projects/{project}/locations/{location}/instances/{instance}` where
-   * `location_id` refers to a GCP region.
-   * @param GoogleCloudMemcacheV1UpgradeInstanceRequest $postBody
-   * @param array $optParams Optional parameters.
-   * @return Operation
-   * @throws \Google\Service\Exception
-   */
-  public function upgrade($name, GoogleCloudMemcacheV1UpgradeInstanceRequest $postBody, $optParams = [])
-  {
-    $params = ['name' => $name, 'postBody' => $postBody];
-    $params = array_merge($params, $optParams);
-    return $this->call('upgrade', [$params], Operation::class);
   }
 }
 

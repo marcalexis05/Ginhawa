@@ -19,33 +19,12 @@ namespace Google\Service\CloudNaturalLanguage;
 
 class EntityMention extends \Google\Model
 {
-  /**
-   * @var float
-   */
-  public $probability;
   protected $sentimentType = Sentiment::class;
   protected $sentimentDataType = '';
   protected $textType = TextSpan::class;
   protected $textDataType = '';
-  /**
-   * @var string
-   */
   public $type;
 
-  /**
-   * @param float
-   */
-  public function setProbability($probability)
-  {
-    $this->probability = $probability;
-  }
-  /**
-   * @return float
-   */
-  public function getProbability()
-  {
-    return $this->probability;
-  }
   /**
    * @param Sentiment
    */
@@ -74,16 +53,10 @@ class EntityMention extends \Google\Model
   {
     return $this->text;
   }
-  /**
-   * @param string
-   */
   public function setType($type)
   {
     $this->type = $type;
   }
-  /**
-   * @return string
-   */
   public function getType()
   {
     return $this->type;

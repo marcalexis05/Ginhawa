@@ -44,7 +44,6 @@ class Promooffer extends \Google\Service\Resource
    * @opt_param string serial device serial
    * @opt_param string volumeId Volume id to exercise the offer
    * @return BooksEmpty
-   * @throws \Google\Service\Exception
    */
   public function accept($optParams = [])
   {
@@ -65,7 +64,6 @@ class Promooffer extends \Google\Service\Resource
    * @opt_param string product device product
    * @opt_param string serial device serial
    * @return BooksEmpty
-   * @throws \Google\Service\Exception
    */
   public function dismiss($optParams = [])
   {
@@ -85,7 +83,6 @@ class Promooffer extends \Google\Service\Resource
    * @opt_param string product device product
    * @opt_param string serial device serial
    * @return Offers
-   * @throws \Google\Service\Exception
    */
   public function get($optParams = [])
   {

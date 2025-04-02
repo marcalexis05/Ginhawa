@@ -22,18 +22,10 @@ class Person extends \Google\Collection
   protected $collection_key = 'photos';
   protected $emailAddressesType = EmailAddress::class;
   protected $emailAddressesDataType = 'array';
-  /**
-   * @var string
-   */
   public $name;
-  /**
-   * @var string
-   */
   public $obfuscatedId;
   protected $personNamesType = Name::class;
   protected $personNamesDataType = 'array';
-  protected $phoneNumbersType = PhoneNumber::class;
-  protected $phoneNumbersDataType = 'array';
   protected $photosType = Photo::class;
   protected $photosDataType = 'array';
 
@@ -51,30 +43,18 @@ class Person extends \Google\Collection
   {
     return $this->emailAddresses;
   }
-  /**
-   * @param string
-   */
   public function setName($name)
   {
     $this->name = $name;
   }
-  /**
-   * @return string
-   */
   public function getName()
   {
     return $this->name;
   }
-  /**
-   * @param string
-   */
   public function setObfuscatedId($obfuscatedId)
   {
     $this->obfuscatedId = $obfuscatedId;
   }
-  /**
-   * @return string
-   */
   public function getObfuscatedId()
   {
     return $this->obfuscatedId;
@@ -92,20 +72,6 @@ class Person extends \Google\Collection
   public function getPersonNames()
   {
     return $this->personNames;
-  }
-  /**
-   * @param PhoneNumber[]
-   */
-  public function setPhoneNumbers($phoneNumbers)
-  {
-    $this->phoneNumbers = $phoneNumbers;
-  }
-  /**
-   * @return PhoneNumber[]
-   */
-  public function getPhoneNumbers()
-  {
-    return $this->phoneNumbers;
   }
   /**
    * @param Photo[]

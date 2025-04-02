@@ -19,8 +19,6 @@ namespace Google\Service\DLP;
 
 class GooglePrivacyDlpV2Action extends \Google\Model
 {
-  protected $deidentifyType = GooglePrivacyDlpV2Deidentify::class;
-  protected $deidentifyDataType = '';
   protected $jobNotificationEmailsType = GooglePrivacyDlpV2JobNotificationEmails::class;
   protected $jobNotificationEmailsDataType = '';
   protected $pubSubType = GooglePrivacyDlpV2PublishToPubSub::class;
@@ -34,20 +32,6 @@ class GooglePrivacyDlpV2Action extends \Google\Model
   protected $saveFindingsType = GooglePrivacyDlpV2SaveFindings::class;
   protected $saveFindingsDataType = '';
 
-  /**
-   * @param GooglePrivacyDlpV2Deidentify
-   */
-  public function setDeidentify(GooglePrivacyDlpV2Deidentify $deidentify)
-  {
-    $this->deidentify = $deidentify;
-  }
-  /**
-   * @return GooglePrivacyDlpV2Deidentify
-   */
-  public function getDeidentify()
-  {
-    return $this->deidentify;
-  }
   /**
    * @param GooglePrivacyDlpV2JobNotificationEmails
    */

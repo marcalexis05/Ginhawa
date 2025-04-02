@@ -25,7 +25,7 @@ use Google\Service\Apigee\GoogleLongrunningOperation;
  * Typical usage is:
  *  <code>
  *   $apigeeService = new Google\Service\Apigee(...);
- *   $canaryevaluations = $apigeeService->organizations_instances_canaryevaluations;
+ *   $canaryevaluations = $apigeeService->canaryevaluations;
  *  </code>
  */
 class OrganizationsInstancesCanaryevaluations extends \Google\Service\Resource
@@ -39,7 +39,6 @@ class OrganizationsInstancesCanaryevaluations extends \Google\Service\Resource
    * @param GoogleCloudApigeeV1CanaryEvaluation $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleLongrunningOperation
-   * @throws \Google\Service\Exception
    */
   public function create($parent, GoogleCloudApigeeV1CanaryEvaluation $postBody, $optParams = [])
   {
@@ -55,7 +54,6 @@ class OrganizationsInstancesCanaryevaluations extends \Google\Service\Resource
    * `organizations/{org}/instances/canaryevaluations/{evaluation}`
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1CanaryEvaluation
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {

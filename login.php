@@ -18,6 +18,9 @@
     // Google OAuth Integration
     require_once 'vendor/autoload.php';
 
+    use Google\Client as Google_Client;
+    use Google\Service\OAuth2 as Google_Service_OAuth2;
+
     $client = new Google_Client();
     try {
         $client->setAuthConfig('client_secret.json');
@@ -36,13 +39,15 @@
     if (isset($_GET['code'])) {
         try {
             $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
-            if (isset($token['error'])) {
+            if (!is_array($token)) {
+                $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Google login failed: Invalid response from server.</label>';
+            } elseif (isset($token['error'])) {
                 $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Google login failed: ' . htmlspecialchars($token['error_description']) . '</label>';
-            } elseif (!$token || !isset($token['access_token'])) {
-                $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Google login failed: Invalid token received.</label>';
+            } elseif (!isset($token['access_token'])) {
+                $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Google login failed: No access token received.</label>';
             } else {
                 $client->setAccessToken($token);
-                $oauth = new Google_Service_Oauth2($client);
+                $oauth = new Google_Service_OAuth2($client);
                 $userInfo = $oauth->userinfo->get();
                 $email = $userInfo->email;
                 $name = $userInfo->name;
@@ -72,7 +77,7 @@
                             } else {
                                 $_SESSION['user'] = $email;
                                 $_SESSION['usertype'] = 'p';
-                                $_SESSION['username'] = explode(" ", $patient['pname'])[0];
+                                $_SESSION['username'] = explode(" ", $patient['pname'])[0] ?? $name;
                                 $_SESSION['google_picture'] = $picture;
 
                                 if (empty($patient['ptel']) || empty($patient['pdob']) || empty($patient['psex']) || empty($patient['age'])) {
@@ -104,6 +109,8 @@
                     header('Location: complete-profile.php');
                     exit();
                 }
+                $stmt->close();
+                $database->close();
             }
         } catch (Exception $e) {
             $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Google login error: ' . htmlspecialchars($e->getMessage()) . '</label>';
@@ -117,163 +124,172 @@
     // Manual login logic
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         include("connection.php");
-        $email = $_POST['useremail'];
-        $password = $_POST['userpassword'];
+        $email = $_POST['useremail'] ?? '';
+        $password = $_POST['userpassword'] ?? '';
 
-        $stmt = $database->prepare("SELECT * FROM webuser WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        if (empty($email) || empty($password)) {
+            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Email and password are required.</label>';
+        } else {
+            $stmt = $database->prepare("SELECT * FROM webuser WHERE email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-        if ($result->num_rows == 1) {
-            $user = $result->fetch_assoc();
-            $utype = $user['usertype'];
+            if ($result->num_rows == 1) {
+                $user = $result->fetch_assoc();
+                $utype = $user['usertype'];
 
-            if ($utype == 'p') {
-                $stmt = $database->prepare("SELECT * FROM patient WHERE pemail = ?");
-                $stmt->bind_param("s", $email);
-                $stmt->execute();
-                $checker = $stmt->get_result();
-                $patient = $checker->fetch_assoc();
+                if ($utype == 'p') {
+                    $stmt = $database->prepare("SELECT * FROM patient WHERE pemail = ?");
+                    $stmt->bind_param("s", $email);
+                    $stmt->execute();
+                    $checker = $stmt->get_result();
+                    $patient = $checker->fetch_assoc();
 
-                if ($checker->num_rows == 1) {
-                    if ($patient['archived'] == 1) {
-                        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Your account has been archived. Please contact support.</label>';
-                    } elseif ($patient['verification_code'] !== NULL) {
-                        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Please verify your account first.</label>';
-                        header("Location: verify-account.php");
-                        exit();
-                    } elseif (password_verify($password, $patient['ppassword'])) {
+                    if ($checker->num_rows == 1) {
+                        if ($patient['archived'] == 1) {
+                            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Your account has been archived. Please contact support.</label>';
+                        } elseif ($patient['verification_code'] !== null) {
+                            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Please verify your account first.</label>';
+                            header("Location: verify-account.php");
+                            exit();
+                        } elseif (password_verify($password, $patient['ppassword'])) {
+                            $_SESSION['user'] = $email;
+                            $_SESSION['usertype'] = 'p';
+                            $_SESSION['username'] = explode(" ", $patient['pname'])[0];
+                            header('Location: patient/index.php');
+                            exit();
+                        } else {
+                            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Invalid password</label>';
+                        }
+                    } else {
+                        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Patient record not found</label>';
+                    }
+                } elseif ($utype == 'a') {
+                    $stmt = $database->prepare("SELECT * FROM admin WHERE aemail = ?");
+                    $stmt->bind_param("s", $email);
+                    $stmt->execute();
+                    $checker = $stmt->get_result();
+                    $admin = $checker->fetch_assoc();
+
+                    if ($checker->num_rows == 1 && password_verify($password, $admin['apassword'])) {
                         $_SESSION['user'] = $email;
-                        $_SESSION['usertype'] = 'p';
-                        $_SESSION['username'] = explode(" ", $patient['pname'])[0];
-                        header('Location: patient/index.php');
+                        $_SESSION['usertype'] = 'a';
+                        header('Location: admin/index.php');
                         exit();
                     } else {
-                        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Invalid password</label>';
+                        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Invalid credentials</label>';
+                    }
+                } elseif ($utype == 'd') {
+                    $stmt = $database->prepare("SELECT * FROM doctor WHERE docemail = ?");
+                    $stmt->bind_param("s", $email);
+                    $stmt->execute();
+                    $checker = $stmt->get_result();
+                    $doctor = $checker->fetch_assoc();
+
+                    if ($checker->num_rows == 1 && password_verify($password, $doctor['docpassword'])) {
+                        $today = date('Y-m-d');
+                        $time_now = date('Y-m-d H:i:s');
+
+                        $stmt_attendance = $database->prepare("INSERT INTO doctor_attendance (doctor_id, docemail, time_in, date) VALUES (?, ?, ?, ?)");
+                        $stmt_attendance->bind_param("isss", $doctor['docid'], $email, $time_now, $today);
+                        $stmt_attendance->execute();
+                        $stmt_attendance->close();
+
+                        $_SESSION['user'] = $email;
+                        $_SESSION['usertype'] = 'd';
+                        $_SESSION['doctor_id'] = $doctor['docid'];
+                        header('Location: doctor/index.php');
+                        exit();
+                    } else {
+                        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Invalid credentials</label>';
                     }
                 }
-            } elseif ($utype == 'a') {
-                $stmt = $database->prepare("SELECT * FROM admin WHERE aemail = ?");
-                $stmt->bind_param("s", $email);
-                $stmt->execute();
-                $checker = $stmt->get_result();
-                $admin = $checker->fetch_assoc();
-
-                if ($checker->num_rows == 1 && password_verify($password, $admin['apassword'])) {
-                    $_SESSION['user'] = $email;
-                    $_SESSION['usertype'] = 'a';
-                    header('Location: admin/index.php');
-                    exit();
-                } else {
-                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Invalid credentials</label>';
-                }
-            } elseif ($utype == 'd') {
-                $stmt = $database->prepare("SELECT * FROM doctor WHERE docemail = ?");
-                $stmt->bind_param("s", $email);
-                $stmt->execute();
-                $checker = $stmt->get_result();
-                $doctor = $checker->fetch_assoc();
-
-                if ($checker->num_rows == 1 && password_verify($password, $doctor['docpassword'])) {
-                    $today = date('Y-m-d');
-                    $time_now = date('Y-m-d H:i:s'); // e.g., "2025-04-01 15:16:00"
-
-                    $stmt_attendance = $database->prepare("INSERT INTO doctor_attendance (doctor_id, docemail, time_in, date) VALUES (?, ?, ?, ?)");
-                    $stmt_attendance->bind_param("isss", $doctor['docid'], $email, $time_now, $today);
-                    $stmt_attendance->execute();
-                    $stmt_attendance->close();
-
-                    $_SESSION['user'] = $email;
-                    $_SESSION['usertype'] = 'd';
-                    $_SESSION['doctor_id'] = $doctor['docid']; // Store doctor_id in session
-                    header('Location: doctor/index.php');
-                    exit();
-                } else {
-                    $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Invalid credentials</label>';
-                }
+                $stmt->close();
+            } else {
+                $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">No account found for this email</label>';
             }
-        } else {
-            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">No account found for this email</label>';
+            $database->close();
         }
-
-        $stmt->close();
-        $database->close();
     }
     ?>
 
     <center>
     <div class="container">
-        <table border="0" style="margin: 0;padding: 0;width: 60%;">
+        <table border="0" style="margin: 0; padding: 0; width: 60%;">
             <tr>
                 <td>
                     <p class="header-text">Welcome Back!</p>
                 </td>
             </tr>
-            <div class="form-body">
-                <tr>
-                    <td>
-                        <p class="sub-text">Login with your details to continue</p>
-                    </td>
-                </tr>
-                <tr>
-                    <form action="" method="POST">
-                        <td class="label-td">
-                            <label for="useremail" class="form-label">Email: </label>
-                        </td>
-                </tr>
-                <tr>
-                    <td class="label-td">
-                        <input type="email" name="useremail" class="input-text" placeholder="Email Address" required>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label-td">
-                        <label for="userpassword" class="form-label">Password: </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label-td">
-                        <input type="password" name="userpassword" id="userpassword" class="input-text" placeholder="Password" required>
-                        <br>
-                        <label>
-                            <input type="checkbox" id="showPassword" onclick="togglePassword('userpassword')"> Show Password
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td><br>
-                        <?php echo $error ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="submit" value="Login" class="login-btn btn-primary btn">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <br>
-                        <a href="<?php echo $googleLoginUrl; ?>" class="login-btn btn-primary btn" style="display:block;text-align:center;">Login with Google</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <br>
-                        <label for="" class="sub-text" style="font-weight: 280;">Forgot your password? </label>
-                        <a href="forgot-password.php" class="hover-link1 non-style-link">Reset Password</a>
-                    </td>
-                </tr>
-            </div>
             <tr>
                 <td>
-                    <br>
-                    <label for="" class="sub-text" style="font-weight: 280;">Don't have an account? </label>
-                    <a href="signup.php" class="hover-link1 non-style-link">Sign Up</a>
-                    <br><br><br>
+                    <p class="sub-text">Login with your details to continue</p>
                 </td>
             </tr>
-            </form>
+            <tr>
+                <td>
+                    <form action="" method="POST">
+                        <table border="0" style="width: 100%;">
+                            <tr>
+                                <td class="label-td">
+                                    <label for="useremail" class="form-label">Email: </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    <input type="email" name="useremail" class="input-text" placeholder="Email Address" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    <label for="userpassword" class="form-label">Password: </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td">
+                                    <input type="password" name="userpassword" id="userpassword" class="input-text" placeholder="Password" required>
+                                    <br>
+                                    <label>
+                                        <input type="checkbox" id="showPassword" onclick="togglePassword('userpassword')"> Show Password
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><br>
+                                    <?php echo $error ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="submit" value="Login" class="login-btn btn-primary btn">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <br>
+                                    <a href="<?php echo $googleLoginUrl; ?>" class="login-btn btn-primary btn" style="display:block;text-align:center;">Login with Google</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <br>
+                                    <label for="" class="sub-text" style="font-weight: 280;">Forgot your password? </label>
+                                    <a href="forgot-password.php" class="hover-link1 non-style-link">Reset Password</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <br>
+                                    <label for="" class="sub-text" style="font-weight: 280;">Don't have an account? </label>
+                                    <a href="signup.php" class="hover-link1 non-style-link">Sign Up</a>
+                                    <br><br>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </td>
+            </tr>
         </table>
     </div>
     </center>

@@ -38,7 +38,6 @@ class Workspaces extends \Google\Service\Resource
    * workspaces/{workspace}
    * @param array $optParams Optional parameters.
    * @return Workspace
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -60,7 +59,6 @@ class Workspaces extends \Google\Service\Resource
    * paginating, all other parameters provided to `ListWorkspaces` must match the
    * call that provided the page token.
    * @return ListWorkspacesResponse
-   * @throws \Google\Service\Exception
    */
   public function listWorkspaces($optParams = [])
   {

@@ -24,7 +24,7 @@ use Google\Service\Apigee\GoogleCloudApigeeV1TargetServer;
  * Typical usage is:
  *  <code>
  *   $apigeeService = new Google\Service\Apigee(...);
- *   $targetservers = $apigeeService->organizations_environments_targetservers;
+ *   $targetservers = $apigeeService->targetservers;
  *  </code>
  */
 class OrganizationsEnvironmentsTargetservers extends \Google\Service\Resource
@@ -41,7 +41,6 @@ class OrganizationsEnvironmentsTargetservers extends \Google\Service\Resource
    * @opt_param string name Optional. The ID to give the TargetServer. This will
    * overwrite the value in TargetServer.
    * @return GoogleCloudApigeeV1TargetServer
-   * @throws \Google\Service\Exception
    */
   public function create($parent, GoogleCloudApigeeV1TargetServer $postBody, $optParams = [])
   {
@@ -58,7 +57,6 @@ class OrganizationsEnvironmentsTargetservers extends \Google\Service\Resource
    * `organizations/{org}/environments/{env}/targetservers/{target_server_id}`.
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1TargetServer
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -74,7 +72,6 @@ class OrganizationsEnvironmentsTargetservers extends \Google\Service\Resource
    * `organizations/{org}/environments/{env}/targetservers/{target_server_id}`.
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1TargetServer
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -93,7 +90,6 @@ class OrganizationsEnvironmentsTargetservers extends \Google\Service\Resource
    * @param GoogleCloudApigeeV1TargetServer $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1TargetServer
-   * @throws \Google\Service\Exception
    */
   public function update($name, GoogleCloudApigeeV1TargetServer $postBody, $optParams = [])
   {

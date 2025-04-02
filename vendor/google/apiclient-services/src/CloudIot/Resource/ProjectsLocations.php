@@ -22,7 +22,7 @@ namespace Google\Service\CloudIot\Resource;
  * Typical usage is:
  *  <code>
  *   $cloudiotService = new Google\Service\CloudIot(...);
- *   $locations = $cloudiotService->projects_locations;
+ *   $locations = $cloudiotService->locations;
  *  </code>
  */
 class ProjectsLocations extends \Google\Service\Resource

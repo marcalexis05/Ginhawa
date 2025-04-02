@@ -25,7 +25,7 @@ use Google\Service\Analytics\UnsampledReports;
  * Typical usage is:
  *  <code>
  *   $analyticsService = new Google\Service\Analytics(...);
- *   $unsampledReports = $analyticsService->management_unsampledReports;
+ *   $unsampledReports = $analyticsService->unsampledReports;
  *  </code>
  */
 class ManagementUnsampledReports extends \Google\Service\Resource
@@ -40,7 +40,6 @@ class ManagementUnsampledReports extends \Google\Service\Resource
    * for.
    * @param string $unsampledReportId ID of the unsampled report to be deleted.
    * @param array $optParams Optional parameters.
-   * @throws \Google\Service\Exception
    */
   public function delete($accountId, $webPropertyId, $profileId, $unsampledReportId, $optParams = [])
   {
@@ -58,7 +57,6 @@ class ManagementUnsampledReports extends \Google\Service\Resource
    * @param string $unsampledReportId ID of the unsampled report to retrieve.
    * @param array $optParams Optional parameters.
    * @return UnsampledReport
-   * @throws \Google\Service\Exception
    */
   public function get($accountId, $webPropertyId, $profileId, $unsampledReportId, $optParams = [])
   {
@@ -77,7 +75,6 @@ class ManagementUnsampledReports extends \Google\Service\Resource
    * @param UnsampledReport $postBody
    * @param array $optParams Optional parameters.
    * @return UnsampledReport
-   * @throws \Google\Service\Exception
    */
   public function insert($accountId, $webPropertyId, $profileId, UnsampledReport $postBody, $optParams = [])
   {
@@ -103,7 +100,6 @@ class ManagementUnsampledReports extends \Google\Service\Resource
    * retrieve. Use this parameter as a pagination mechanism along with the max-
    * results parameter.
    * @return UnsampledReports
-   * @throws \Google\Service\Exception
    */
   public function listManagementUnsampledReports($accountId, $webPropertyId, $profileId, $optParams = [])
   {

@@ -37,7 +37,6 @@ class Models extends \Google\Service\Resource
    * @param string $datasetId Required. Dataset ID of the model to delete.
    * @param string $modelId Required. Model ID of the model to delete.
    * @param array $optParams Optional parameters.
-   * @throws \Google\Service\Exception
    */
   public function delete($projectId, $datasetId, $modelId, $optParams = [])
   {
@@ -53,7 +52,6 @@ class Models extends \Google\Service\Resource
    * @param string $modelId Required. Model ID of the requested model.
    * @param array $optParams Optional parameters.
    * @return Model
-   * @throws \Google\Service\Exception
    */
   public function get($projectId, $datasetId, $modelId, $optParams = [])
   {
@@ -76,7 +74,6 @@ class Models extends \Google\Service\Resource
    * @opt_param string pageToken Page token, returned by a previous call to
    * request the next page of results
    * @return ListModelsResponse
-   * @throws \Google\Service\Exception
    */
   public function listModels($projectId, $datasetId, $optParams = [])
   {
@@ -93,7 +90,6 @@ class Models extends \Google\Service\Resource
    * @param Model $postBody
    * @param array $optParams Optional parameters.
    * @return Model
-   * @throws \Google\Service\Exception
    */
   public function patch($projectId, $datasetId, $modelId, Model $postBody, $optParams = [])
   {

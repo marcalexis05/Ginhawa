@@ -34,7 +34,7 @@ use Google\Client;
  */
 class DataLabeling extends \Google\Service
 {
-  /** See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account.. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
 
@@ -55,7 +55,6 @@ class DataLabeling extends \Google\Service
   public $projects_evaluations;
   public $projects_instructions;
   public $projects_operations;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the DataLabeling service.
@@ -68,7 +67,6 @@ class DataLabeling extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://datalabeling.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://datalabeling.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1beta1';

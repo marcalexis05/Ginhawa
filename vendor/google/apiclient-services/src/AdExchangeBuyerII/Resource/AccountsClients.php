@@ -25,7 +25,7 @@ use Google\Service\AdExchangeBuyerII\ListClientsResponse;
  * Typical usage is:
  *  <code>
  *   $adexchangebuyer2Service = new Google\Service\AdExchangeBuyerII(...);
- *   $clients = $adexchangebuyer2Service->accounts_clients;
+ *   $clients = $adexchangebuyer2Service->clients;
  *  </code>
  */
 class AccountsClients extends \Google\Service\Resource
@@ -39,7 +39,6 @@ class AccountsClients extends \Google\Service\Resource
    * @param Client $postBody
    * @param array $optParams Optional parameters.
    * @return Client
-   * @throws \Google\Service\Exception
    */
   public function create($accountId, Client $postBody, $optParams = [])
   {
@@ -56,7 +55,6 @@ class AccountsClients extends \Google\Service\Resource
    * retrieve. (required)
    * @param array $optParams Optional parameters.
    * @return Client
-   * @throws \Google\Service\Exception
    */
   public function get($accountId, $clientAccountId, $optParams = [])
   {
@@ -83,7 +81,6 @@ class AccountsClients extends \Google\Service\Resource
    * standpoint of an Ad Exchange sponsor buyer partner) of the client to return.
    * If specified, at most one client will be returned in the response.
    * @return ListClientsResponse
-   * @throws \Google\Service\Exception
    */
   public function listAccountsClients($accountId, $optParams = [])
   {
@@ -102,7 +99,6 @@ class AccountsClients extends \Google\Service\Resource
    * @param Client $postBody
    * @param array $optParams Optional parameters.
    * @return Client
-   * @throws \Google\Service\Exception
    */
   public function update($accountId, $clientAccountId, Client $postBody, $optParams = [])
   {

@@ -29,7 +29,7 @@ use Google\Service\CloudShell\StartEnvironmentRequest;
  * Typical usage is:
  *  <code>
  *   $cloudshellService = new Google\Service\CloudShell(...);
- *   $environments = $cloudshellService->users_environments;
+ *   $environments = $cloudshellService->environments;
  *  </code>
  */
 class UsersEnvironments extends \Google\Service\Resource
@@ -45,7 +45,6 @@ class UsersEnvironments extends \Google\Service\Resource
    * @param AddPublicKeyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function addPublicKey($environment, AddPublicKeyRequest $postBody, $optParams = [])
   {
@@ -65,7 +64,6 @@ class UsersEnvironments extends \Google\Service\Resource
    * @param AuthorizeEnvironmentRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function authorize($name, AuthorizeEnvironmentRequest $postBody, $optParams = [])
   {
@@ -82,7 +80,6 @@ class UsersEnvironments extends \Google\Service\Resource
    * `users/someone@example.com/environments/default`.
    * @param array $optParams Optional parameters.
    * @return Environment
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -101,7 +98,6 @@ class UsersEnvironments extends \Google\Service\Resource
    * @param RemovePublicKeyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function removePublicKey($environment, RemovePublicKeyRequest $postBody, $optParams = [])
   {
@@ -123,7 +119,6 @@ class UsersEnvironments extends \Google\Service\Resource
    * @param StartEnvironmentRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function start($name, StartEnvironmentRequest $postBody, $optParams = [])
   {

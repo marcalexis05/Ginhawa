@@ -38,12 +38,11 @@ class CloudBillingBudget extends \Google\Service
   /** View and manage your Google Cloud Platform billing accounts. */
   const CLOUD_BILLING =
       "https://www.googleapis.com/auth/cloud-billing";
-  /** See, edit, configure, and delete your Google Cloud data and see the email address for your Google Account.. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
 
   public $billingAccounts_budgets;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the CloudBillingBudget service.
@@ -56,7 +55,6 @@ class CloudBillingBudget extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://billingbudgets.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://billingbudgets.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v1';
@@ -112,10 +110,6 @@ class CloudBillingBudget extends \Google\Service
                   'type' => 'integer',
                 ],
                 'pageToken' => [
-                  'location' => 'query',
-                  'type' => 'string',
-                ],
-                'scope' => [
                   'location' => 'query',
                   'type' => 'string',
                 ],

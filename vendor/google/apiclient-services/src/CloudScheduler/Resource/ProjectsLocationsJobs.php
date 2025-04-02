@@ -29,7 +29,7 @@ use Google\Service\CloudScheduler\RunJobRequest;
  * Typical usage is:
  *  <code>
  *   $cloudschedulerService = new Google\Service\CloudScheduler(...);
- *   $jobs = $cloudschedulerService->projects_locations_jobs;
+ *   $jobs = $cloudschedulerService->jobs;
  *  </code>
  */
 class ProjectsLocationsJobs extends \Google\Service\Resource
@@ -42,7 +42,6 @@ class ProjectsLocationsJobs extends \Google\Service\Resource
    * @param Job $postBody
    * @param array $optParams Optional parameters.
    * @return Job
-   * @throws \Google\Service\Exception
    */
   public function create($parent, Job $postBody, $optParams = [])
   {
@@ -57,7 +56,6 @@ class ProjectsLocationsJobs extends \Google\Service\Resource
    * `projects/PROJECT_ID/locations/LOCATION_ID/jobs/JOB_ID`.
    * @param array $optParams Optional parameters.
    * @return CloudschedulerEmpty
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -72,7 +70,6 @@ class ProjectsLocationsJobs extends \Google\Service\Resource
    * `projects/PROJECT_ID/locations/LOCATION_ID/jobs/JOB_ID`.
    * @param array $optParams Optional parameters.
    * @return Job
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -94,9 +91,9 @@ class ProjectsLocationsJobs extends \Google\Service\Resource
    * @opt_param string pageToken A token identifying a page of results the server
    * will return. To request the first page results, page_token must be empty. To
    * request the next page of results, page_token must be the value of
-   * next_page_token returned from the previous call to ListJobs.
+   * next_page_token returned from the previous call to ListJobs. It is an error
+   * to switch the value of filter or order_by while iterating through pages.
    * @return ListJobsResponse
-   * @throws \Google\Service\Exception
    */
   public function listProjectsLocationsJobs($parent, $optParams = [])
   {
@@ -129,7 +126,6 @@ class ProjectsLocationsJobs extends \Google\Service\Resource
    * @opt_param string updateMask A mask used to specify which fields of the job
    * are being updated.
    * @return Job
-   * @throws \Google\Service\Exception
    */
   public function patch($name, Job $postBody, $optParams = [])
   {
@@ -148,7 +144,6 @@ class ProjectsLocationsJobs extends \Google\Service\Resource
    * @param PauseJobRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Job
-   * @throws \Google\Service\Exception
    */
   public function pause($name, PauseJobRequest $postBody, $optParams = [])
   {
@@ -167,7 +162,6 @@ class ProjectsLocationsJobs extends \Google\Service\Resource
    * @param ResumeJobRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Job
-   * @throws \Google\Service\Exception
    */
   public function resume($name, ResumeJobRequest $postBody, $optParams = [])
   {
@@ -184,7 +178,6 @@ class ProjectsLocationsJobs extends \Google\Service\Resource
    * @param RunJobRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Job
-   * @throws \Google\Service\Exception
    */
   public function run($name, RunJobRequest $postBody, $optParams = [])
   {

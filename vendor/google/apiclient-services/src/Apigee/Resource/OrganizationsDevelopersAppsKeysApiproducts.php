@@ -25,7 +25,7 @@ use Google\Service\Apigee\GoogleProtobufEmpty;
  * Typical usage is:
  *  <code>
  *   $apigeeService = new Google\Service\Apigee(...);
- *   $apiproducts = $apigeeService->organizations_developers_apps_keys_apiproducts;
+ *   $apiproducts = $apigeeService->apiproducts;
  *  </code>
  */
 class OrganizationsDevelopersAppsKeysApiproducts extends \Google\Service\Resource
@@ -41,7 +41,6 @@ class OrganizationsDevelopersAppsKeysApiproducts extends \Google\Service\Resourc
    * }/keys/{key}/apiproducts/{apiproduct}`
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1DeveloperAppKey
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -65,7 +64,6 @@ class OrganizationsDevelopersAppsKeysApiproducts extends \Google\Service\Resourc
    * @opt_param string action Approve or revoke the consumer key by setting this
    * value to `approve` or `revoke`, respectively.
    * @return GoogleProtobufEmpty
-   * @throws \Google\Service\Exception
    */
   public function updateDeveloperAppKeyApiProduct($name, $optParams = [])
   {

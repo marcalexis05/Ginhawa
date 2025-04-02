@@ -26,7 +26,7 @@ use Google\Service\Cloudchannel\GoogleCloudChannelV1UpdateChannelPartnerLinkRequ
  * Typical usage is:
  *  <code>
  *   $cloudchannelService = new Google\Service\Cloudchannel(...);
- *   $channelPartnerLinks = $cloudchannelService->accounts_channelPartnerLinks;
+ *   $channelPartnerLinks = $cloudchannelService->channelPartnerLinks;
  *  </code>
  */
 class AccountsChannelPartnerLinks extends \Google\Service\Resource
@@ -53,7 +53,6 @@ class AccountsChannelPartnerLinks extends \Google\Service\Resource
    * @param GoogleCloudChannelV1ChannelPartnerLink $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleCloudChannelV1ChannelPartnerLink
-   * @throws \Google\Service\Exception
    */
   public function create($parent, GoogleCloudChannelV1ChannelPartnerLink $postBody, $optParams = [])
   {
@@ -79,7 +78,6 @@ class AccountsChannelPartnerLinks extends \Google\Service\Resource
    * @opt_param string view Optional. The level of granularity the
    * ChannelPartnerLink will display.
    * @return GoogleCloudChannelV1ChannelPartnerLink
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -110,7 +108,6 @@ class AccountsChannelPartnerLinks extends \Google\Service\Resource
    * @opt_param string view Optional. The level of granularity the
    * ChannelPartnerLink will display.
    * @return GoogleCloudChannelV1ListChannelPartnerLinksResponse
-   * @throws \Google\Service\Exception
    */
   public function listAccountsChannelPartnerLinks($parent, $optParams = [])
   {
@@ -139,7 +136,6 @@ class AccountsChannelPartnerLinks extends \Google\Service\Resource
    * @param GoogleCloudChannelV1UpdateChannelPartnerLinkRequest $postBody
    * @param array $optParams Optional parameters.
    * @return GoogleCloudChannelV1ChannelPartnerLink
-   * @throws \Google\Service\Exception
    */
   public function patch($name, GoogleCloudChannelV1UpdateChannelPartnerLinkRequest $postBody, $optParams = [])
   {

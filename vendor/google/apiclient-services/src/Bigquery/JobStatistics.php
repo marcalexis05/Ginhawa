@@ -24,67 +24,28 @@ class JobStatistics extends \Google\Collection
         "reservationId" => "reservation_id",
   ];
   public $completionRatio;
-  protected $copyType = JobStatistics5::class;
-  protected $copyDataType = '';
-  /**
-   * @var string
-   */
   public $creationTime;
-  protected $dataMaskingStatisticsType = DataMaskingStatistics::class;
-  protected $dataMaskingStatisticsDataType = '';
-  /**
-   * @var string
-   */
-  public $edition;
-  /**
-   * @var string
-   */
   public $endTime;
   protected $extractType = JobStatistics4::class;
   protected $extractDataType = '';
-  /**
-   * @var string
-   */
-  public $finalExecutionDurationMs;
   protected $loadType = JobStatistics3::class;
   protected $loadDataType = '';
-  /**
-   * @var string
-   */
   public $numChildJobs;
-  /**
-   * @var string
-   */
   public $parentJobId;
   protected $queryType = JobStatistics2::class;
   protected $queryDataType = '';
-  /**
-   * @var string[]
-   */
   public $quotaDeferments;
   protected $reservationUsageType = JobStatisticsReservationUsage::class;
   protected $reservationUsageDataType = 'array';
-  /**
-   * @var string
-   */
   public $reservationId;
   protected $rowLevelSecurityStatisticsType = RowLevelSecurityStatistics::class;
   protected $rowLevelSecurityStatisticsDataType = '';
   protected $scriptStatisticsType = ScriptStatistics::class;
   protected $scriptStatisticsDataType = '';
-  protected $sessionInfoType = SessionInfo::class;
-  protected $sessionInfoDataType = '';
-  /**
-   * @var string
-   */
+  protected $sessionInfoTemplateType = SessionInfo::class;
+  protected $sessionInfoTemplateDataType = '';
   public $startTime;
-  /**
-   * @var string
-   */
   public $totalBytesProcessed;
-  /**
-   * @var string
-   */
   public $totalSlotMs;
   protected $transactionInfoType = TransactionInfo::class;
   protected $transactionInfoDataType = '';
@@ -97,72 +58,18 @@ class JobStatistics extends \Google\Collection
   {
     return $this->completionRatio;
   }
-  /**
-   * @param JobStatistics5
-   */
-  public function setCopy(JobStatistics5 $copy)
-  {
-    $this->copy = $copy;
-  }
-  /**
-   * @return JobStatistics5
-   */
-  public function getCopy()
-  {
-    return $this->copy;
-  }
-  /**
-   * @param string
-   */
   public function setCreationTime($creationTime)
   {
     $this->creationTime = $creationTime;
   }
-  /**
-   * @return string
-   */
   public function getCreationTime()
   {
     return $this->creationTime;
   }
-  /**
-   * @param DataMaskingStatistics
-   */
-  public function setDataMaskingStatistics(DataMaskingStatistics $dataMaskingStatistics)
-  {
-    $this->dataMaskingStatistics = $dataMaskingStatistics;
-  }
-  /**
-   * @return DataMaskingStatistics
-   */
-  public function getDataMaskingStatistics()
-  {
-    return $this->dataMaskingStatistics;
-  }
-  /**
-   * @param string
-   */
-  public function setEdition($edition)
-  {
-    $this->edition = $edition;
-  }
-  /**
-   * @return string
-   */
-  public function getEdition()
-  {
-    return $this->edition;
-  }
-  /**
-   * @param string
-   */
   public function setEndTime($endTime)
   {
     $this->endTime = $endTime;
   }
-  /**
-   * @return string
-   */
   public function getEndTime()
   {
     return $this->endTime;
@@ -182,20 +89,6 @@ class JobStatistics extends \Google\Collection
     return $this->extract;
   }
   /**
-   * @param string
-   */
-  public function setFinalExecutionDurationMs($finalExecutionDurationMs)
-  {
-    $this->finalExecutionDurationMs = $finalExecutionDurationMs;
-  }
-  /**
-   * @return string
-   */
-  public function getFinalExecutionDurationMs()
-  {
-    return $this->finalExecutionDurationMs;
-  }
-  /**
    * @param JobStatistics3
    */
   public function setLoad(JobStatistics3 $load)
@@ -209,30 +102,18 @@ class JobStatistics extends \Google\Collection
   {
     return $this->load;
   }
-  /**
-   * @param string
-   */
   public function setNumChildJobs($numChildJobs)
   {
     $this->numChildJobs = $numChildJobs;
   }
-  /**
-   * @return string
-   */
   public function getNumChildJobs()
   {
     return $this->numChildJobs;
   }
-  /**
-   * @param string
-   */
   public function setParentJobId($parentJobId)
   {
     $this->parentJobId = $parentJobId;
   }
-  /**
-   * @return string
-   */
   public function getParentJobId()
   {
     return $this->parentJobId;
@@ -251,16 +132,10 @@ class JobStatistics extends \Google\Collection
   {
     return $this->query;
   }
-  /**
-   * @param string[]
-   */
   public function setQuotaDeferments($quotaDeferments)
   {
     $this->quotaDeferments = $quotaDeferments;
   }
-  /**
-   * @return string[]
-   */
   public function getQuotaDeferments()
   {
     return $this->quotaDeferments;
@@ -279,16 +154,10 @@ class JobStatistics extends \Google\Collection
   {
     return $this->reservationUsage;
   }
-  /**
-   * @param string
-   */
   public function setReservationId($reservationId)
   {
     $this->reservationId = $reservationId;
   }
-  /**
-   * @return string
-   */
   public function getReservationId()
   {
     return $this->reservationId;
@@ -324,55 +193,37 @@ class JobStatistics extends \Google\Collection
   /**
    * @param SessionInfo
    */
-  public function setSessionInfo(SessionInfo $sessionInfo)
+  public function setSessionInfoTemplate(SessionInfo $sessionInfoTemplate)
   {
-    $this->sessionInfo = $sessionInfo;
+    $this->sessionInfoTemplate = $sessionInfoTemplate;
   }
   /**
    * @return SessionInfo
    */
-  public function getSessionInfo()
+  public function getSessionInfoTemplate()
   {
-    return $this->sessionInfo;
+    return $this->sessionInfoTemplate;
   }
-  /**
-   * @param string
-   */
   public function setStartTime($startTime)
   {
     $this->startTime = $startTime;
   }
-  /**
-   * @return string
-   */
   public function getStartTime()
   {
     return $this->startTime;
   }
-  /**
-   * @param string
-   */
   public function setTotalBytesProcessed($totalBytesProcessed)
   {
     $this->totalBytesProcessed = $totalBytesProcessed;
   }
-  /**
-   * @return string
-   */
   public function getTotalBytesProcessed()
   {
     return $this->totalBytesProcessed;
   }
-  /**
-   * @param string
-   */
   public function setTotalSlotMs($totalSlotMs)
   {
     $this->totalSlotMs = $totalSlotMs;
   }
-  /**
-   * @return string
-   */
   public function getTotalSlotMs()
   {
     return $this->totalSlotMs;

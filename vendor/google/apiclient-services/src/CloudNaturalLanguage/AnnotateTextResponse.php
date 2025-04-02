@@ -19,25 +19,18 @@ namespace Google\Service\CloudNaturalLanguage;
 
 class AnnotateTextResponse extends \Google\Collection
 {
-  protected $collection_key = 'sentences';
+  protected $collection_key = 'tokens';
   protected $categoriesType = ClassificationCategory::class;
   protected $categoriesDataType = 'array';
   protected $documentSentimentType = Sentiment::class;
   protected $documentSentimentDataType = '';
   protected $entitiesType = Entity::class;
   protected $entitiesDataType = 'array';
-  /**
-   * @var string
-   */
-  public $languageCode;
-  /**
-   * @var bool
-   */
-  public $languageSupported;
-  protected $moderationCategoriesType = ClassificationCategory::class;
-  protected $moderationCategoriesDataType = 'array';
+  public $language;
   protected $sentencesType = Sentence::class;
   protected $sentencesDataType = 'array';
+  protected $tokensType = Token::class;
+  protected $tokensDataType = 'array';
 
   /**
    * @param ClassificationCategory[]
@@ -81,47 +74,13 @@ class AnnotateTextResponse extends \Google\Collection
   {
     return $this->entities;
   }
-  /**
-   * @param string
-   */
-  public function setLanguageCode($languageCode)
+  public function setLanguage($language)
   {
-    $this->languageCode = $languageCode;
+    $this->language = $language;
   }
-  /**
-   * @return string
-   */
-  public function getLanguageCode()
+  public function getLanguage()
   {
-    return $this->languageCode;
-  }
-  /**
-   * @param bool
-   */
-  public function setLanguageSupported($languageSupported)
-  {
-    $this->languageSupported = $languageSupported;
-  }
-  /**
-   * @return bool
-   */
-  public function getLanguageSupported()
-  {
-    return $this->languageSupported;
-  }
-  /**
-   * @param ClassificationCategory[]
-   */
-  public function setModerationCategories($moderationCategories)
-  {
-    $this->moderationCategories = $moderationCategories;
-  }
-  /**
-   * @return ClassificationCategory[]
-   */
-  public function getModerationCategories()
-  {
-    return $this->moderationCategories;
+    return $this->language;
   }
   /**
    * @param Sentence[]
@@ -136,6 +95,20 @@ class AnnotateTextResponse extends \Google\Collection
   public function getSentences()
   {
     return $this->sentences;
+  }
+  /**
+   * @param Token[]
+   */
+  public function setTokens($tokens)
+  {
+    $this->tokens = $tokens;
+  }
+  /**
+   * @return Token[]
+   */
+  public function getTokens()
+  {
+    return $this->tokens;
   }
 }
 

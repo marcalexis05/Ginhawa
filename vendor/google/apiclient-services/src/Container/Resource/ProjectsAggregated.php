@@ -22,7 +22,7 @@ namespace Google\Service\Container\Resource;
  * Typical usage is:
  *  <code>
  *   $containerService = new Google\Service\Container(...);
- *   $aggregated = $containerService->projects_aggregated;
+ *   $aggregated = $containerService->aggregated;
  *  </code>
  */
 class ProjectsAggregated extends \Google\Service\Resource

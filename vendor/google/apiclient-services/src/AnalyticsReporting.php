@@ -43,7 +43,6 @@ class AnalyticsReporting extends \Google\Service
 
   public $reports;
   public $userActivity;
-  public $rootUrlTemplate;
 
   /**
    * Constructs the internal representation of the AnalyticsReporting service.
@@ -56,7 +55,6 @@ class AnalyticsReporting extends \Google\Service
   {
     parent::__construct($clientOrConfig);
     $this->rootUrl = $rootUrl ?: 'https://analyticsreporting.googleapis.com/';
-    $this->rootUrlTemplate = $rootUrl ?: 'https://analyticsreporting.UNIVERSE_DOMAIN/';
     $this->servicePath = '';
     $this->batchPath = 'batch';
     $this->version = 'v4';

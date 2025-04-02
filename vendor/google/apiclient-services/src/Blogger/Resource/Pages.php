@@ -36,9 +36,6 @@ class Pages extends \Google\Service\Resource
    * @param string $blogId
    * @param string $pageId
    * @param array $optParams Optional parameters.
-   *
-   * @opt_param bool useTrash Move to Trash if possible
-   * @throws \Google\Service\Exception
    */
   public function delete($blogId, $pageId, $optParams = [])
   {
@@ -55,7 +52,6 @@ class Pages extends \Google\Service\Resource
    *
    * @opt_param string view
    * @return Page
-   * @throws \Google\Service\Exception
    */
   public function get($blogId, $pageId, $optParams = [])
   {
@@ -72,7 +68,6 @@ class Pages extends \Google\Service\Resource
    *
    * @opt_param bool isDraft
    * @return Page
-   * @throws \Google\Service\Exception
    */
   public function insert($blogId, Page $postBody, $optParams = [])
   {
@@ -92,7 +87,6 @@ class Pages extends \Google\Service\Resource
    * @opt_param string status
    * @opt_param string view
    * @return PageList
-   * @throws \Google\Service\Exception
    */
   public function listPages($blogId, $optParams = [])
   {
@@ -111,7 +105,6 @@ class Pages extends \Google\Service\Resource
    * @opt_param bool publish
    * @opt_param bool revert
    * @return Page
-   * @throws \Google\Service\Exception
    */
   public function patch($blogId, $pageId, Page $postBody, $optParams = [])
   {
@@ -126,7 +119,6 @@ class Pages extends \Google\Service\Resource
    * @param string $pageId
    * @param array $optParams Optional parameters.
    * @return Page
-   * @throws \Google\Service\Exception
    */
   public function publish($blogId, $pageId, $optParams = [])
   {
@@ -141,7 +133,6 @@ class Pages extends \Google\Service\Resource
    * @param string $pageId
    * @param array $optParams Optional parameters.
    * @return Page
-   * @throws \Google\Service\Exception
    */
   public function revert($blogId, $pageId, $optParams = [])
   {
@@ -160,7 +151,6 @@ class Pages extends \Google\Service\Resource
    * @opt_param bool publish
    * @opt_param bool revert
    * @return Page
-   * @throws \Google\Service\Exception
    */
   public function update($blogId, $pageId, Page $postBody, $optParams = [])
   {

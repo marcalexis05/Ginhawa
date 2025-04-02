@@ -26,7 +26,7 @@ use Google\Service\AdExchangeBuyerII\ListFilterSetsResponse;
  * Typical usage is:
  *  <code>
  *   $adexchangebuyer2Service = new Google\Service\AdExchangeBuyerII(...);
- *   $filterSets = $adexchangebuyer2Service->bidders_filterSets;
+ *   $filterSets = $adexchangebuyer2Service->filterSets;
  *  </code>
  */
 class BiddersFilterSets extends \Google\Service\Resource
@@ -48,7 +48,6 @@ class BiddersFilterSets extends \Google\Service\Resource
    * persisted indefinitely. By default, filter sets are not transient. If
    * transient, it will be available for at least 1 hour after creation.
    * @return FilterSet
-   * @throws \Google\Service\Exception
    */
   public function create($ownerName, FilterSet $postBody, $optParams = [])
   {
@@ -68,7 +67,6 @@ class BiddersFilterSets extends \Google\Service\Resource
    * `bidders/123/accounts/456/filterSets/abc`
    * @param array $optParams Optional parameters.
    * @return Adexchangebuyer2Empty
-   * @throws \Google\Service\Exception
    */
   public function delete($name, $optParams = [])
   {
@@ -88,7 +86,6 @@ class BiddersFilterSets extends \Google\Service\Resource
    * `bidders/123/accounts/456/filterSets/abc`
    * @param array $optParams Optional parameters.
    * @return FilterSet
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -116,7 +113,6 @@ class BiddersFilterSets extends \Google\Service\Resource
    * ListFilterSetsResponse.nextPageToken returned from the previous call to the
    * accounts.filterSets.list method.
    * @return ListFilterSetsResponse
-   * @throws \Google\Service\Exception
    */
   public function listBiddersFilterSets($ownerName, $optParams = [])
   {

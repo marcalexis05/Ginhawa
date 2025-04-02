@@ -17,78 +17,32 @@
 
 namespace Google\Service\Bigquery;
 
-class HivePartitioningOptions extends \Google\Collection
+class HivePartitioningOptions extends \Google\Model
 {
-  protected $collection_key = 'fields';
-  /**
-   * @var string[]
-   */
-  public $fields;
-  /**
-   * @var string
-   */
   public $mode;
-  /**
-   * @var bool
-   */
   public $requirePartitionFilter;
-  /**
-   * @var string
-   */
   public $sourceUriPrefix;
 
-  /**
-   * @param string[]
-   */
-  public function setFields($fields)
-  {
-    $this->fields = $fields;
-  }
-  /**
-   * @return string[]
-   */
-  public function getFields()
-  {
-    return $this->fields;
-  }
-  /**
-   * @param string
-   */
   public function setMode($mode)
   {
     $this->mode = $mode;
   }
-  /**
-   * @return string
-   */
   public function getMode()
   {
     return $this->mode;
   }
-  /**
-   * @param bool
-   */
   public function setRequirePartitionFilter($requirePartitionFilter)
   {
     $this->requirePartitionFilter = $requirePartitionFilter;
   }
-  /**
-   * @return bool
-   */
   public function getRequirePartitionFilter()
   {
     return $this->requirePartitionFilter;
   }
-  /**
-   * @param string
-   */
   public function setSourceUriPrefix($sourceUriPrefix)
   {
     $this->sourceUriPrefix = $sourceUriPrefix;
   }
-  /**
-   * @return string
-   */
   public function getSourceUriPrefix()
   {
     return $this->sourceUriPrefix;

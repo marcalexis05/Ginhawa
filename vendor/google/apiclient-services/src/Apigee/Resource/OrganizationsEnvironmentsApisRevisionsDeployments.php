@@ -24,7 +24,7 @@ use Google\Service\Apigee\GoogleCloudApigeeV1DeploymentChangeReport;
  * Typical usage is:
  *  <code>
  *   $apigeeService = new Google\Service\Apigee(...);
- *   $deployments = $apigeeService->organizations_environments_apis_revisions_deployments;
+ *   $deployments = $apigeeService->deployments;
  *  </code>
  */
 class OrganizationsEnvironmentsApisRevisionsDeployments extends \Google\Service\Resource
@@ -52,7 +52,6 @@ class OrganizationsEnvironmentsApisRevisionsDeployments extends \Google\Service\
    * of the new revision over the currently deployed revision by overriding
    * conflict checks.
    * @return GoogleCloudApigeeV1DeploymentChangeReport
-   * @throws \Google\Service\Exception
    */
   public function generateDeployChangeReport($name, $optParams = [])
   {
@@ -80,7 +79,6 @@ class OrganizationsEnvironmentsApisRevisionsDeployments extends \Google\Service\
    * `organizations/{org}/environments/{env}/apis/{api}/revisions/{rev}`
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1DeploymentChangeReport
-   * @throws \Google\Service\Exception
    */
   public function generateUndeployChangeReport($name, $optParams = [])
   {

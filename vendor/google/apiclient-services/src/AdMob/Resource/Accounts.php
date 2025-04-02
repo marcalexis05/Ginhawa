@@ -37,7 +37,6 @@ class Accounts extends \Google\Service\Resource
    * Example: accounts/pub-9876543210987654
    * @param array $optParams Optional parameters.
    * @return PublisherAccount
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -58,7 +57,6 @@ class Accounts extends \Google\Service\Resource
    * prior `ListPublisherAccounts` call, and that the system should return the
    * next page of data.
    * @return ListPublisherAccountsResponse
-   * @throws \Google\Service\Exception
    */
   public function listAccounts($optParams = [])
   {

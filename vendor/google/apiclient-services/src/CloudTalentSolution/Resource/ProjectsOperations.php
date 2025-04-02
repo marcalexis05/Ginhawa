@@ -24,7 +24,7 @@ use Google\Service\CloudTalentSolution\Operation;
  * Typical usage is:
  *  <code>
  *   $jobsService = new Google\Service\CloudTalentSolution(...);
- *   $operations = $jobsService->projects_operations;
+ *   $operations = $jobsService->operations;
  *  </code>
  */
 class ProjectsOperations extends \Google\Service\Resource
@@ -37,7 +37,6 @@ class ProjectsOperations extends \Google\Service\Resource
    * @param string $name The name of the operation resource.
    * @param array $optParams Optional parameters.
    * @return Operation
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {

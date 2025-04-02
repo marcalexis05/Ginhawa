@@ -26,7 +26,7 @@ use Google\Service\Apigee\GoogleProtobufEmpty;
  * Typical usage is:
  *  <code>
  *   $apigeeService = new Google\Service\Apigee(...);
- *   $debugsessions = $apigeeService->organizations_environments_apis_revisions_debugsessions;
+ *   $debugsessions = $apigeeService->debugsessions;
  *  </code>
  */
 class OrganizationsEnvironmentsApisRevisionsDebugsessions extends \Google\Service\Resource
@@ -46,7 +46,6 @@ class OrganizationsEnvironmentsApisRevisionsDebugsessions extends \Google\Servic
    * DebugSession should end. A timeout specified in DebugSession will overwrite
    * this value.
    * @return GoogleCloudApigeeV1DebugSession
-   * @throws \Google\Service\Exception
    */
   public function create($parent, GoogleCloudApigeeV1DebugSession $postBody, $optParams = [])
   {
@@ -64,7 +63,6 @@ class OrganizationsEnvironmentsApisRevisionsDebugsessions extends \Google\Servic
    * /{api}/revisions/{revision}/debugsessions/{debugsession}`.
    * @param array $optParams Optional parameters.
    * @return GoogleProtobufEmpty
-   * @throws \Google\Service\Exception
    */
   public function deleteData($name, $optParams = [])
   {
@@ -80,7 +78,6 @@ class OrganizationsEnvironmentsApisRevisionsDebugsessions extends \Google\Servic
    * /{api}/revisions/{revision}/debugsessions/{session}`.
    * @param array $optParams Optional parameters.
    * @return GoogleCloudApigeeV1DebugSession
-   * @throws \Google\Service\Exception
    */
   public function get($name, $optParams = [])
   {
@@ -103,7 +100,6 @@ class OrganizationsEnvironmentsApisRevisionsDebugsessions extends \Google\Servic
    * @opt_param string pageToken Page token, returned from a previous
    * ListDebugSessions call, that you can use to retrieve the next page.
    * @return GoogleCloudApigeeV1ListDebugSessionsResponse
-   * @throws \Google\Service\Exception
    */
   public function listOrganizationsEnvironmentsApisRevisionsDebugsessions($parent, $optParams = [])
   {

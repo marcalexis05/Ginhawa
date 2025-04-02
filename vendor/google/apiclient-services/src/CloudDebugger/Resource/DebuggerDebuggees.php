@@ -24,7 +24,7 @@ use Google\Service\CloudDebugger\ListDebuggeesResponse;
  * Typical usage is:
  *  <code>
  *   $clouddebuggerService = new Google\Service\CloudDebugger(...);
- *   $debuggees = $clouddebuggerService->debugger_debuggees;
+ *   $debuggees = $clouddebuggerService->debuggees;
  *  </code>
  */
 class DebuggerDebuggees extends \Google\Service\Resource

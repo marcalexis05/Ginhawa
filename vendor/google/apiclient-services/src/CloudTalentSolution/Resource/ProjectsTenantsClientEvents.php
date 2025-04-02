@@ -24,7 +24,7 @@ use Google\Service\CloudTalentSolution\ClientEvent;
  * Typical usage is:
  *  <code>
  *   $jobsService = new Google\Service\CloudTalentSolution(...);
- *   $clientEvents = $jobsService->projects_tenants_clientEvents;
+ *   $clientEvents = $jobsService->clientEvents;
  *  </code>
  */
 class ProjectsTenantsClientEvents extends \Google\Service\Resource
@@ -42,7 +42,6 @@ class ProjectsTenantsClientEvents extends \Google\Service\Resource
    * @param ClientEvent $postBody
    * @param array $optParams Optional parameters.
    * @return ClientEvent
-   * @throws \Google\Service\Exception
    */
   public function create($parent, ClientEvent $postBody, $optParams = [])
   {
