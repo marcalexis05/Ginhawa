@@ -84,6 +84,7 @@
             </table>
         </div>
         <?php
+        // Base query for all schedules (we'll filter later)
         $sqlmain= "select * from schedule inner join doctor on schedule.docid=doctor.docid where schedule.scheduledate>='$today' order by schedule.scheduledate asc";
         $sqlpt1="";
         $insertkey="";
@@ -114,7 +115,7 @@
             $booked_dates[] = $row['scheduledate'];
         }
 
-        // Check for approved patient requests
+        // Check for approved patient requests for this patient
         $approved_request_sql = "SELECT doctor_id, session_date, start_time, end_time 
                                  FROM patient_requests 
                                  WHERE patient_id = ? AND status = 'approved'";
@@ -182,92 +183,98 @@
                                         if($result->num_rows==0){
                                             echo '<tr><td colspan="4"><br><br><br><br><center><img src="../img/notfound.svg" width="25%"><br><p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We couldn\'t find anything related to your keywords !</p><a class="non-style-link" href="schedule.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">  Show all Sessions  </font></button></a></center><br><br><br><br></td></tr>';
                                         } else {
+                                            $displayed_count = 0; // Counter for displayed sessions
                                             for ($x=0; $x<($result->num_rows);$x++){
-                                                echo "<tr>";
-                                                for($q=0;$q<3;$q++){
-                                                    $row=$result->fetch_assoc();
-                                                    if (!isset($row)){
+                                                $row=$result->fetch_assoc();
+                                                $scheduleid=$row["scheduleid"];
+                                                $title=$row["title"];
+                                                $docid=$row["docid"];
+                                                $docname=$row["docname"];
+                                                $scheduledate=$row["scheduledate"];
+                                                $start_time = date('h:i A', strtotime($row["start_time"]));
+                                                $end_time = date('h:i A', strtotime($row["end_time"]));
+
+                                                // Check if this patient has an approved request for this doctor's session
+                                                $has_approved_request = false;
+                                                foreach ($approved_requests as $request) {
+                                                    if ($request['doctor_id'] == $docid && 
+                                                        $request['session_date'] == $scheduledate && 
+                                                        $request['start_time'] == $row["start_time"] && 
+                                                        $request['end_time'] == $row["end_time"]) {
+                                                        $has_approved_request = true;
                                                         break;
-                                                    };
-                                                    $scheduleid=$row["scheduleid"];
-                                                    $title=$row["title"];
-                                                    $docid=$row["docid"];
-                                                    $docname=$row["docname"];
-                                                    $scheduledate=$row["scheduledate"];
-                                                    $start_time = date('h:i A', strtotime($row["start_time"]));
-                                                    $end_time = date('h:i A', strtotime($row["end_time"]));
-                                                    if($scheduleid==""){
-                                                        break;
                                                     }
-
-                                                    // Check if patient already has an appointment with this doctor on this schedule
-                                                    $booking_check_sql = "SELECT COUNT(*) as count 
-                                                                         FROM appointment 
-                                                                         WHERE pid = ? AND scheduleid = ?";
-                                                    $stmt = $database->prepare($booking_check_sql);
-                                                    $stmt->bind_param("ii", $userid, $scheduleid);
-                                                    $stmt->execute();
-                                                    $booking_result = $stmt->get_result();
-                                                    $booking_row = $booking_result->fetch_assoc();
-                                                    $already_booked = $booking_row['count'] > 0;
-
-                                                    // Check if patient has an appointment on this date
-                                                    $date_booked = in_array($scheduledate, $booked_dates);
-
-                                                    // Check if this schedule is already booked by ANY patient
-                                                    $schedule_booked_sql = "SELECT COUNT(*) as count 
-                                                                           FROM appointment 
-                                                                           WHERE scheduleid = ?";
-                                                    $stmt = $database->prepare($schedule_booked_sql);
-                                                    $stmt->bind_param("i", $scheduleid);
-                                                    $stmt->execute();
-                                                    $schedule_result = $stmt->get_result();
-                                                    $schedule_row = $schedule_result->fetch_assoc();
-                                                    $schedule_booked = $schedule_row['count'] > 0;
-
-                                                    // Check if this patient has an approved request for this doctor's session
-                                                    $has_approved_request = false;
-                                                    foreach ($approved_requests as $request) {
-                                                        if ($request['doctor_id'] == $docid && 
-                                                            $request['session_date'] == $scheduledate && 
-                                                            $request['start_time'] == $row["start_time"] && 
-                                                            $request['end_time'] == $row["end_time"]) {
-                                                            $has_approved_request = true;
-                                                            break;
-                                                        }
-                                                    }
-
-                                                    // Determine button state
-                                                    $button_disabled = $already_booked || $date_booked || $schedule_booked || !$has_approved_request;
-                                                    $button_class = $button_disabled ? "login-btn btn-primary-soft btn disabled-btn" : "login-btn btn-primary-soft btn";
-                                                    if ($already_booked) {
-                                                        $button_text = "Already Booked";
-                                                    } elseif ($date_booked) {
-                                                        $button_text = "Date Booked";
-                                                    } elseif ($schedule_booked) {
-                                                        $button_text = "Slot Taken";
-                                                    } elseif (!$has_approved_request) {
-                                                        $button_text = "Request Pending";
-                                                    } else {
-                                                        $button_text = "Book Now";
-                                                    }
-                                                    $button_link = $button_disabled ? "#" : "booking.php?id=$scheduleid";
-
-                                                    echo '
-                                                    <td style="width: 25%;">
-                                                        <div  class="dashboard-items search-items"  >
-                                                            <div style="width:100%">
-                                                                <div class="h1-search">'.substr($title,0,21).'</div><br>
-                                                                <div class="h3-search">'.substr($docname,0,30).'</div>
-                                                                <div class="h4-search">'.$scheduledate.'<br>Time: <b>'.$start_time.' - '.$end_time.'</b></div>
-                                                                <br>
-                                                                <a href="'.$button_link.'" '.($button_disabled ? 'onclick="return false;"' : '').'><button class="'.$button_class.'" style="padding-top:11px;padding-bottom:11px;width:100%"><font class="tn-in-text">'.$button_text.'</font></button></a>
-                                                            </div>
-                                                        </div>
-                                                    </td>';
                                                 }
-                                                echo "</tr>";
+
+                                                // Skip this session if the patient doesn't have an approved request
+                                                if (!$has_approved_request) {
+                                                    continue;
+                                                }
+
+                                                $displayed_count++; // Increment only if session is displayed
+                                                if ($displayed_count % 3 == 1) {
+                                                    echo "<tr>"; // Start a new row every 3 items
+                                                }
+
+                                                // Check if patient already has an appointment with this doctor on this schedule
+                                                $booking_check_sql = "SELECT COUNT(*) as count 
+                                                                     FROM appointment 
+                                                                     WHERE pid = ? AND scheduleid = ?";
+                                                $stmt = $database->prepare($booking_check_sql);
+                                                $stmt->bind_param("ii", $userid, $scheduleid);
+                                                $stmt->execute();
+                                                $booking_result = $stmt->get_result();
+                                                $booking_row = $booking_result->fetch_assoc();
+                                                $already_booked = $booking_row['count'] > 0;
+
+                                                // Check if patient has an appointment on this date
+                                                $date_booked = in_array($scheduledate, $booked_dates);
+
+                                                // Check if this schedule is already booked by ANY patient
+                                                $schedule_booked_sql = "SELECT COUNT(*) as count 
+                                                                       FROM appointment 
+                                                                       WHERE scheduleid = ?";
+                                                $stmt = $database->prepare($schedule_booked_sql);
+                                                $stmt->bind_param("i", $scheduleid);
+                                                $stmt->execute();
+                                                $schedule_result = $stmt->get_result();
+                                                $schedule_row = $schedule_result->fetch_assoc();
+                                                $schedule_booked = $schedule_row['count'] > 0;
+
+                                                // Determine button state
+                                                $button_disabled = $already_booked || $date_booked || $schedule_booked;
+                                                $button_class = $button_disabled ? "login-btn btn-primary-soft btn disabled-btn" : "login-btn btn-primary-soft btn";
+                                                if ($already_booked) {
+                                                    $button_text = "Already Booked";
+                                                } elseif ($date_booked) {
+                                                    $button_text = "Date Booked";
+                                                } elseif ($schedule_booked) {
+                                                    $button_text = "Slot Taken";
+                                                } else {
+                                                    $button_text = "Book Now";
+                                                }
+                                                $button_link = $button_disabled ? "#" : "booking.php?id=$scheduleid";
+
+                                                echo '
+                                                <td style="width: 25%;">
+                                                    <div  class="dashboard-items search-items"  >
+                                                        <div style="width:100%">
+                                                            <div class="h1-search">'.substr($title,0,21).'</div><br>
+                                                            <div class="h3-search">'.substr($docname,0,30).'</div>
+                                                            <div class="h4-search">'.$scheduledate.'<br>Time: <b>'.$start_time.' - '.$end_time.'</b></div>
+                                                            <br>
+                                                            <a href="'.$button_link.'" '.($button_disabled ? 'onclick="return false;"' : '').'><button class="'.$button_class.'" style="padding-top:11px;padding-bottom:11px;width:100%"><font class="tn-in-text">'.$button_text.'</font></button></a>
+                                                        </div>
+                                                    </div>
+                                                </td>';
+
+                                                if ($displayed_count % 3 == 0 || $x == $result->num_rows - 1) {
+                                                    echo "</tr>"; // Close row after 3 items or at the end
+                                                }
                                             }
+
+                                            // Update the session count to reflect only displayed sessions
+                                            echo '<script>document.querySelector(".heading-main12").innerHTML = "'.$searchtype.' Sessions ('.$displayed_count.')"</script>';
                                         }
                                         ?>
                                     </tbody>
@@ -294,9 +301,6 @@
                     break;
                 case 'Slot Taken':
                     message = 'This time slot is already booked by another patient.';
-                    break;
-                case 'Request Pending':
-                    message = 'You need to request this session and get approval from the doctor first.';
                     break;
             }
             Swal.fire({

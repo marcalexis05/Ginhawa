@@ -35,21 +35,38 @@
     $userid = $userfetch["pid"];
     $username = $userfetch["pname"];
 
-    // Main query for appointments with updated schema
-    $sqlmain = "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, 
-                schedule.scheduledate, schedule.start_time, schedule.end_time, appointment.apponum, appointment.appodate 
-                FROM schedule 
-                INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid 
-                INNER JOIN patient ON patient.pid = appointment.pid 
-                INNER JOIN doctor ON schedule.docid = doctor.docid 
-                WHERE patient.pid = $userid";
+    // Main query for appointments with correct apponum per doctor per day
+    $sqlmain = "
+        SELECT 
+            a.appoid, 
+            s.scheduleid, 
+            s.title, 
+            d.docname, 
+            p.pname, 
+            s.scheduledate, 
+            s.start_time, 
+            s.end_time, 
+            a.appodate,
+            (
+                SELECT COUNT(*) + 1
+                FROM appointment a2
+                INNER JOIN schedule s2 ON a2.scheduleid = s2.scheduleid
+                WHERE s2.docid = s.docid
+                AND s2.scheduledate = s.scheduledate
+                AND a2.appodate < a.appodate
+            ) AS apponum
+        FROM schedule s
+        INNER JOIN appointment a ON s.scheduleid = a.scheduleid 
+        INNER JOIN patient p ON p.pid = a.pid 
+        INNER JOIN doctor d ON s.docid = d.docid 
+        WHERE p.pid = $userid";
 
     if ($_POST && !empty($_POST["sheduledate"])) {
         $sheduledate = $_POST["sheduledate"];
-        $sqlmain .= " AND schedule.scheduledate = '$sheduledate'";
+        $sqlmain .= " AND s.scheduledate = '$sheduledate'";
     }
 
-    $sqlmain .= " ORDER BY appointment.appodate ASC";
+    $sqlmain .= " ORDER BY a.appodate ASC";
     $result = $database->query($sqlmain);
 
     // Check if query failed
@@ -156,7 +173,7 @@
                                                         <img src="../img/notfound.svg" width="25%">
                                                         <br>
                                                         <p class="heading-main12" style="margin-left: 45px; font-size: 20px; color: rgb(49, 49, 49)">We couldn\'t find anything related to your keywords!</p>
-                                                        <a class="non-style-link" href="appointment.php"><button class="login-btn btn-primary-soft btn" style="display: flex; justify-content: center; align-items: center; margin-left: 20px;"> Show all Appointments </button></a>
+                                                        <a class="non-style-link" href="appointment.php"><button class="login-btn btn-primary-soft btn" style="display: flex; justify-content: center; align-items: center; margin-left: 20px;"> Show all Appointments </button></a>
                                                     </center>
                                                     <br><br><br><br>
                                                 </td>
@@ -175,7 +192,7 @@
                                                     $scheduledate = $row["scheduledate"];
                                                     $start_time = date('h:i A', strtotime($row["start_time"]));
                                                     $end_time = date('h:i A', strtotime($row["end_time"]));
-                                                    $apponum = $row["apponum"];
+                                                    $apponum = $row["apponum"]; // Now correctly counts per doctor per day
                                                     $appodate = $row["appodate"];
                                                     $appoid = $row["appoid"];
 
@@ -195,7 +212,7 @@
                                                                         ' . substr($title, 0, 21) . '<br>
                                                                     </div>
                                                                     <div class="h3-search">
-                                                                        Appointment Number: <div class="h1-search">0' . $apponum . '</div>
+                                                                        Appointment Number: <div class="h1-search">' . sprintf("%02d", $apponum) . '</div>
                                                                     </div>
                                                                     <div class="h3-search">
                                                                         ' . substr($docname, 0, 30) . '
@@ -238,7 +255,7 @@
                             Your Appointment number is ' . $id . '.<br><br>
                         </div>
                         <div style="display: flex; justify-content: center;">
-                            <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text">  OK  </font></button></a>
+                            <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text">  OK  </font></button></a>
                             <br><br><br><br>
                         </div>
                     </center>
@@ -255,12 +272,12 @@
                         <a class="close" href="appointment.php">×</a>
                         <div class="content">
                             You want to Cancel this Appointment?<br><br>
-                            Session Name:  <b>' . substr($title, 0, 40) . '</b><br>
-                            Doctor name : <b>' . substr($docname, 0, 40) . '</b><br><br>
+                            Session Name:  <b>' . substr($title, 0, 40) . '</b><br>
+                            Doctor name : <b>' . substr($docname, 0, 40) . '</b><br><br>
                         </div>
                         <div style="display: flex; justify-content: center;">
-                            <a href="delete-appointment.php?id=' . $id . '" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text"> Yes </font></button></a>   
-                            <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text">  No  </font></button></a>
+                            <a href="delete-appointment.php?id=' . $id . '" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text"> Yes </font></button></a>   
+                            <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text">  No  </font></button></a>
                         </div>
                     </center>
                 </div>

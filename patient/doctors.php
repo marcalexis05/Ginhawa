@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <title>Doctors</title>
     <style>
         .popup { animation: transitionIn-Y-bottom 0.5s; }
@@ -38,6 +40,10 @@
     $userfetch = $userrow->fetch_assoc();
     $userid = $userfetch["pid"];
     $username = $userfetch["pname"];
+    // Calculate min and max dates
+    date_default_timezone_set('Asia/Kolkata');
+    $today = date('Y-m-d'); // e.g., 2025-04-04
+    $oneWeekLater = date('Y-m-d', strtotime('+7 days')); // e.g., 2025-04-11
     ?>
     <div class="container">
         <div class="menu">
@@ -104,11 +110,7 @@
                     <td width="15%">
                         <p style="font-size:14px;color:rgb(119,119,119);padding:0;margin:0;text-align:right;">Today's Date</p>
                         <p class="heading-sub12" style="padding:0;margin:0;">
-                            <?php 
-                            date_default_timezone_set('Asia/Kolkata');
-                            $date = date('Y-m-d');
-                            echo $date;
-                            ?>
+                            <?php echo $today; ?>
                         </p>
                     </td>
                     <td width="10%">
@@ -182,7 +184,7 @@
                                                                     <label for="title' . $docid . '" class="form-label">Session Title:</label>
                                                                     <input type="text" name="title" id="title' . $docid . '" class="input-text" placeholder="Enter session title" required>
                                                                     <label for="session_date' . $docid . '" class="form-label">Preferred Date:</label>
-                                                                    <input type="date" name="session_date" id="session_date' . $docid . '" class="input-text" min="' . date('Y-m-d') . '" required>
+                                                                    <input type="text" name="session_date" id="session_date' . $docid . '" class="input-text" required>
                                                                     <label for="start_time' . $docid . '" class="form-label">Start Time (8:00 AM - 5:30 PM):</label>
                                                                     <select name="start_time" id="start_time' . $docid . '" class="input-text" required onchange="updateEndTime(' . $docid . ')">
                                                                         <option value="">Select Start Time</option>';
@@ -294,6 +296,8 @@
         }
     }
     ?>
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
     function updateEndTime(docid) {
@@ -310,6 +314,32 @@
             document.getElementById('end_time' + docid).value = endTime;
         }
     }
+
+    // Initialize Flatpickr for each doctor's session_date input
+    document.addEventListener('DOMContentLoaded', function() {
+        <?php
+        $result = $database->query($sqlmain);
+        for ($x = 0; $x < $result->num_rows; $x++) {
+            $row = $result->fetch_assoc();
+            $docid = $row["docid"];
+            echo "
+            flatpickr('#session_date$docid', {
+                minDate: '$today', // e.g., '2025-04-04'
+                maxDate: '$oneWeekLater', // e.g., '2025-04-11'
+                disable: [
+                    function(date) {
+                        return date.getDay() === 0; // Disable Sundays
+                    }
+                ],
+                dateFormat: 'Y-m-d',
+                onOpen: function(selectedDates, dateStr, instance) {
+                    instance.redraw();
+                }
+            });
+            ";
+        }
+        ?>
+    });
 
     function validateRequestForm(docid, event) {
         event.preventDefault(); // Prevent form submission until validation completes

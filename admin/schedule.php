@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
     <link rel="icon" href="../Images/G-icon.png">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
         
     <title>Schedule</title>
     <style>
@@ -97,6 +99,11 @@
     
     //import database
     include("../connection.php");
+
+    // Calculate min and max dates for the date input
+    date_default_timezone_set('Asia/Kolkata');
+    $today = date('Y-m-d'); // e.g., 2025-04-04
+    $oneWeekLater = date('Y-m-d', strtotime('+7 days')); // e.g., 2025-04-11
     ?>
     <div class="container">
         <div class="menu">
@@ -163,8 +170,6 @@
                         </p>
                         <p class="heading-sub12" style="padding: 0;margin: 0;">
                             <?php 
-                            date_default_timezone_set('Asia/Kolkata');
-                            $today = date('Y-m-d');
                             echo $today;
                             $list110 = $database->query("select * from schedule;");
                             ?>
@@ -219,7 +224,7 @@
                     <td colspan="4" >
                         <div style="display: flex;margin-top: 40px;">
                         <div class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49);margin-top: 5px;">Schedule a Session</div>
-                        <a href="?action=add-session&id=none&error=0" class="non-style-link"><button  class="login-btn btn-primary btn button-icon"  style="margin-left:25px;background-image: url('../img/icons/add.svg');">Add a Session</font></button>
+                        <a href="?action=add-session" class="non-style-link"><button  class="login-btn btn-primary btn button-icon"  style="margin-left:25px;background-image: url('../img/icons/add.svg');">Add a Session</font></button>
                         </a>
                         </div>
                     </td>
@@ -361,9 +366,10 @@
     </div>
     <?php
     if($_GET){
-        $id=$_GET["id"];
-        $action=$_GET["action"];
-        if($action=='add-session'){
+        $action = $_GET["action"];
+        $id = isset($_GET["id"]) ? $_GET["id"] : null; // Safely check for id
+
+        if($action == 'add-session'){
             echo '
             <div id="popup1" class="overlay">
                     <div class="popup">
@@ -417,7 +423,7 @@
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                    <input type="date" name="date" id="session_date" class="input-text" min="'.date('Y-m-d').'" required><br>
+                                    <input type="text" name="date" id="session_date" class="input-text" required><br>
                                 </td>
                             </tr>
                             <tr>
@@ -483,8 +489,8 @@
             </div>
             </div>
             ';
-        }elseif($action=='session-added'){
-            $titleget=$_GET["title"];
+        } elseif($action == 'session-added'){
+            $titleget = $_GET["title"];
             echo '
             <div id="popup1" class="overlay">
                     <div class="popup">
@@ -503,159 +509,192 @@
             </div>
             </div>
             ';
-        }elseif($action=='drop'){
-            $nameget=$_GET["name"];
+        } elseif($action == 'add-session-conflict'){
+            $titleget = $_GET["title"];
+            $dateget = $_GET["date"];
+            $start_timeget = $_GET["start_time"];
             echo '
             <div id="popup1" class="overlay">
-                    <div class="popup">
+                <div class="popup">
                     <center>
-                        <h2>Are you sure?</h2>
+                        <br><br>
+                        <h2>Session Conflict</h2>
                         <a class="close" href="schedule.php">×</a>
                         <div class="content">
-                            You want to delete this record<br>('.substr($nameget,0,40).').
+                            The doctor already has a session scheduled on ' . htmlspecialchars($dateget) . ' at ' . htmlspecialchars(date('h:i A', strtotime($start_timeget))) . '.<br>
+                            Cannot schedule "' . htmlspecialchars($titleget) . '". Please choose a different time or date.
                         </div>
                         <div style="display: flex;justify-content: center;">
-                        <a href="delete-session.php?id='.$id.'" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"<font class="tn-in-text"> Yes </font></button></a>   
-                        <a href="schedule.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">  No  </font></button></a>
+                            <a href="?action=add-session" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">Try Again</font></button></a>
+                            <a href="schedule.php" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">Cancel</font></button></a>
                         </div>
                     </center>
+                </div>
             </div>
-            </div>
-            '; 
-        }elseif($action=='view'){
-            $sqlmain= "select schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.start_time,schedule.end_time from schedule inner join doctor on schedule.docid=doctor.docid  where  schedule.scheduleid=$id";
-            $result= $database->query($sqlmain);
-            $row=$result->fetch_assoc();
-            $docname=$row["docname"];
-            $scheduleid=$row["scheduleid"];
-            $title=$row["title"];
-            $scheduledate=$row["scheduledate"];
-            $start_time = date('h:i A', strtotime($row["start_time"]));
-            $end_time = date('h:i A', strtotime($row["end_time"]));
-            $sqlmain12= "select * from appointment inner join patient on patient.pid=appointment.pid inner join schedule on schedule.scheduleid=appointment.scheduleid where schedule.scheduleid=$id;";
-            $result12= $database->query($sqlmain12);
-            echo '
-            <div id="popup1" class="overlay">
-                    <div class="popup" style="width: 70%;">
-                    <center>
-                        <h2></h2>
-                        <a class="close" href="schedule.php">×</a>
-                        <div class="content">
-                        </div>
-                        <div class="abc scroll" style="display: flex;justify-content: center;">
-                        <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
-                            <tr>
-                                <td>
-                                    <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">View Details.</p><br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="name" class="form-label">Session Title: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    '.$title.'<br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="Email" class="form-label">Doctor of this session: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                '.$docname.'<br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="nic" class="form-label">Scheduled Date: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                '.$scheduledate.'<br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="Tele" class="form-label">Scheduled Time: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                '.$start_time.' - '.$end_time.'<br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="spec" class="form-label"><b>Patients that Already registered for this session:</b> ('.$result12->num_rows.')</label>
-                                    <br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                            <td colspan="4">
-                                <center>
-                                 <div class="abc scroll">
-                                 <table width="100%" class="sub-table scrolldown" border="0">
-                                 <thead>
-                                 <tr>   
-                                        <th class="table-headin">Patient ID</th>
-                                        <th class="table-headin">Patient name</th>
-                                        <th class="table-headin">Appointment number</th>
-                                        <th class="table-headin">Patient Telephone</th>
-                                 </thead>
-                                 <tbody>';
-                                         $result= $database->query($sqlmain12);
-                                         if($result->num_rows==0){
-                                             echo '<tr>
-                                             <td colspan="7">
-                                             <br><br><br><br>
-                                             <center>
-                                             <img src="../img/notfound.svg" width="25%">
-                                             <br>
-                                             <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We couldn\'t find anything related to your keywords!</p>
-                                             <a class="non-style-link" href="appointment.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;"> Show all Appointments </font></button>
-                                             </a>
-                                             </center>
-                                             <br><br><br><br>
-                                             </td>
-                                             </tr>';
+            ';
+        } elseif($action == 'drop'){
+            if ($id === null) {
+                echo "Error: No session ID provided for deletion.";
+            } else {
+                $nameget = $_GET["name"];
+                echo '
+                <div id="popup1" class="overlay">
+                        <div class="popup">
+                        <center>
+                            <h2>Are you sure?</h2>
+                            <a class="close" href="schedule.php">×</a>
+                            <div class="content">
+                                You want to delete this record<br>('.substr($nameget,0,40).').
+                            </div>
+                            <div style="display: flex;justify-content: center;">
+                            <a href="delete-session.php?id='.$id.'" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"<font class="tn-in-text"> Yes </font></button></a>   
+                            <a href="schedule.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">  No  </font></button></a>
+                            </div>
+                        </center>
+                </div>
+                </div>
+                ';
+            }
+        } elseif($action == 'view'){
+            if ($id === null) {
+                echo "Error: No session ID provided for viewing.";
+            } else {
+                $sqlmain = "select schedule.scheduleid,schedule.title,doctor.docname,schedule.scheduledate,schedule.start_time,schedule.end_time from schedule inner join doctor on schedule.docid=doctor.docid where schedule.scheduleid=$id";
+                $result = $database->query($sqlmain);
+                $row = $result->fetch_assoc();
+                $docname = $row["docname"];
+                $scheduleid = $row["scheduleid"];
+                $title = $row["title"];
+                $scheduledate = $row["scheduledate"];
+                $start_time = date('h:i A', strtotime($row["start_time"]));
+                $end_time = date('h:i A', strtotime($row["end_time"]));
+                $sqlmain12 = "select * from appointment inner join patient on patient.pid=appointment.pid inner join schedule on schedule.scheduleid=appointment.scheduleid where schedule.scheduleid=$id;";
+                $result12 = $database->query($sqlmain12);
+                echo '
+                <div id="popup1" class="overlay">
+                        <div class="popup" style="width: 70%;">
+                        <center>
+                            <h2></h2>
+                            <a class="close" href="schedule.php">×</a>
+                            <div class="content">
+                            </div>
+                            <div class="abc scroll" style="display: flex;justify-content: center;">
+                            <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
+                                <tr>
+                                    <td>
+                                        <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">View Details.</p><br><br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        <label for="name" class="form-label">Session Title: </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        '.$title.'<br><br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        <label for="Email" class="form-label">Doctor of this session: </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                    '.$docname.'<br><br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        <label for="nic" class="form-label">Scheduled Date: </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                    '.$scheduledate.'<br><br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        <label for="Tele" class="form-label">Scheduled Time: </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                    '.$start_time.' - '.$end_time.'<br><br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        <label for="spec" class="form-label"><b>Patients that Already registered for this session:</b> ('.$result12->num_rows.')</label>
+                                        <br><br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                <td colspan="4">
+                                    <center>
+                                     <div class="abc scroll">
+                                     <table width="100%" class="sub-table scrolldown" border="0">
+                                     <thead>
+                                     <tr>   
+                                            <th class="table-headin">Patient ID</th>
+                                            <th class="table-headin">Patient name</th>
+                                            <th class="table-headin">Appointment number</th>
+                                            <th class="table-headin">Patient Telephone</th>
+                                     </thead>
+                                     <tbody>';
+                                             $result = $database->query($sqlmain12);
+                                             if($result->num_rows==0){
+                                                 echo '<tr>
+                                                 <td colspan="7">
+                                                 <br><br><br><br>
+                                                 <center>
+                                                 <img src="../img/notfound.svg" width="25%">
+                                                 <br>
+                                                 <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We couldn\'t find anything related to your keywords!</p>
+                                                 <a class="non-style-link" href="appointment.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;"> Show all Appointments </font></button>
+                                                 </a>
+                                                 </center>
+                                                 <br><br><br><br>
+                                                 </td>
+                                                 </tr>';
+                                             }
+                                             else{
+                                             for ( $x=0; $x<$result->num_rows;$x++){
+                                                 $row=$result->fetch_assoc();
+                                                 $apponum=$row["apponum"];
+                                                 $pid=$row["pid"];
+                                                 $pname=$row["pname"];
+                                                 $ptel=$row["ptel"];
+                                                 echo '<tr style="text-align:center;">
+                                                    <td>'.substr($pid,0,15).'</td>
+                                                     <td style="font-weight:600;padding:25px">'.substr($pname,0,25).'</td>
+                                                     <td style="text-align:center;font-size:23px;font-weight:500; color: var(--btnnicetext);">'.$apponum.'</td>
+                                                     <td>'.substr($ptel,0,25).'</td>
+                                                 </tr>';
+                                             }
                                          }
-                                         else{
-                                         for ( $x=0; $x<$result->num_rows;$x++){
-                                             $row=$result->fetch_assoc();
-                                             $apponum=$row["apponum"];
-                                             $pid=$row["pid"];
-                                             $pname=$row["pname"];
-                                             $ptel=$row["ptel"];
-                                             echo '<tr style="text-align:center;">
-                                                <td>'.substr($pid,0,15).'</td>
-                                                 <td style="font-weight:600;padding:25px">'.substr($pname,0,25).'</td>
-                                                 <td style="text-align:center;font-size:23px;font-weight:500; color: var(--btnnicetext);">'.$apponum.'</td>
-                                                 <td>'.substr($ptel,0,25).'</td>
-                                             </tr>';
-                                         }
-                                     }
-                                    echo '</tbody>
-                                 </table>
-                                 </div>
-                                 </center>
-                            </td> 
-                         </tr>
-                        </table>
-                        </div>
-                    </center>
-                    <br><br>
-            </div>
-            </div>
-            ';  
+                                        echo '</tbody>
+                                     </table>
+                                     </div>
+                                     </center>
+                                </td> 
+                             </tr>
+                            </table>
+                            </div>
+                        </center>
+                        <br><br>
+                </div>
+                </div>
+                ';
+            }
+        }
     }
-}
     ?>
     </div>
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
     function toggleNotifications() {
         var dropdown = document.getElementById('notificationDropdown');
@@ -685,8 +724,26 @@
         }
     }
 
+    // Initialize Flatpickr with Sunday disabled
+    document.addEventListener('DOMContentLoaded', function() {
+        flatpickr('#session_date', {
+            minDate: '<?php echo $today; ?>', // e.g., "2025-04-04"
+            maxDate: '<?php echo $oneWeekLater; ?>', // e.g., "2025-04-11"
+            disable: [
+                function(date) {
+                    // Disable Sundays (getDay() === 0)
+                    return date.getDay() === 0;
+                }
+            ],
+            dateFormat: 'Y-m-d', // Format for form submission
+            onOpen: function(selectedDates, dateStr, instance) {
+                instance.redraw(); // Ensure calendar updates correctly
+            }
+        });
+    });
+
     function validateForm() {
-        let sessionDate = new Date(document.getElementById('session_date').value);
+        let sessionDate = document.getElementById('session_date').value;
         let startTime = document.getElementById('start_time').value;
         let duration = document.getElementById('duration').value;
         let today = new Date();
@@ -697,7 +754,11 @@
             alert('Session title cannot be empty');
             return false;
         }
-        if (sessionDate < today) {
+        if (!sessionDate) {
+            alert('Please select a session date');
+            return false;
+        }
+        if (new Date(sessionDate) < today) {
             alert('Session date cannot be in the past');
             return false;
         }

@@ -16,11 +16,11 @@
 <body>
     <?php
     session_start();
-    if(isset($_SESSION["user"])) {
-        if(($_SESSION["user"])=="" || $_SESSION['usertype']!='p') {
+    if (isset($_SESSION["user"])) {
+        if (($_SESSION["user"]) == "" || $_SESSION['usertype'] != 'p') {
             header("location: ../login.php");
         } else {
-            $useremail=$_SESSION["user"];
+            $useremail = $_SESSION["user"];
         }
     } else {
         header("location: ../login.php");
@@ -44,7 +44,6 @@
     ?>
     <div class="container">
         <div class="menu">
-            <!-- Menu content remains the same -->
             <table class="menu-container" border="0">
                 <tr>
                     <td style="padding:10px" colspan="2">
@@ -54,8 +53,8 @@
                                     <img src="../img/user.png" alt="" width="100%" style="border-radius:50%">
                                 </td>
                                 <td style="padding:0px;margin:0px;">
-                                    <p class="profile-title"><?php echo substr($username,0,13)  ?>..</p>
-                                    <p class="profile-subtitle"><?php echo substr($useremail,0,22)  ?></p>
+                                    <p class="profile-title"><?php echo substr($username, 0, 13) ?>..</p>
+                                    <p class="profile-subtitle"><?php echo substr($useremail, 0, 22) ?></p>
                                 </td>
                             </tr>
                             <tr>
@@ -86,22 +85,22 @@
         <div class="dash-body">
             <table border="0" width="100%" style=" border-spacing: 0;margin:0;padding:0;margin-top:25px; ">
                 <tr >
-                    <td width="13%" ><a href="schedule.php" ><button  class="login-btn btn-primary-soft btn btn-icon-back"  style="padding-top:11px;padding-bottom:11px;margin-left:20px;width:125px"><font class="tn-in-text">Back</font></button></a></td>
+                    <td width="13%" ><a href="schedule.php" ><button class="login-btn btn-primary-soft btn btn-icon-back" style="padding-top:11px;padding-bottom:11px;margin-left:20px;width:125px"><font class="tn-in-text">Back</font></button></a></td>
                     <td >
                         <form action="schedule.php" method="post" class="header-search">
-                            <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Doctor name or Email or Date (YYYY-MM-DD)" list="doctors" >  
+                            <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Doctor name or Email or Date (YYYY-MM-DD)" list="doctors" >  
                             <?php
                             echo '<datalist id="doctors">';
-                            $list11 = $database->query("select DISTINCT * from  doctor;");
-                            $list12 = $database->query("select DISTINCT * from  schedule GROUP BY title;");
-                            for ($y=0;$y<$list11->num_rows;$y++){
-                                $row00=$list11->fetch_assoc();
-                                $d=$row00["docname"];
+                            $list11 = $database->query("SELECT DISTINCT * FROM doctor;");
+                            $list12 = $database->query("SELECT DISTINCT * FROM schedule GROUP BY title;");
+                            for ($y = 0; $y < $list11->num_rows; $y++) {
+                                $row00 = $list11->fetch_assoc();
+                                $d = $row00["docname"];
                                 echo "<option value='$d'><br/>";
                             };
-                            for ($y=0;$y<$list12->num_rows;$y++){
-                                $row00=$list12->fetch_assoc();
-                                $d=$row00["title"];
+                            for ($y = 0; $y < $list12->num_rows; $y++) {
+                                $row00 = $list12->fetch_assoc();
+                                $d = $row00["title"];
                                 echo "<option value='$d'><br/>";
                             };
                             echo ' </datalist>';
@@ -114,7 +113,7 @@
                         <p class="heading-sub12" style="padding: 0;margin: 0;"><?php echo $today; ?></p>
                     </td>
                     <td width="10%">
-                        <button  class="btn-label"  style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
+                        <button class="btn-label" style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
                     </td>
                 </tr>
                 <tr>
@@ -127,45 +126,61 @@
                                 <table width="100%" class="sub-table scrolldown" border="0" style="padding: 50px;border:none">
                                     <tbody>
                                         <?php
-                                        if(($_GET)){
-                                            if(isset($_GET["id"])){
-                                                $id=$_GET["id"];
-                                                $sqlmain= "select * from schedule inner join doctor on schedule.docid=doctor.docid where schedule.scheduleid=? order by schedule.scheduledate desc";
+                                        if (($_GET)) {
+                                            if (isset($_GET["id"])) {
+                                                $id = $_GET["id"];
+                                                $sqlmain = "SELECT * FROM schedule INNER JOIN doctor ON schedule.docid = doctor.docid WHERE schedule.scheduleid = ?";
                                                 $stmt = $database->prepare($sqlmain);
                                                 $stmt->bind_param("i", $id);
                                                 $stmt->execute();
                                                 $result = $stmt->get_result();
-                                                $row=$result->fetch_assoc();
-                                                $scheduleid=$row["scheduleid"];
-                                                $title=$row["title"];
-                                                $docname=$row["docname"];
-                                                $docemail=$row["docemail"];
-                                                $scheduledate=$row["scheduledate"];
+                                                $row = $result->fetch_assoc();
+                                                $scheduleid = $row["scheduleid"];
+                                                $title = $row["title"];
+                                                $docname = $row["docname"];
+                                                $docemail = $row["docemail"];
+                                                $scheduledate = $row["scheduledate"];
+                                                $docid = $row["docid"];
                                                 $start_time = date('h:i A', strtotime($row["start_time"]));
                                                 $end_time = date('h:i A', strtotime($row["end_time"]));
-                                                $sql2="select * from appointment where scheduleid=$id";
-                                                $result12= $database->query($sql2);
-                                                $apponum=($result12->num_rows)+1;
+
+                                                // Calculate apponum as the number of prior bookings for this doctor on this scheduledate
+                                                $sql2 = "
+                                                    SELECT COUNT(*) + 1 AS apponum 
+                                                    FROM appointment 
+                                                    INNER JOIN schedule ON appointment.scheduleid = schedule.scheduleid 
+                                                    WHERE schedule.docid = ? 
+                                                    AND schedule.scheduledate = ? 
+                                                    AND appointment.appodate < ?
+                                                ";
+                                                $current_appodate = date('Y-m-d H:i:s'); // Current timestamp for new booking
+                                                $stmt2 = $database->prepare($sql2);
+                                                $stmt2->bind_param("iss", $docid, $scheduledate, $current_appodate);
+                                                $stmt2->execute();
+                                                $result2 = $stmt2->get_result();
+                                                $apponum_row = $result2->fetch_assoc();
+                                                $apponum = $apponum_row["apponum"] ?? 1; // Default to 1 if no prior bookings
+
                                                 echo '
                                                     <form action="booking-complete.php" method="post">
-                                                        <input type="hidden" name="scheduleid" value="'.$scheduleid.'" >
-                                                        <input type="hidden" name="apponum" value="'.$apponum.'" >
-                                                        <input type="hidden" name="date" value="'.$today.'" >
+                                                        <input type="hidden" name="scheduleid" value="' . $scheduleid . '" >
+                                                        <input type="hidden" name="apponum" value="' . $apponum . '" >
+                                                        <input type="hidden" name="date" value="' . $today . '" >
                                                     ';
                                                 echo '
                                                     <td style="width: 50%;" rowspan="2">
-                                                        <div  class="dashboard-items search-items"  >
+                                                        <div class="dashboard-items search-items">
                                                             <div style="width:100%">
                                                                 <div class="h1-search" style="font-size:25px;">Session Details</div><br><br>
                                                                 <div class="h3-search" style="font-size:18px;line-height:30px">
-                                                                    Doctor name:    <b>'.$docname.'</b><br>
-                                                                    Doctor Email:    <b>'.$docemail.'</b> 
+                                                                    Doctor name:    <b>' . $docname . '</b><br>
+                                                                    Doctor Email:    <b>' . $docemail . '</b> 
                                                                 </div>
                                                                 <div class="h3-search" style="font-size:18px;"></div><br>
                                                                 <div class="h3-search" style="font-size:18px;">
-                                                                    Session Title: '.$title.'<br>
-                                                                    Session Scheduled Date: '.$scheduledate.'<br>
-                                                                    Session Time: '.$start_time.' - '.$end_time.'<br>
+                                                                    Session Title: ' . $title . '<br>
+                                                                    Session Scheduled Date: ' . $scheduledate . '<br>
+                                                                    Session Time: ' . $start_time . ' - ' . $end_time . '<br>
                                                                     Channeling fee: <b>PHP2,000.00</b>
                                                                 </div>
                                                                 <br>
@@ -173,11 +188,11 @@
                                                         </div>
                                                     </td>
                                                     <td style="width: 25%;">
-                                                        <div  class="dashboard-items search-items"  >
+                                                        <div class="dashboard-items search-items">
                                                             <div style="width:100%;padding-top: 15px;padding-bottom: 15px;">
                                                                 <div class="h1-search" style="font-size:20px;line-height: 35px;margin-left:8px;text-align:center;">Your Appointment Number</div>
                                                                 <center>
-                                                                    <div class=" dashboard-icons" style="margin-left: 0px;width:90%;font-size:70px;font-weight:800;text-align:center;color:var(--btnnictext);background-color: var(--btnice)">'.$apponum.'</div>
+                                                                    <div class="dashboard-icons" style="margin-left: 0px;width:90%;font-size:70px;font-weight:800;text-align:center;color:var(--btnnictext);background-color: var(--btnice)">' . sprintf("%02d", $apponum) . '</div>
                                                                 </center>
                                                             </div><br><br><br>
                                                         </div>
@@ -189,7 +204,7 @@
                                                         </form>
                                                         </td>
                                                     </tr>
-                                                    '; 
+                                                    ';
                                             }
                                         }
                                         ?>
