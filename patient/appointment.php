@@ -7,10 +7,30 @@
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
     <title>Appointments</title>
     <style>
         .popup { animation: transitionIn-Y-bottom 0.5s; }
         .sub-table { animation: transitionIn-Y-bottom 0.5s; }
+        .gmeet-link {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        .gmeet-link:hover {
+            background-color: #45a049;
+        }
+        .gmeet-link.unavailable {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -35,38 +55,21 @@
     $userid = $userfetch["pid"];
     $username = $userfetch["pname"];
 
-    // Main query for appointments with correct apponum per doctor per day
-    $sqlmain = "
-        SELECT 
-            a.appoid, 
-            s.scheduleid, 
-            s.title, 
-            d.docname, 
-            p.pname, 
-            s.scheduledate, 
-            s.start_time, 
-            s.end_time, 
-            a.appodate,
-            (
-                SELECT COUNT(*) + 1
-                FROM appointment a2
-                INNER JOIN schedule s2 ON a2.scheduleid = s2.scheduleid
-                WHERE s2.docid = s.docid
-                AND s2.scheduledate = s.scheduledate
-                AND a2.appodate < a.appodate
-            ) AS apponum
-        FROM schedule s
-        INNER JOIN appointment a ON s.scheduleid = a.scheduleid 
-        INNER JOIN patient p ON p.pid = a.pid 
-        INNER JOIN doctor d ON s.docid = d.docid 
-        WHERE p.pid = $userid";
+    // Main query for appointments with updated schema
+    $sqlmain = "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, 
+                schedule.scheduledate, schedule.start_time, schedule.end_time, appointment.apponum, appointment.appodate 
+                FROM schedule 
+                INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid 
+                INNER JOIN patient ON patient.pid = appointment.pid 
+                INNER JOIN doctor ON schedule.docid = doctor.docid 
+                WHERE patient.pid = $userid";
 
     if ($_POST && !empty($_POST["sheduledate"])) {
         $sheduledate = $_POST["sheduledate"];
-        $sqlmain .= " AND s.scheduledate = '$sheduledate'";
+        $sqlmain .= " AND schedule.scheduledate = '$sheduledate'";
     }
 
-    $sqlmain .= " ORDER BY a.appodate ASC";
+    $sqlmain .= " ORDER BY appointment.appodate ASC";
     $result = $database->query($sqlmain);
 
     // Check if query failed
@@ -74,6 +77,7 @@
         die("Query failed: " . $database->error);
     }
     ?>
+
     <div class="container">
         <div class="menu">
             <table class="menu-container" border="0">
@@ -147,7 +151,7 @@
                                     <td width="5%" style="text-align: center;">Date:</td>
                                     <td width="30%">
                                         <form action="" method="post">
-                                            <input type="date" name="sheduledate" id="date" class="input-text filter-container-items" style="margin: 0; width: 95%;">
+                                            <input type="date" name="sheduledate" id="date" class="input-text filter-container-items" style="margin: 0; width: 95%;" value="<?php echo isset($_POST['sheduledate']) ? $_POST['sheduledate'] : ''; ?>">
                                     </td>
                                     <td width="12%">
                                         <input type="submit" name="filter" value="Filter" class="btn-primary-soft btn button-icon btn-filter" style="padding: 15px; margin: 0; width: 100%;">
@@ -195,6 +199,7 @@
                                                     $apponum = $row["apponum"]; // Now correctly counts per doctor per day
                                                     $appodate = $row["appodate"];
                                                     $appoid = $row["appoid"];
+                                                    $gmeet_link = $row["gmeet_link"] ?? 'Not yet generated';
 
                                                     if (empty($scheduleid)) {
                                                         break;
@@ -219,7 +224,13 @@
                                                                     </div>
                                                                     <div class="h4-search">
                                                                         Scheduled Date: ' . $scheduledate . '<br>Time: <b>' . $start_time . ' - ' . $end_time . '</b>
-                                                                    </div>
+                                                                    </div>';
+                                                    if ($gmeet_link === 'Not yet generated') {
+                                                        echo '<div><a class="gmeet-link unavailable">' . $gmeet_link . '</a></div>';
+                                                    } else {
+                                                        echo '<div><a href="' . $gmeet_link . '" target="_blank" class="gmeet-link">Join Google Meet</a></div>';
+                                                    }
+                                                    echo '
                                                                     <br>
                                                                     <a href="?action=drop&id=' . $appoid . '&title=' . urlencode($title) . '&doc=' . urlencode($docname) . '"><button class="login-btn btn-primary-soft btn" style="padding: 11px; width: 100%"><font class="tn-in-text">Cancel Booking</font></button></a>
                                                                 </div>
@@ -239,6 +250,7 @@
             </table>
         </div>
     </div>
+
     <?php
     if ($_GET) {
         $id = $_GET["id"];
