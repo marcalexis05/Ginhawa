@@ -16,6 +16,7 @@
 <body>
     <?php
     session_start();
+
     if (!isset($_SESSION["user"]) || empty($_SESSION["user"]) || $_SESSION['usertype'] != 'p') {
         header("location: ../login.php");
         exit;
@@ -24,6 +25,7 @@
     $useremail = $_SESSION["user"];
     include("../connection.php");
 
+    // Fetch patient details
     $sqlmain = "SELECT * FROM patient WHERE pemail=?";
     $stmt = $database->prepare($sqlmain);
     $stmt->bind_param("s", $useremail);
@@ -33,34 +35,28 @@
     $userid = $userfetch["pid"];
     $username = $userfetch["pname"];
 
+    // Main query for appointments with updated schema
     $sqlmain = "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, 
-                schedule.scheduledate, schedule.start_time, schedule.end_time, appointment.apponum, appointment.appodate, appointment.gmeet_link 
+                schedule.scheduledate, schedule.start_time, schedule.end_time, appointment.apponum, appointment.appodate 
                 FROM schedule 
                 INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid 
                 INNER JOIN patient ON patient.pid = appointment.pid 
                 INNER JOIN doctor ON schedule.docid = doctor.docid 
-                WHERE patient.pid = ?";
+                WHERE patient.pid = $userid";
 
     if ($_POST && !empty($_POST["sheduledate"])) {
         $sheduledate = $_POST["sheduledate"];
-        $sqlmain .= " AND schedule.scheduledate = ?";
+        $sqlmain .= " AND schedule.scheduledate = '$sheduledate'";
     }
 
     $sqlmain .= " ORDER BY appointment.appodate ASC";
-    $stmt = $database->prepare($sqlmain);
-    if ($_POST && !empty($_POST["sheduledate"])) {
-        $stmt->bind_param("is", $userid, $sheduledate);
-    } else {
-        $stmt->bind_param("i", $userid);
-    }
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $result = $database->query($sqlmain);
 
+    // Check if query failed
     if ($result === false) {
         die("Query failed: " . $database->error);
     }
     ?>
-
     <div class="container">
         <div class="menu">
             <table class="menu-container" border="0">
@@ -85,86 +81,135 @@
                     </td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-home"><a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Home</p></a></div></td>
+                    <td class="menu-btn menu-icon-home"><a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Home</p></div></a></td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-doctor"><a href="doctors.php" class="non-style-link-menu"><div><p class="menu-text">All Doctors</p></a></div></td>
+                    <td class="menu-btn menu-icon-doctor"><a href="doctors.php" class="non-style-link-menu"><div><p class="menu-text">All Doctors</p></div></a></td>
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-session"><a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">Scheduled Sessions</p></div></a></td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-appoinment menu-active menu-icon-appoinment-active"><a href="appointment.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">My Bookings</p></a></div></td>
+                    <td class="menu-btn menu-icon-appoinment menu-active menu-icon-appoinment-active"><a href="appointment.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">My Bookings</p></div></a></td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-settings"><a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></a></div></td>
+                    <td class="menu-btn menu-icon-settings"><a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></div></a></td>
                 </tr>
             </table>
         </div>
         <div class="dash-body">
-            <table border="0" width="100%" style="border-spacing: 0; margin:0; padding:0; margin-top:25px;">
+            <table border="0" width="100%" style="border-spacing: 0; margin: 0; padding: 0; margin-top: 25px;">
                 <tr>
-                    <td width="13%"><a href="appointment.php"><button class="login-btn btn-primary-soft btn btn-icon-back" style="padding-top:11px;padding-bottom:11px;margin-left:20px;width:125px"><font class="tn-in-text">Back</font></button></a></td>
-                    <td>
-                        <form action="" method="post" class="header-search">
-                            <input type="date" name="sheduledate" class="input-text header-searchbar" placeholder="Search by Date (YYYY-MM-DD)" value="<?php echo isset($_POST['sheduledate']) ? $_POST['sheduledate'] : ''; ?>">
-                            <input type="submit" value="Search" class="login-btn btn-primary btn" style="padding-left: 25px;padding-right: 25px;padding-top: 10px;padding-bottom: 10px;">
-                        </form>
-                    </td>
+                    <td width="13%"><a href="appointment.php"><button class="login-btn btn-primary-soft btn btn-icon-back" style="padding: 11px; margin-left: 20px; width: 125px"><font class="tn-in-text">Back</font></button></a></td>
+                    <td><p style="font-size: 23px; padding-left: 12px; font-weight: 600;">My Bookings History</p></td>
                     <td width="15%">
-                        <p style="font-size: 14px;color: rgb(119, 119, 119);padding: 0;margin: 0;text-align: right;">Today's Date</p>
-                        <p class="heading-sub12" style="padding: 0;margin: 0;"><?php echo date('Y-m-d'); ?></p>
+                        <p style="font-size: 14px; color: rgb(119, 119, 119); padding: 0; margin: 0; text-align: right;">Today's Date</p>
+                        <p class="heading-sub12" style="padding: 0; margin: 0;">
+                            <?php 
+                            date_default_timezone_set('Asia/Kolkata');
+                            $today = date('Y-m-d');
+                            echo $today;
+                            ?>
+                        </p>
                     </td>
                     <td width="10%">
-                        <button class="btn-label" style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
+                        <button class="btn-label" style="display: flex; justify-content: center; align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="4" style="padding-top:10px;">
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">My Bookings (<?php echo $result->num_rows; ?>)</p>
+                    <td colspan="4" style="padding-top: 10px; width: 100%;">
+                        <p class="heading-main12" style="margin-left: 45px; font-size: 18px; color: rgb(49, 49, 49)">My Bookings (<?php echo $result->num_rows; ?>)</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="padding-top: 0px; width: 100%;">
+                        <center>
+                            <table class="filter-container" border="0">
+                                <tr>
+                                    <td width="10%"></td>
+                                    <td width="5%" style="text-align: center;">Date:</td>
+                                    <td width="30%">
+                                        <form action="" method="post">
+                                            <input type="date" name="sheduledate" id="date" class="input-text filter-container-items" style="margin: 0; width: 95%;">
+                                    </td>
+                                    <td width="12%">
+                                        <input type="submit" name="filter" value="Filter" class="btn-primary-soft btn button-icon btn-filter" style="padding: 15px; margin: 0; width: 100%;">
+                                        </form>
+                                    </td>
+                                </tr>
+                            </table>
+                        </center>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="4">
                         <center>
                             <div class="abc scroll">
-                                <table width="93%" class="sub-table scrolldown" border="0">
-                                    <thead>
-                                        <tr>
-                                            <th class="table-headin">Appointment No</th>
-                                            <th class="table-headin">Title</th>
-                                            <th class="table-headin">Doctor</th>
-                                            <th class="table-headin">Scheduled Date & Time</th>
-                                            <th class="table-headin">Google Meet Link</th>
-                                            <th class="table-headin">Events</th>
-                                        </tr>
-                                    </thead>
+                                <table width="93%" class="sub-table scrolldown" border="0" style="border: none;">
                                     <tbody>
                                         <?php
                                         if ($result->num_rows == 0) {
-                                            echo '<tr><td colspan="6"><br><br><br><br><center><img src="../img/notfound.svg" width="25%"><br><p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">No bookings found!</p></center><br><br><br><br></td></tr>';
+                                            echo '<tr>
+                                                <td colspan="7">
+                                                    <br><br><br><br>
+                                                    <center>
+                                                        <img src="../img/notfound.svg" width="25%">
+                                                        <br>
+                                                        <p class="heading-main12" style="margin-left: 45px; font-size: 20px; color: rgb(49, 49, 49)">We couldn\'t find anything related to your keywords!</p>
+                                                        <a class="non-style-link" href="appointment.php"><button class="login-btn btn-primary-soft btn" style="display: flex; justify-content: center; align-items: center; margin-left: 20px;"> Show all Appointments </button></a>
+                                                    </center>
+                                                    <br><br><br><br>
+                                                </td>
+                                            </tr>';
                                         } else {
-                                            while ($row = $result->fetch_assoc()) {
-                                                $appoid = $row["appoid"];
-                                                $scheduleid = $row["scheduleid"];
-                                                $title = $row["title"];
-                                                $docname = $row["docname"];
-                                                $scheduledate = $row["scheduledate"];
-                                                $start_time = date('h:i A', strtotime($row["start_time"]));
-                                                $gmeet_link = $row["gmeet_link"] ?? 'Not yet generated';
+                                            for ($x = 0; $x < $result->num_rows; $x++) {
+                                                echo "<tr>";
+                                                for ($q = 0; $q < 3; $q++) {
+                                                    $row = $result->fetch_assoc();
+                                                    if (!isset($row)) {
+                                                        break;
+                                                    }
+                                                    $scheduleid = $row["scheduleid"];
+                                                    $title = $row["title"];
+                                                    $docname = $row["docname"];
+                                                    $scheduledate = $row["scheduledate"];
+                                                    $start_time = date('h:i A', strtotime($row["start_time"]));
+                                                    $end_time = date('h:i A', strtotime($row["end_time"]));
+                                                    $apponum = $row["apponum"];
+                                                    $appodate = $row["appodate"];
+                                                    $appoid = $row["appoid"];
 
-                                                echo '<tr>
-                                                    <td>' . $row["apponum"] . '</td>
-                                                    <td>' . substr($title, 0, 30) . '</td>
-                                                    <td>' . substr($docname, 0, 20) . '</td>
-                                                    <td>' . $scheduledate . ' ' . $start_time . '</td>
-                                                    <td><a href="' . $gmeet_link . '" target="_blank">' . substr($gmeet_link, 0, 30) . '...</a></td>
-                                                    <td>
-                                                        <div style="display:flex;justify-content: center;">
-                                                            <a href="?action=drop&id=' . $appoid . '&scheduleid=' . $scheduleid . '" class="non-style-link"><button class="btn-primary-soft btn button-icon btn-cancel" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Cancel</font></button></a>
-                                                        </div>
-                                                    </td>
-                                                </tr>';
+                                                    if (empty($scheduleid)) {
+                                                        break;
+                                                    }
+
+                                                    echo '
+                                                        <td style="width: 25%;">
+                                                            <div class="dashboard-items search-items">
+                                                                <div style="width: 100%;">
+                                                                    <div class="h3-search">
+                                                                        Booking Date: ' . substr($appodate, 0, 30) . '<br>
+                                                                        Reference Number: OC-000-' . $appoid . '
+                                                                    </div>
+                                                                    <div class="h1-search">
+                                                                        ' . substr($title, 0, 21) . '<br>
+                                                                    </div>
+                                                                    <div class="h3-search">
+                                                                        Appointment Number: <div class="h1-search">0' . $apponum . '</div>
+                                                                    </div>
+                                                                    <div class="h3-search">
+                                                                        ' . substr($docname, 0, 30) . '
+                                                                    </div>
+                                                                    <div class="h4-search">
+                                                                        Scheduled Date: ' . $scheduledate . '<br>Time: <b>' . $start_time . ' - ' . $end_time . '</b>
+                                                                    </div>
+                                                                    <br>
+                                                                    <a href="?action=drop&id=' . $appoid . '&title=' . urlencode($title) . '&doc=' . urlencode($docname) . '"><button class="login-btn btn-primary-soft btn" style="padding: 11px; width: 100%"><font class="tn-in-text">Cancel Booking</font></button></a>
+                                                                </div>
+                                                            </div>
+                                                        </td>';
+                                                }
+                                                echo "</tr>";
                                             }
                                         }
                                         ?>
@@ -177,43 +222,45 @@
             </table>
         </div>
     </div>
-
     <?php
     if ($_GET) {
         $id = $_GET["id"];
         $action = $_GET["action"];
-        if ($action == 'drop') {
-            $scheduleid = $_GET["scheduleid"];
-            $sql_drop = "DELETE FROM appointment WHERE appoid=?";
-            $stmt = $database->prepare($sql_drop);
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
+        if ($action == 'booking-added') {
             echo '
             <div id="popup1" class="overlay">
                 <div class="popup">
                     <center>
+                        <br><br>
+                        <h2>Booking Successfully.</h2>
                         <a class="close" href="appointment.php">×</a>
                         <div class="content">
-                            <p style="padding: 0;margin: 0;text-align: center;font-size: 20px;font-weight: 500;">Booking Cancelled</p>
+                            Your Appointment number is ' . $id . '.<br><br>
                         </div>
-                        <div style="display: flex;justify-content: center;">
-                            <a href="appointment.php"><button class="btn-primary-soft btn">OK</button></a>
+                        <div style="display: flex; justify-content: center;">
+                            <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text">  OK  </font></button></a>
+                            <br><br><br><br>
                         </div>
                     </center>
                 </div>
             </div>';
-        } elseif ($action == 'booking-added') {
-            $id = $_GET["id"];
+        } elseif ($action == 'drop') {
+            $title = urldecode($_GET["title"]);
+            $docname = urldecode($_GET["doc"]);
             echo '
             <div id="popup1" class="overlay">
                 <div class="popup">
                     <center>
+                        <h2>Are you sure?</h2>
                         <a class="close" href="appointment.php">×</a>
                         <div class="content">
-                            <p style="padding: 0;margin: 0;text-align: center;font-size: 20px;font-weight: 500;">Booking Successful</p>
+                            You want to Cancel this Appointment?<br><br>
+                            Session Name:  <b>' . substr($title, 0, 40) . '</b><br>
+                            Doctor name : <b>' . substr($docname, 0, 40) . '</b><br><br>
                         </div>
-                        <div style="display: flex;justify-content: center;">
-                            <a href="appointment.php"><button class="btn-primary-soft btn">OK</button></a>
+                        <div style="display: flex; justify-content: center;">
+                            <a href="delete-appointment.php?id=' . $id . '" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text"> Yes </font></button></a>   
+                            <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text">  No  </font></button></a>
                         </div>
                     </center>
                 </div>
