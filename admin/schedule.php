@@ -460,7 +460,9 @@
                                         <option value="60">1 hour</option>
                                         <option value="90">1 hour 30 minutes</option>
                                         <option value="120">2 hours</option>
-                                    </select><br><br>
+                                    </selectರ
+
+    </select><br><br>
                                 </td>
                             </tr>
                             <tr>
@@ -523,6 +525,28 @@
                         <div class="content">
                             The doctor already has a session scheduled on ' . htmlspecialchars($dateget) . ' at ' . htmlspecialchars(date('h:i A', strtotime($start_timeget))) . '.<br>
                             Cannot schedule "' . htmlspecialchars($titleget) . '". Please choose a different time or date.
+                        </div>
+                        <div style="display: flex;justify-content: center;">
+                            <a href="?action=add-session" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">Try Again</font></button></a>
+                            <a href="schedule.php" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">Cancel</font></button></a>
+                        </div>
+                    </center>
+                </div>
+            </div>
+            ';
+        } elseif($action == 'add-session-limit-exceeded'){
+            $titleget = $_GET["title"];
+            $dateget = $_GET["date"];
+            echo '
+            <div id="popup1" class="overlay">
+                <div class="popup">
+                    <center>
+                        <br><br>
+                        <h2>Session Limit Exceeded</h2>
+                        <a class="close" href="schedule.php">×</a>
+                        <div class="content">
+                            The doctor already has 5 sessions scheduled on ' . htmlspecialchars($dateget) . '.<br>
+                            Cannot schedule "' . htmlspecialchars($titleget) . '". Maximum limit is 5 sessions per day.
                         </div>
                         <div style="display: flex;justify-content: center;">
                             <a href="?action=add-session" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">Try Again</font></button></a>

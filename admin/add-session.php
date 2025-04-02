@@ -20,6 +20,24 @@ if ($_POST) {
     $end_datetime = $start_datetime + ($duration * 60); // Convert minutes to seconds
     $end_time = date("H:i:s", $end_datetime); // e.g., "15:30:00"
 
+    // Check the number of sessions for the doctor on the given date
+    $count_sql = "SELECT COUNT(*) as session_count FROM schedule WHERE docid = ? AND scheduledate = ?";
+    $count_stmt = $database->prepare($count_sql);
+    if ($count_stmt === false) {
+        die("Prepare failed: " . $database->error);
+    }
+    $count_stmt->bind_param("is", $docid, $date);
+    $count_stmt->execute();
+    $count_result = $count_stmt->get_result();
+    $session_count = $count_result->fetch_assoc()["session_count"];
+    $count_stmt->close();
+
+    if ($session_count >= 5) {
+        // Limit exceeded, redirect with error message
+        header("location: schedule.php?action=add-session-limit-exceeded&title=" . urlencode($title) . "&date=" . urlencode($date));
+        exit;
+    }
+
     // Check for overlapping sessions
     $check_sql = "
         SELECT COUNT(*) as conflict_count 
@@ -49,7 +67,7 @@ if ($_POST) {
         exit;
     }
 
-    // No conflict, insert the new session
+    // No conflict and under limit, insert the new session
     $sql = "INSERT INTO schedule (docid, title, scheduledate, start_time, end_time) VALUES (?, ?, ?, ?, ?)";
     $stmt = $database->prepare($sql);
     if ($stmt === false) {
