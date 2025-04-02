@@ -1,4 +1,7 @@
 <?php
+require_once '../vendor/autoload.php';
+use PHPMailer\PHPMailer\PHPMailer;
+
 include("../connection.php");
 date_default_timezone_set('Asia/Kolkata');
 $current_datetime = date('Y-m-d H:i');
@@ -20,14 +23,24 @@ while ($row = $result->fetch_assoc()) {
     $docname = $row["docname"];
     $gmeet_link = $row["gmeet_link"];
 
-    $subject = "Your Session Google Meet Link";
+    $subject = "Your Session Starts Now - Google Meet Link";
     $body = "Dear $patient_name,\n\nYour session '$title' with Dr. $docname is starting now on $scheduledate at $start_time.\nJoin here: $gmeet_link\n\nRegards,\nSession Coordinator";
-    $headers = "From: your_email@gmail.com\r\nContent-Type: text/plain; charset=UTF-8\r\n";
 
-    if (mail($patient_email, $subject, $body, $headers)) {
-        error_log("Email sent to $patient_email for session $title at $current_datetime");
+    $mail = new PHPMailer();
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com';
+    $mail->Port = 587;
+    $mail->SMTPAuth = true;
+    $mail->Username = 'your_email@gmail.com';
+    $mail->Password = 'your_app_password';
+    $mail->setFrom('your_email@gmail.com', 'Session Coordinator');
+    $mail->addAddress($patient_email);
+    $mail->Subject = $subject;
+    $mail->Body = $body;
+    if ($mail->send()) {
+        error_log("Reminder email sent to $patient_email for session $title at $current_datetime");
     } else {
-        error_log("Failed to send email to $patient_email for session $title at $current_datetime");
+        error_log("Failed to send reminder email: " . $mail->ErrorInfo);
     }
 }
 ?>

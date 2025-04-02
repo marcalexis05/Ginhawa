@@ -7,10 +7,30 @@
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
     <title>Appointments</title>
     <style>
         .popup { animation: transitionIn-Y-bottom 0.5s; }
         .sub-table { animation: transitionIn-Y-bottom 0.5s; }
+        .gmeet-link {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        .gmeet-link:hover {
+            background-color: #45a049;
+        }
+        .gmeet-link.unavailable {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -35,28 +55,36 @@
     $userid = $userfetch["pid"];
     $username = $userfetch["pname"];
 
-    // Main query for appointments with updated schema
+    // Main query for appointments with gmeet_link
     $sqlmain = "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, 
-                schedule.scheduledate, schedule.start_time, schedule.end_time, appointment.apponum, appointment.appodate 
+                schedule.scheduledate, schedule.start_time, schedule.end_time, appointment.apponum, 
+                appointment.appodate, appointment.gmeet_link 
                 FROM schedule 
                 INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid 
                 INNER JOIN patient ON patient.pid = appointment.pid 
                 INNER JOIN doctor ON schedule.docid = doctor.docid 
-                WHERE patient.pid = $userid";
+                WHERE patient.pid = ?";
 
     if ($_POST && !empty($_POST["sheduledate"])) {
         $sheduledate = $_POST["sheduledate"];
-        $sqlmain .= " AND schedule.scheduledate = '$sheduledate'";
+        $sqlmain .= " AND schedule.scheduledate = ?";
     }
 
     $sqlmain .= " ORDER BY appointment.appodate ASC";
-    $result = $database->query($sqlmain);
+    $stmt = $database->prepare($sqlmain);
+    if ($_POST && !empty($_POST["sheduledate"])) {
+        $stmt->bind_param("is", $userid, $sheduledate);
+    } else {
+        $stmt->bind_param("i", $userid);
+    }
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    // Check if query failed
     if ($result === false) {
         die("Query failed: " . $database->error);
     }
     ?>
+
     <div class="container">
         <div class="menu">
             <table class="menu-container" border="0">
@@ -130,7 +158,7 @@
                                     <td width="5%" style="text-align: center;">Date:</td>
                                     <td width="30%">
                                         <form action="" method="post">
-                                            <input type="date" name="sheduledate" id="date" class="input-text filter-container-items" style="margin: 0; width: 95%;">
+                                            <input type="date" name="sheduledate" id="date" class="input-text filter-container-items" style="margin: 0; width: 95%;" value="<?php echo isset($_POST['sheduledate']) ? $_POST['sheduledate'] : ''; ?>">
                                     </td>
                                     <td width="12%">
                                         <input type="submit" name="filter" value="Filter" class="btn-primary-soft btn button-icon btn-filter" style="padding: 15px; margin: 0; width: 100%;">
@@ -156,7 +184,7 @@
                                                         <img src="../img/notfound.svg" width="25%">
                                                         <br>
                                                         <p class="heading-main12" style="margin-left: 45px; font-size: 20px; color: rgb(49, 49, 49)">We couldn\'t find anything related to your keywords!</p>
-                                                        <a class="non-style-link" href="appointment.php"><button class="login-btn btn-primary-soft btn" style="display: flex; justify-content: center; align-items: center; margin-left: 20px;"> Show all Appointments </button></a>
+                                                        <a class="non-style-link" href="appointment.php"><button class="login-btn btn-primary-soft btn" style="display: flex; justify-content: center; align-items: center; margin-left: 20px;"> Show all Appointments </button></a>
                                                     </center>
                                                     <br><br><br><br>
                                                 </td>
@@ -178,6 +206,7 @@
                                                     $apponum = $row["apponum"];
                                                     $appodate = $row["appodate"];
                                                     $appoid = $row["appoid"];
+                                                    $gmeet_link = $row["gmeet_link"] ?? 'Not yet generated';
 
                                                     if (empty($scheduleid)) {
                                                         break;
@@ -202,7 +231,13 @@
                                                                     </div>
                                                                     <div class="h4-search">
                                                                         Scheduled Date: ' . $scheduledate . '<br>Time: <b>' . $start_time . ' - ' . $end_time . '</b>
-                                                                    </div>
+                                                                    </div>';
+                                                    if ($gmeet_link === 'Not yet generated') {
+                                                        echo '<div><a class="gmeet-link unavailable">' . $gmeet_link . '</a></div>';
+                                                    } else {
+                                                        echo '<div><a href="' . $gmeet_link . '" target="_blank" class="gmeet-link">Join Google Meet</a></div>';
+                                                    }
+                                                    echo '
                                                                     <br>
                                                                     <a href="?action=drop&id=' . $appoid . '&title=' . urlencode($title) . '&doc=' . urlencode($docname) . '"><button class="login-btn btn-primary-soft btn" style="padding: 11px; width: 100%"><font class="tn-in-text">Cancel Booking</font></button></a>
                                                                 </div>
@@ -222,6 +257,7 @@
             </table>
         </div>
     </div>
+
     <?php
     if ($_GET) {
         $id = $_GET["id"];
@@ -238,7 +274,7 @@
                             Your Appointment number is ' . $id . '.<br><br>
                         </div>
                         <div style="display: flex; justify-content: center;">
-                            <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text">  OK  </font></button></a>
+                            <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text">  OK  </font></button></a>
                             <br><br><br><br>
                         </div>
                     </center>
@@ -255,12 +291,12 @@
                         <a class="close" href="appointment.php">×</a>
                         <div class="content">
                             You want to Cancel this Appointment?<br><br>
-                            Session Name:  <b>' . substr($title, 0, 40) . '</b><br>
-                            Doctor name : <b>' . substr($docname, 0, 40) . '</b><br><br>
+                            Session Name:  <b>' . substr($title, 0, 40) . '</b><br>
+                            Doctor name : <b>' . substr($docname, 0, 40) . '</b><br><br>
                         </div>
                         <div style="display: flex; justify-content: center;">
-                            <a href="delete-appointment.php?id=' . $id . '" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text"> Yes </font></button></a>   
-                            <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text">  No  </font></button></a>
+                            <a href="delete-appointment.php?id=' . $id . '" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text"> Yes </font></button></a>   
+                            <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="display: flex; justify-content: center; align-items: center; margin: 10px; padding: 10px;"><font class="tn-in-text">  No  </font></button></a>
                         </div>
                     </center>
                 </div>
