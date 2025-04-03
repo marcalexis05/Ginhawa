@@ -338,6 +338,13 @@ input[type=search]:focus {
   font-size: 16px;
   
 }
+.menu-texts{
+  margin-left: auto;
+  padding-left: 40%;
+  font-weight: 500;
+  font-size: 16px;
+  
+}
 
 
 .menu-active{
@@ -364,12 +371,36 @@ input[type=search]:focus {
   text-decoration: none;
   color: var(--primarycolor);
 }
+.menu-icon-attendance {
+  position: relative;
+  padding-left: 30px; /* Adjust this to control the space between the icon and text */
+}
+
+.menu-icon-attendance::before {
+  content: '';
+  position: absolute;
+  left: 80;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  background: url('../img/icons/attendance1.svg') no-repeat center;
+  background-size: contain;
+}
+.menu-icon-attendance {
+  position: relative;
+  padding-left: 80px; /* This creates a large gap between the icon and text */
+}
+.menu-icon-attendance:hover::before {
+  background: url('../img/icons/attendanceblue.svg') no-repeat center;
+}
 
 
 
 .menu-icon-dashbord{
   background-image: url('../img/icons/dashboard.svg');
 }
+
 
 
 .menu-icon-doctor{
@@ -393,6 +424,9 @@ input[type=search]:focus {
 }
 .menu-icon-home{
   background-image: url('../img/icons/home.svg');
+}
+.menu-icon-attendance{
+  background-image: url('../img/icons/Attendance1.svg');
 }
 
 
@@ -439,6 +473,12 @@ input[type=search]:focus {
   color: var(--primarycolor);
   
   background-image: url('../img/icons/home-iceblue.svg');
+}
+
+.menu-icon-attendance:hover,.menu-icon-attendance-active{
+  color: var(--primarycolor);
+  
+  background-image: url('../img/icons/attendanceblue.svg');
 }
 
 

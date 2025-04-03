@@ -53,11 +53,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="./Images/G-icon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/animations.css">  
     <link rel="stylesheet" href="css/main.css">  
     <link rel="stylesheet" href="css/signup.css">
-    <link rel="icon" href="../Images/G-icon.png">
+    <link rel="icon" href="./Images/G-icon.png">
         
     <title>Sign Up</title>
     <style>

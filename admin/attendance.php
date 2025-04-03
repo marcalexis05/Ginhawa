@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../Images/G-icon.png">
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
@@ -10,13 +11,37 @@
     <style>
         .clock { font-size: 24px; margin: 15px 0; color: #2c3e50; font-weight: 600; background: #ecf0f1; padding: 10px 20px; border-radius: 8px; display: inline-block; }
         .attendance-table { width: 100%; margin: 20px 0; background: #fff; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; }
-        .sub-table th { background: #3498db; color: white; padding: 15px; font-weight: 600; }
+        .sub-table th { background: #2ecc71; color: white; padding: 15px; font-weight: 600; }
         .sub-table td { padding: 12px; border-bottom: 1px solid #eee; }
         .sub-table tr:hover { background: #f8f9fa; }
         .filter-container { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
         .status-active { color: #2ecc71; font-weight: bold; }
         .status-inactive { color: #e74c3c; font-weight: bold; }
         .error-message { color: #e74c3c; padding: 10px; background: #ffebee; border-radius: 5px; margin: 10px 0; }
+        .menu-icon-attendance {
+    position: relative;
+    padding-left: 30px; /* Adjust this to control the space between the icon and text */
+}
+
+.menu-icon-attendance::before {
+    content: '';
+    position: absolute;
+    left: 80;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    background: url('../img/icons/attendance1.svg') no-repeat center;
+    background-size: contain;
+}
+.menu-icon-attendance {
+    position: absolute;
+    padding-left: 80px; /* This creates a large gap between the icon and text */
+}
+.menu-icon-attendance:hover::before {
+    background: url('../img/icons/attendanceblue.svg') no-repeat center;
+}
+    
     </style>
 </head>
 <body>
@@ -69,8 +94,14 @@
                     <td class="menu-btn menu-icon-patient"><a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">Patients</p></a></div></td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-attendance menu-active menu-icon-attendance-active"><a href="attendance.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Attendance</p></div></a></td>
-                </tr>
+                <td class="menu-btn menu-icon-attendance">
+    <a href="attendance.php" class="non-style-link-menu">
+        <div>
+            <p class="menu-texts" style="margin-left: 40px;">Attendance</p>
+        </div>
+    </a>
+</td>
+</tr>
             </table>
         </div>
 

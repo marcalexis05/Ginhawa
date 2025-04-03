@@ -20,6 +20,7 @@ include("../connection.php");
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../Images/G-icon.png">
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
@@ -187,6 +188,11 @@ include("../connection.php");
                         <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">Patients</p></a></div>
                     </td>
                 </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-attendance">
+                        <a href="attendance.php" class="non-style-link-menu"><div><p class="menu-text">Attendance</p></div></a>
+                    </td>
+                </tr>
             </table>
         </div>
         <div class="dash-body">
@@ -242,12 +248,33 @@ include("../connection.php");
                         <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Doctors (<?php echo $list11->num_rows; ?>)</p>
                     </td>
                 </tr>
+                <tr>
+                    <td colspan="4" style="padding-top:0px;">
+                        <form method="get" action="">
+                            <label for="archive_filter" style="margin-left: 45px;">Filter by Status: </label>
+                            <select name="archive_filter" id="archive_filter" onchange="this.form.submit()" class="box" style="padding: 5px;">
+                                <option value="all" <?php echo (isset($_GET['archive_filter']) && $_GET['archive_filter'] == 'all') ? 'selected' : ''; ?>>All</option>
+                                <option value="0" <?php echo (isset($_GET['archive_filter']) && $_GET['archive_filter'] == '0') ? 'selected' : ''; ?>>Unarchived</option>
+                                <option value="1" <?php echo (isset($_GET['archive_filter']) && $_GET['archive_filter'] == '1') ? 'selected' : ''; ?>>Archived</option>
+                            </select>
+                        </form>
+                    </td>
+                </tr>
                 <?php
+                    $archive_filter = isset($_GET['archive_filter']) ? $_GET['archive_filter'] : 'all';
                     if($_POST){
                         $keyword=$_POST["search"];
-                        $sqlmain= "select * from doctor where docemail='$keyword' or docname='$keyword' or docname like '$keyword%' or docname like '%$keyword' or docname like '%$keyword%'";
-                    }else{
-                        $sqlmain= "select * from doctor order by docid desc";
+                        if ($archive_filter == 'all') {
+                            $sqlmain= "select * from doctor where (docemail='$keyword' or docname='$keyword' or docname like '$keyword%' or docname like '%$keyword' or docname like '%$keyword%')";
+                        } else {
+                            $sqlmain= "select * from doctor where (docemail='$keyword' or docname='$keyword' or docname like '$keyword%' or docname like '%$keyword' or docname like '%$keyword%') and archived='$archive_filter'";
+                        }
+                    } else {
+                        if ($archive_filter == 'all') {
+                            $sqlmain= "select * from doctor order by docid desc";
+                        } else {
+                            $sqlmain= "select * from doctor where archived='$archive_filter' order by docid desc";
+                        }
                     }
                 ?>
                 <tr>
@@ -260,6 +287,7 @@ include("../connection.php");
                                 <th class="table-headin">Doctor Name</th>
                                 <th class="table-headin">Email</th>
                                 <th class="table-headin">Specialties</th>
+                                <th class="table-headin">Status</th>
                                 <th class="table-headin">Events</th>
                         </tr>
                         </thead>
@@ -268,7 +296,7 @@ include("../connection.php");
                                 $result= $database->query($sqlmain);
                                 if($result->num_rows==0){
                                     echo '<tr>
-                                    <td colspan="4">
+                                    <td colspan="5">
                                     <br><br><br><br>
                                     <center>
                                     <img src="../img/notfound.svg" width="25%">
@@ -287,6 +315,7 @@ include("../connection.php");
                                         $name=$row["docname"];
                                         $email=$row["docemail"];
                                         $spe=$row["specialties"];
+                                        $archived=$row["archived"];
                                         $spcil_res= $database->query("select sname from specialties where id='$spe'");
                                         $spcil_array= $spcil_res->fetch_assoc();
                                         $spcil_name=$spcil_array["sname"];
@@ -294,13 +323,14 @@ include("../connection.php");
                                             <td> '.substr($name,0,30).'</td>
                                             <td>'.substr($email,0,20).'</td>
                                             <td>'.substr($spcil_name,0,20).'</td>
+                                            <td>'.($archived == 1 ? 'Archived' : 'Unarchived').'</td>
                                             <td>
                                             <div style="display:flex;justify-content: center;">
                                             <a href="?action=edit&id='.$docid.'&error=0" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-edit"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Edit</font></button></a>
                                                
                                             <a href="?action=view&id='.$docid.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-view"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
                                                
-                                            <a href="?action=drop&id='.$docid.'&name='.$name.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-delete"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Remove</font></button></a>
+                                            <a href="?action=archive&id='.$docid.'&name='.$name.'&archived='.$archived.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-delete"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">'.($archived == 1 ? 'Unarchive' : 'Archive').'</font></button></a>
                                             </div>
                                             </td>
                                         </tr>';
@@ -316,44 +346,99 @@ include("../connection.php");
             </table>
         </div>
     </div>
-    <?php 
-    if($_GET){
-        $id=$_GET["id"];
-        $action=$_GET["action"];
-        if($action=='drop'){
-            $nameget=$_GET["name"];
+    <?php
+    // Feedback popups for archive success or error
+    if (isset($_GET['success']) && $_GET['success'] == 'archive_updated') {
+        echo '
+        <div id="popup1" class="overlay">
+            <div class="popup">
+                <center>
+                    <h2>Success</h2>
+                    <a class="close" href="doctors.php">×</a>
+                    <div class="content">
+                        Doctor account status updated successfully!
+                    </div>
+                    <div style="display: flex;justify-content: center;">
+                        <a href="doctors.php" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">OK</font></button></a>
+                    </div>
+                </center>
+            </div>
+        </div>';
+    } elseif (isset($_GET['error'])) {
+        $error_msg = '';
+        switch ($_GET['error']) {
+            case 'missing_params':
+                $error_msg = 'Missing required parameters.';
+                break;
+            case 'invalid_params':
+                $error_msg = 'Invalid parameters provided.';
+                break;
+            case 'db_prepare_failed':
+                $error_msg = 'Database preparation failed.';
+                break;
+            case 'archive_failed':
+                $error_msg = 'Failed to update archive status.';
+                break;
+            default:
+                $error_msg = 'An unknown error occurred.';
+        }
+        echo '
+        <div id="popup1" class="overlay">
+            <div class="popup">
+                <center>
+                    <h2>Error</h2>
+                    <a class="close" href="doctors.php">×</a>
+                    <div class="content">
+                        ' . $error_msg . '
+                    </div>
+                    <div style="display: flex;justify-content: center;">
+                        <a href="doctors.php" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">OK</font></button></a>
+                    </div>
+                </center>
+            </div>
+        </div>';
+    }
+
+    // Action popups
+    if (!empty($_GET) && isset($_GET["id"]) && isset($_GET["action"])) {
+        $id = $_GET["id"];
+        $action = $_GET["action"];
+        if ($action == 'archive') {
+            $nameget = $_GET["name"];
+            $archived = $_GET["archived"];
+            $new_status = $archived == 1 ? 0 : 1; // Toggle archive status
             echo '
             <div id="popup1" class="overlay">
-                    <div class="popup">
+                <div class="popup">
                     <center>
                         <h2>Are you sure?</h2>
                         <a class="close" href="doctors.php">×</a>
                         <div class="content">
-                            You want to delete this record<br>('.substr($nameget,0,40).').
+                            You want to '.($archived == 1 ? 'unarchive' : 'archive').' this record<br>('.substr($nameget,0,40).').
                         </div>
                         <div style="display: flex;justify-content: center;">
-                        <a href="delete-doctor.php?id='.$id.'" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text"> Yes </font></button></a>   
-                        <a href="doctors.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">  No  </font></button></a>
+                            <a href="archive-doctor.php?id='.$id.'&status='.$new_status.'" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">Yes</font></button></a>   
+                            <a href="doctors.php" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">No</font></button></a>
                         </div>
                     </center>
-            </div>
-            </div>
-            ';
-        }elseif($action=='view'){
-            $sqlmain= "select * from doctor where docid='$id'";
-            $result= $database->query($sqlmain);
-            $row=$result->fetch_assoc();
-            $name=$row["docname"];
-            $email=$row["docemail"];
-            $spe=$row["specialties"];
-            $spcil_res= $database->query("select sname from specialties where id='$spe'");
-            $spcil_array= $spcil_res->fetch_assoc();
-            $spcil_name=$spcil_array["sname"];
-            $tele=$row['doctel'];
-            $ptid=$row['ptid']; // Fetch the ptid
+                </div>
+            </div>';
+        } elseif ($action == 'view') {
+            $sqlmain = "select * from doctor where docid='$id'";
+            $result = $database->query($sqlmain);
+            $row = $result->fetch_assoc();
+            $name = $row["docname"];
+            $email = $row["docemail"];
+            $spe = $row["specialties"];
+            $archived = $row["archived"];
+            $spcil_res = $database->query("select sname from specialties where id='$spe'");
+            $spcil_array = $spcil_res->fetch_assoc();
+            $spcil_name = $spcil_array["sname"];
+            $tele = $row['doctel'];
+            $ptid = $row['ptid']; // Fetch the ptid
             echo '
             <div id="popup1" class="overlay">
-                    <div class="popup">
+                <div class="popup">
                     <center>
                         <h2></h2>
                         <a class="close" href="doctors.php">×</a>
@@ -361,356 +446,361 @@ include("../connection.php");
                             eDoc Web App<br>
                         </div>
                         <div style="display: flex;justify-content: center;">
-                        <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
-                            <tr>
-                                <td>
-                                    <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">View Details.</p><br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="ptid" class="form-label">PT ID: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    '.$ptid.'<br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="name" class="form-label">Name: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    '.$name.'<br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="Email" class="form-label">Email: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                '.$email.'<br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="Tele" class="form-label">Telephone: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                '.$tele.'<br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="spec" class="form-label">Specialties: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                            <td class="label-td" colspan="2">
-                            '.$spcil_name.'<br><br>
-                            </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <a href="doctors.php"><input type="button" value="OK" class="login-btn btn-primary-soft btn" ></a>
-                                </td>
-                            </tr>
-                        </table>
-                        </div>
-                    </center>
-                    <br><br>
-            </div>
-            </div>
-            ';
-        }elseif($action=='add'){
-            $error_1=$_GET["error"];
-            $errorlist= array(
-                '1'=>'<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Already have an account for this Email address.</label>',
-                '2'=>'<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Password Confirmation Error! Reconfirm Password</label>',
-                '3'=>'<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;"></label>',
-                '4'=>"",
-                '0'=>'',
-            );
-            if($error_1!='4'){
-                echo '
-            <div id="popup1" class="overlay">
-                    <div class="popup">
-                    <center>
-                        <a class="close" href="doctors.php">×</a> 
-                        <div style="display: flex;justify-content: center;">
-                        <div class="abc">
-                        <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
-                        <tr>
-                                <td class="label-td" colspan="2">'.$errorlist[$error_1].'</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">Add New Doctor</p><br><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <form action="add-new.php" method="POST" class="add-new-form" name="addNewForm" onsubmit="return validateForm()">
-                                <td class="label-td" colspan="2">
-                                    <label for="name" class="form-label">Name: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <input type="text" name="name" class="input-text" placeholder="Doctor Name" required><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="Email" class="form-label">Email: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <input type="email" name="email" class="input-text" placeholder="Email Address" required><br>
-                                    <span id="emailError" style="color:red;"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="Tele" class="form-label">Telephone: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <input type="tel" name="Tele" class="input-text" placeholder="Telephone Number" required>
-                                    <input type="hidden" name="full_tele" id="full_tele"><br>
-                                    <span id="teleError" style="color:red;"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="spec" class="form-label">Choose specialties: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <select name="spec" id="" class="box" >';
-                                        $list11 = $database->query("select * from specialties order by sname asc;");
-                                        for ($y=0; $y<$list11->num_rows; $y++){
-                                            $row00=$list11->fetch_assoc();
-                                            $sn=$row00["sname"];
-                                            $id00=$row00["id"];
-                                            echo "<option value=".$id00.">$sn</option><br/>";
-                                        };
-                                echo ' </select><br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="password" class="form-label">Password: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <input type="password" name="password" class="input-text" placeholder="Define a Password" required><br>
-                                    <span id="passwordError" style="color:red;"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <label for="cpassword" class="form-label">Confirm Password: </label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label-td" colspan="2">
-                                    <input type="password" name="cpassword" class="input-text" placeholder="Confirm Password" required><br>
-                                    <span id="cpasswordError" style="color:red;"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    <input type="reset" value="Reset" class="login-btn btn-primary-soft btn" >     
-                                    <input type="submit" value="Add" class="login-btn btn-primary btn">
-                                </td>
-                            </tr>
-                            </form>
-                            </tr>
-                        </table>
-                        </div>
-                        </div>
-                    </center>
-                    <br><br>
-            </div>
-            </div>
-            ';
-            }else{
-                echo '
-                    <div id="popup1" class="overlay">
-                            <div class="popup">
-                            <center>
-                            <br><br><br><br>
-                                <h2>New Record Added Successfully!</h2>
-                                <a class="close" href="doctors.php">×</a>
-                                <div class="content"></div>
-                                <div style="display: flex;justify-content: center;">
-                                <a href="doctors.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">  OK  </font></button></a>
-                                </div>
-                                <br><br>
-                            </center>
-                    </div>
-                    </div>
-                ';
-            }
-        }elseif($action=='edit'){
-            $sqlmain= "select * from doctor where docid='$id'";
-            $result= $database->query($sqlmain);
-            $row=$result->fetch_assoc();
-            $name=$row["docname"];
-            $email=$row["docemail"];
-            $spe=$row["specialties"];
-            $spcil_res= $database->query("select sname from specialties where id='$spe'");
-            $spcil_array= $spcil_res->fetch_assoc();
-            $spcil_name=$spcil_array["sname"];
-            $tele=$row['doctel'];
-            $ptid=$row['ptid']; // Fetch the ptid
-
-            $error_1=$_GET["error"];
-            $errorlist= array(
-                '1'=>'<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Already have an account for this Email address.</label>',
-                '2'=>'<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Password Confirmation Error! Reconfirm Password</label>',
-                '3'=>'<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;"></label>',
-                '4'=>"",
-                '0'=>'',
-            );
-
-            if($error_1!='4'){
-                echo '
-                    <div id="popup1" class="overlay">
-                            <div class="popup">
-                            <center>
-                                <a class="close" href="doctors.php">×</a> 
-                                <div style="display: flex;justify-content: center;">
-                                <div class="abc">
-                                <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
+                            <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
                                 <tr>
-                                        <td class="label-td" colspan="2">'.$errorlist[$error_1].'</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">Edit Doctor Details</p>
-                                            PT ID: '.$ptid.'<br><br>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label-td" colspan="2">
-                                            <form action="edit-doc.php" method="POST" class="add-new-form">
-                                            <label for="Email" class="form-label">Email: </label>
-                                            <input type="hidden" value="'.$id.'" name="id00">
-                                            <input type="hidden" name="oldemail" value="'.$email.'" >
-                                            <input type="hidden" name="ptid" value="'.$ptid.'" >
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label-td" colspan="2">
-                                        <input type="email" name="email" class="input-text" placeholder="Email Address" value="'.$email.'" required><br>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label-td" colspan="2">
-                                            <label for="name" class="form-label">Name: </label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label-td" colspan="2">
-                                            <input type="text" name="name" class="input-text" placeholder="Doctor Name" value="'.$name.'" required><br>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label-td" colspan="2">
-                                            <label for="Tele" class="form-label">Telephone: </label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label-td" colspan="2">
-                                            <input type="tel" name="Tele" class="input-text" placeholder="Telephone Number" value="'.$tele.'" required><br>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label-td" colspan="2">
-                                            <label for="spec" class="form-label">Choose specialties: (Current: '.$spcil_name.')</label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label-td" colspan="2">
-                                            <select name="spec" id="" class="box">';
-                                                $list11 = $database->query("select * from specialties;");
-                                                for ($y=0; $y<$list11->num_rows; $y++){
-                                                    $row00=$list11->fetch_assoc();
-                                                    $sn=$row00["sname"];
-                                                    $id00=$row00["id"];
-                                                    echo "<option value=".$id00.">$sn</option><br/>";
-                                                };
-                                echo '       </select><br><br>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label-td" colspan="2">
-                                            <label for="password" class="form-label">Password: </label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label-td" colspan="2">
-                                            <input type="password" name="password" class="input-text" placeholder="Define a Password" required><br>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label-td" colspan="2">
-                                            <label for="cpassword" class="form-label">Confirm Password: </label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label-td" colspan="2">
-                                            <input type="password" name="cpassword" class="input-text" placeholder="Confirm Password" required><br>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">
-                                            <input type="reset" value="Reset" class="login-btn btn-primary-soft btn" >     
-                                            <input type="submit" value="Save" class="login-btn btn-primary btn">
-                                        </td>
-                                    </tr>
-                                    </form>
-                                    </tr>
-                                </table>
-                                </div>
-                                </div>
-                            </center>
-                            <br><br>
-                    </div>
-                    </div>
-                    ';
-            }else{
+                                    <td>
+                                        <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">View Details.</p><br><br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        <label for="ptid" class="form-label">PT ID: </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        '.$ptid.'<br><br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        <label for="name" class="form-label">Name: </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        '.$name.'<br><br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        <label for="Email" class="form-label">Email: </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        '.$email.'<br><br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        <label for="Tele" class="form-label">Telephone: </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        '.$tele.'<br><br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        <label for="spec" class="form-label">Specialties: </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        '.$spcil_name.'<br><br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        <label for="status" class="form-label">Status: </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-td" colspan="2">
+                                        '.($archived == 1 ? 'Archived' : 'Unarchived').'<br><br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <a href="doctors.php"><input type="button" value="OK" class="login-btn btn-primary-soft btn" ></a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </center>
+                    <br><br>
+                </div>
+            </div>';
+        } elseif ($action == 'add') {
+            $error_1 = $_GET["error"];
+            $errorlist = array(
+                '1' => '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Already have an account for this Email address.</label>',
+                '2' => '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Password Confirmation Error! Reconfirm Password</label>',
+                '3' => '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;"></label>',
+                '4' => "",
+                '0' => '',
+            );
+            if ($error_1 != '4') {
                 echo '
                 <div id="popup1" class="overlay">
-                        <div class="popup">
+                    <div class="popup">
                         <center>
-                        <br><br><br><br>
+                            <a class="close" href="doctors.php">×</a> 
+                            <div style="display: flex;justify-content: center;">
+                                <div class="abc">
+                                    <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
+                                        <tr>
+                                            <td class="label-td" colspan="2">'.$errorlist[$error_1].'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">Add New Doctor</p><br><br>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <form action="add-new.php" method="POST" class="add-new-form" name="addNewForm" onsubmit="return validateForm()">
+                                                <td class="label-td" colspan="2">
+                                                    <label for="name" class="form-label">Name: </label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <input type="text" name="name" class="input-text" placeholder="Doctor Name" required><br>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <label for="Email" class="form-label">Email: </label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <input type="email" name="email" class="input-text" placeholder="Email Address" required><br>
+                                                    <span id="emailError" style="color:red;"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <label for="Tele" class="form-label">Telephone: </label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <input type="tel" name="Tele" class="input-text" placeholder="Telephone Number" required>
+                                                    <input type="hidden" name="full_tele" id="full_tele"><br>
+                                                    <span id="teleError" style="color:red;"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <label for="spec" class="form-label">Choose specialties: </label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <select name="spec" id="" class="box" >';
+                                                        $list11 = $database->query("select * from specialties order by sname asc;");
+                                                        for ($y=0; $y<$list11->num_rows; $y++){
+                                                            $row00=$list11->fetch_assoc();
+                                                            $sn=$row00["sname"];
+                                                            $id00=$row00["id"];
+                                                            echo "<option value=".$id00.">$sn</option><br/>";
+                                                        };
+                                                    echo ' </select><br>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <label for="password" class="form-label">Password: </label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <input type="password" name="password" class="input-text" placeholder="Define a Password" required><br>
+                                                    <span id="passwordError" style="color:red;"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <label for="cpassword" class="form-label">Confirm Password: </label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <input type="password" name="cpassword" class="input-text" placeholder="Confirm Password" required><br>
+                                                    <span id="cpasswordError" style="color:red;"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <input type="reset" value="Reset" class="login-btn btn-primary-soft btn" >     
+                                                    <input type="submit" value="Add" class="login-btn btn-primary btn">
+                                                </td>
+                                            </tr>
+                                        </form>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </center>
+                        <br><br>
+                    </div>
+                </div>';
+            } else {
+                echo '
+                <div id="popup1" class="overlay">
+                    <div class="popup">
+                        <center>
+                            <br><br><br><br>
+                            <h2>New Record Added Successfully!</h2>
+                            <a class="close" href="doctors.php">×</a>
+                            <div class="content"></div>
+                            <div style="display: flex;justify-content: center;">
+                                <a href="doctors.php" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">OK</font></button></a>
+                            </div>
+                            <br><br>
+                        </center>
+                    </div>
+                </div>';
+            }
+        } elseif ($action == 'edit') {
+            $sqlmain = "select * from doctor where docid='$id'";
+            $result = $database->query($sqlmain);
+            $row = $result->fetch_assoc();
+            $name = $row["docname"];
+            $email = $row["docemail"];
+            $spe = $row["specialties"];
+            $spcil_res = $database->query("select sname from specialties where id='$spe'");
+            $spcil_array = $spcil_res->fetch_assoc();
+            $spcil_name = $spcil_array["sname"];
+            $tele = $row['doctel'];
+            $ptid = $row['ptid']; // Fetch the ptid
+
+            $error_1 = $_GET["error"];
+            $errorlist = array(
+                '1' => '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Already have an account for this Email address.</label>',
+                '2' => '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Password Confirmation Error! Reconfirm Password</label>',
+                '3' => '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;"></label>',
+                '4' => "",
+                '0' => '',
+            );
+
+            if ($error_1 != '4') {
+                echo '
+                <div id="popup1" class="overlay">
+                    <div class="popup">
+                        <center>
+                            <a class="close" href="doctors.php">×</a> 
+                            <div style="display: flex;justify-content: center;">
+                                <div class="abc">
+                                    <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
+                                        <tr>
+                                            <td class="label-td" colspan="2">'.$errorlist[$error_1].'</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">Edit Doctor Details</p>
+                                                PT ID: '.$ptid.'<br><br>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label-td" colspan="2">
+                                                <form action="edit-doc.php" method="POST" class="add-new-form">
+                                                    <label for="Email" class="form-label">Email: </label>
+                                                    <input type="hidden" value="'.$id.'" name="id00">
+                                                    <input type="hidden" name="oldemail" value="'.$email.'" >
+                                                    <input type="hidden" name="ptid" value="'.$ptid.'" >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <input type="email" name="email" class="input-text" placeholder="Email Address" value="'.$email.'" required><br>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <label for="name" class="form-label">Name: </label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <input type="text" name="name" class="input-text" placeholder="Doctor Name" value="'.$name.'" required><br>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <label for="Tele" class="form-label">Telephone: </label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <input type="tel" name="Tele" class="input-text" placeholder="Telephone Number" value="'.$tele.'" required><br>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <label for="spec" class="form-label">Choose specialties: (Current: '.$spcil_name.')</label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <select name="spec" id="" class="box">';
+                                                        $list11 = $database->query("select * from specialties;");
+                                                        for ($y=0; $y<$list11->num_rows; $y++){
+                                                            $row00=$list11->fetch_assoc();
+                                                            $sn=$row00["sname"];
+                                                            $id00=$row00["id"];
+                                                            echo "<option value=".$id00.">$sn</option><br/>";
+                                                        };
+                                                    echo ' </select><br><br>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <label for="password" class="form-label">Password: </label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <input type="password" name="password" class="input-text" placeholder="Define a Password" required><br>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <label for="cpassword" class="form-label">Confirm Password: </label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label-td" colspan="2">
+                                                    <input type="password" name="cpassword" class="input-text" placeholder="Confirm Password" required><br>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <input type="reset" value="Reset" class="login-btn btn-primary-soft btn" >     
+                                                    <input type="submit" value="Save" class="login-btn btn-primary btn">
+                                                </td>
+                                            </tr>
+                                        </form>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </center>
+                        <br><br>
+                    </div>
+                </div>';
+            } else {
+                echo '
+                <div id="popup1" class="overlay">
+                    <div class="popup">
+                        <center>
+                            <br><br><br><br>
                             <h2>Edit Successfully!</h2>
                             <a class="close" href="doctors.php">×</a>
                             <div class="content"></div>
                             <div style="display: flex;justify-content: center;">
-                            <a href="doctors.php" class="non-style-link"><button  class="btn-primary btn"  style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">  OK  </font></button></a>
+                                <a href="doctors.php" class="non-style-link"><button class="btn-primary btn" style="display: flex;justify-content: center;align-items: center;margin:10px;padding:10px;"><font class="tn-in-text">OK</font></button></a>
                             </div>
                             <br><br>
                         </center>
-                </div>
-                </div>
-                ';
-            };
-        };
-    };
+                    </div>
+                </div>';
+            }
+        }
+    }
     ?>
 </div>
 </body>

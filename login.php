@@ -3,12 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="./Images/G-icon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/animations.css">  
     <link rel="stylesheet" href="css/main.css">  
     <link rel="stylesheet" href="css/login.css">
-    <link rel="icon" href="../Images/G-icon.png">
     <title>Login</title>
+    <style>
+        /* Custom styling for the Google Login button */
+        .google-login-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 10px 15px;
+            background-color: #ffffff;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #3c4043;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        .google-login-btn:hover {
+            background-color: #f8f9fa;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+        }
+
+        .google-login-btn img {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
     <?php
@@ -187,22 +218,28 @@
                     $checker = $stmt->get_result();
                     $doctor = $checker->fetch_assoc();
 
-                    if ($checker->num_rows == 1 && password_verify($password, $doctor['docpassword'])) {
-                        $today = date('Y-m-d');
-                        $time_now = date('Y-m-d H:i:s');
+                    if ($checker->num_rows == 1) {
+                        if ($doctor['archived'] == 1) {
+                            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Your account has been archived. Please contact support.</label>';
+                        } elseif (password_verify($password, $doctor['docpassword'])) {
+                            $today = date('Y-m-d');
+                            $time_now = date('Y-m-d H:i:s');
 
-                        $stmt_attendance = $database->prepare("INSERT INTO doctor_attendance (doctor_id, docemail, time_in, date) VALUES (?, ?, ?, ?)");
-                        $stmt_attendance->bind_param("isss", $doctor['docid'], $email, $time_now, $today);
-                        $stmt_attendance->execute();
-                        $stmt_attendance->close();
+                            $stmt_attendance = $database->prepare("INSERT INTO doctor_attendance (doctor_id, docemail, time_in, date) VALUES (?, ?, ?, ?)");
+                            $stmt_attendance->bind_param("isss", $doctor['docid'], $email, $time_now, $today);
+                            $stmt_attendance->execute();
+                            $stmt_attendance->close();
 
-                        $_SESSION['user'] = $email;
-                        $_SESSION['usertype'] = 'd';
-                        $_SESSION['doctor_id'] = $doctor['docid'];
-                        header('Location: doctor/index.php');
-                        exit();
+                            $_SESSION['user'] = $email;
+                            $_SESSION['usertype'] = 'd';
+                            $_SESSION['doctor_id'] = $doctor['docid'];
+                            header('Location: doctor/index.php');
+                            exit();
+                        } else {
+                            $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Invalid credentials</label>';
+                        }
                     } else {
-                        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Invalid credentials</label>';
+                        $error = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Doctor record not found</label>';
                     }
                 }
                 $stmt->close();
@@ -267,8 +304,11 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <br>
-                                    <a href="<?php echo $googleLoginUrl; ?>" class="login-btn btn-primary btn" style="display:block;text-align:center;">Login with Google</a>
+                                    
+                                    <a href="<?php echo $googleLoginUrl; ?>" class="google-login-btn">
+                                        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo">
+                                        Sign in with Google
+                                    </a>
                                 </td>
                             </tr>
                             <tr>

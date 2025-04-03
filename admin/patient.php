@@ -55,6 +55,29 @@
         .btn-unarchive:hover {
             color: #44ff44;
         }
+        .menu-icon-attendance {
+    position: relative;
+    padding-left: 30px; /* Adjust this to control the space between the icon and text */
+}
+
+.menu-icon-attendance::before {
+    content: '';
+    position: absolute;
+    left: 80;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    background: url('../img/icons/attendance1.svg') no-repeat center;
+    background-size: contain;
+}
+.menu-icon-attendance {
+    position: relative;
+    padding-left: 80px; /* This creates a large gap between the icon and text */
+}
+.menu-icon-attendance:hover::before {
+    background: url('../img/icons/attendance1.svg') no-repeat center;
+}
     </style>
 </head>
 <body>
@@ -173,6 +196,16 @@
                         <a href="patient.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Patients</p></div></a>
                     </td>
                 </tr>
+                <tr class="menu-row">
+                <td class="menu-btn menu-icon-attendance">
+    <a href="attendance.php" class="non-style-link-menu">
+        <div>
+            <p class="menu-texts" style="margin-left: 40px;">Attendance</p>
+        </div>
+    </a>
+</td>
+</tr>
+  
             </table>
         </div>
         <div class="dash-body">

@@ -4,14 +4,83 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../Images/G-icon.png">
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
     <title>Dashboard</title>
     <style>
-        .dashbord-tables{animation: transitionIn-Y-over 0.5s;}
-        .filter-container{animation: transitionIn-Y-bottom 0.5s;}
-        .sub-table,.anime{animation: transitionIn-Y-bottom 0.5s;}
+        .dashbord-tables { animation: transitionIn-Y-over 0.5s; }
+        .filter-container { animation: transitionIn-Y-bottom 0.5s; }
+        .sub-table, .anime { animation: transitionIn-Y-bottom 0.5s; }
+        
+        /* Status Section Styling */
+        .status-container {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        .status-container .dashboard-items {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .status-container .dashboard-items:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .status-container .h1-dashboard {
+            font-size: 36px;
+            color: #007B62;
+            margin-bottom: 5px;
+        }
+        .status-container .h3-dashboard {
+            font-size: 16px;
+            color: #333;
+        }
+        
+        /* Upcoming Booking Section Styling */
+        .booking-container {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        .booking-container .sub-table {
+            width: 90%;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .booking-container .table-headin {
+            background-color: #007B62;
+            color: #ffffff;
+            padding: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .booking-container tbody tr {
+            transition: background-color 0.2s;
+        }
+        .booking-container tbody tr:hover {
+            background-color: #f1faff;
+        }
+        .booking-container td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        .booking-container .no-data {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -158,125 +227,115 @@
                 </tr>
                 <tr>
                     <td colspan="4">
-                        <table border="0" width="100%">
-                            <tr>
-                                <td width="50%">
-                                    <center>
-                                        <table class="filter-container" style="border: none;" border="0">
+                        <div class="status-container">
+                            <center>
+                                <table class="filter-container" style="border: none; width: 100%; text-align: center;" border="0">
+                                    <tr>
+                                        <td colspan="3">
+                                            <p style="font-size: 20px; font-weight: 600; padding: 12px 0; margin: 0 auto;">Status</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 33.33%;">
+                                            <div class="dashboard-items" style="padding: 20px; margin: 0 auto; width: 95%; max-width: 300px; display: flex; justify-content: center; align-items: center;">
+                                                <div style="text-align: center;">
+                                                    <div class="h1-dashboard"><?php echo $doctorrow->num_rows ?></div>
+                                                    <br>
+                                                    <div class="h3-dashboard">All Doctors</div>
+                                                </div>
+                                                <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/doctors-hover.svg'); margin-left: 15px;"></div>
+                                            </div>
+                                        </td>
+                                        <td style="width: 33.33%;">
+                                            <div class="dashboard-items" style="padding: 20px; margin: 0 auto; width: 95%; max-width: 300px; display: flex; justify-content: center; align-items: center;">
+                                                <div style="text-align: center;">
+                                                    <div class="h1-dashboard"><?php echo $appointmentrow->num_rows ?></div>
+                                                    <br>
+                                                    <div class="h3-dashboard">New Booking</div>
+                                                </div>
+                                                <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/book-hover.svg'); margin-left: 15px;"></div>
+                                            </div>
+                                        </td>
+                                        <td style="width: 33.33%;">
+                                            <div class="dashboard-items" style="padding: 20px; margin: 0 auto; width: 95%; max-width: 300px; display: flex; justify-content: center; align-items: center;">
+                                                <div style="text-align: center;">
+                                                    <div class="h1-dashboard"><?php echo $schedulerow->num_rows ?></div>
+                                                    <br>
+                                                    <div class="h3-dashboard" style="font-size: 15px;">Today Sessions</div>
+                                                </div>
+                                                <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/session-iceblue.svg'); margin-left: 15px;"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </center>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <div class="booking-container">
+                            <p style="font-size: 20px; font-weight: 600; padding: 12px 0; margin: 0 auto; text-align: center;" class="anime">Your Upcoming Bookings</p>
+                            <center>
+                                <div class="abc scroll" style="height: 250px; padding: 0; margin: 0;">
+                                    <table width="90%" class="sub-table scrolldown" border="0">
+                                        <thead>
                                             <tr>
-                                                <td colspan="4">
-                                                    <p style="font-size: 20px;font-weight:600;padding-left: 12px;">Status</p>
-                                                </td>
+                                                <th class="table-headin">Appoint. Number</th>
+                                                <th class="table-headin">Session Title</th>
+                                                <th class="table-headin">Doctor</th>
+                                                <th class="table-headin">Scheduled Date & Time</th>
                                             </tr>
-                                            <tr>
-                                                <td style="width: 25%;">
-                                                    <div class="dashboard-items" style="padding:20px;margin:auto;width:95%;display: flex">
-                                                        <div>
-                                                            <div class="h1-dashboard"><?php echo $doctorrow->num_rows ?></div><br>
-                                                            <div class="h3-dashboard">All Doctors</div>
-                                                        </div>
-                                                        <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/doctors-hover.svg');"></div>
-                                                    </div>
-                                                </td>
-                                                <td style="width: 25%;">
-                                                    <div class="dashboard-items" style="padding:20px;margin:auto;width:95%;display: flex;">
-                                                        <div>
-                                                            <div class="h1-dashboard"><?php echo $patientrow->num_rows ?></div><br>
-                                                            <div class="h3-dashboard">All Patients</div>
-                                                        </div>
-                                                        <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/patients-hover.svg');"></div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width: 25%;">
-                                                    <div class="dashboard-items" style="padding:20px;margin:auto;width:95%;display: flex;">
-                                                        <div>
-                                                            <div class="h1-dashboard"><?php echo $appointmentrow->num_rows ?></div><br>
-                                                            <div class="h3-dashboard">New Booking</div>
-                                                        </div>
-                                                        <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/book-hover.svg');"></div>
-                                                    </div>
-                                                </td>
-                                                <td style="width: 25%;">
-                                                    <div class="dashboard-items" style="padding:20px;margin:auto;width:95%;display: flex;padding-top:21px;padding-bottom:21px;">
-                                                        <div>
-                                                            <div class="h1-dashboard"><?php echo $schedulerow->num_rows ?></div><br>
-                                                            <div class="h3-dashboard" style="font-size: 15px">Today Sessions</div>
-                                                        </div>
-                                                        <div class="btn-icon-back dashboard-icons" style="background-image: url('../img/icons/session-iceblue.svg');"></div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </center>
-                                </td>
-                                <td>
-                                    <p style="font-size: 20px;font-weight:600;padding-left: 40px;" class="anime">Your Upcoming Booking</p>
-                                    <center>
-                                        <div class="abc scroll" style="height: 250px;padding: 0;margin: 0;">
-                                            <table width="85%" class="sub-table scrolldown" border="0">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="table-headin">Appoint. Number</th>
-                                                        <th class="table-headin">Session Title</th>
-                                                        <th class="table-headin">Doctor</th>
-                                                        <th class="table-headin">Scheduled Date & Time</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php
-                                                    $nextweek = date("Y-m-d", strtotime("+1 week"));
-                                                    $sqlmain = "select schedule.scheduleid, schedule.title, appointment.apponum, doctor.docname, schedule.scheduledate, schedule.start_time, schedule.end_time 
-                                                                from schedule 
-                                                                inner join appointment on schedule.scheduleid=appointment.scheduleid 
-                                                                inner join patient on patient.pid=appointment.pid 
-                                                                inner join doctor on schedule.docid=doctor.docid 
-                                                                where patient.pid=? and schedule.scheduledate>='$today' 
-                                                                order by schedule.scheduledate asc";
-                                                    $stmt = $database->prepare($sqlmain);
-                                                    $stmt->bind_param("i", $userid);
-                                                    $stmt->execute();
-                                                    $result = $stmt->get_result();
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $nextweek = date("Y-m-d", strtotime("+1 week"));
+                                            $sqlmain = "select schedule.scheduleid, schedule.title, appointment.apponum, doctor.docname, schedule.scheduledate, schedule.start_time, schedule.end_time 
+                                                        from schedule 
+                                                        inner join appointment on schedule.scheduleid=appointment.scheduleid 
+                                                        inner join patient on patient.pid=appointment.pid 
+                                                        inner join doctor on schedule.docid=doctor.docid 
+                                                        where patient.pid=? and schedule.scheduledate>='$today' 
+                                                        order by schedule.scheduledate asc";
+                                            $stmt = $database->prepare($sqlmain);
+                                            $stmt->bind_param("i", $userid);
+                                            $stmt->execute();
+                                            $result = $stmt->get_result();
 
-                                                    if($result->num_rows==0){
-                                                        echo '<tr>
-                                                            <td colspan="4">
-                                                                <br><br><br><br>
-                                                                <center>
-                                                                    <img src="../img/notfound.svg" width="25%">
-                                                                    <br>
-                                                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">Nothing to show here!</p>
-                                                                    <a class="non-style-link" href="schedule.php"><button class="login-btn btn-primary-soft btn" style="display: flex;justify-content: center;align-items: center;margin-left:20px;">Channel a Doctor</button></a>
-                                                                </center>
-                                                                <br><br><br><br>
-                                                            </td>
-                                                        </tr>';
-                                                    } else {
-                                                        while($row = $result->fetch_assoc()){
-                                                            $scheduleid = $row["scheduleid"];
-                                                            $title = $row["title"];
-                                                            $apponum = $row["apponum"];
-                                                            $docname = $row["docname"];
-                                                            $scheduledate = $row["scheduledate"];
-                                                            $start_time = date("h:i A", strtotime($row["start_time"]));
-                                                            $end_time = date("h:i A", strtotime($row["end_time"]));
-                                                            echo '<tr>
-                                                                <td style="padding:30px;font-size:25px;font-weight:700;">'.$apponum.'</td>
-                                                                <td style="padding:20px;">'.substr($title,0,30).'</td>
-                                                                <td>'.substr($docname,0,20).'</td>
-                                                                <td style="text-align:center;">'.substr($scheduledate,0,10).' '.$start_time.' - '.$end_time.'</td>
-                                                            </tr>';
-                                                        }
-                                                    }
-                                                    ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </center>
-                                </td>
-                            </tr>
-                        </table>
+                                            if($result->num_rows==0){
+                                                echo '<tr>
+                                                    <td colspan="4" class="no-data">
+                                                        <br><br>
+                                                        <img src="../img/notfound.svg" width="25%">
+                                                        <br>
+                                                        <p class="heading-main12" style="font-size:20px;color:rgb(49, 49, 49)">Nothing to show here!</p>
+                                                        <a class="non-style-link" href="schedule.php"><button class="login-btn btn-primary-soft btn" style="display: flex;justify-content: center;align-items: center;margin:20px auto;">Channel a Doctor</button></a>
+                                                        <br><br>
+                                                    </td>
+                                                </tr>';
+                                            } else {
+                                                while($row = $result->fetch_assoc()){
+                                                    $scheduleid = $row["scheduleid"];
+                                                    $title = $row["title"];
+                                                    $apponum = $row["apponum"];
+                                                    $docname = $row["docname"];
+                                                    $scheduledate = $row["scheduledate"];
+                                                    $start_time = date("h:i A", strtotime($row["start_time"]));
+                                                    $end_time = date("h:i A", strtotime($row["end_time"]));
+                                                    echo '<tr>
+                                                        <td style="font-size: 25px; font-weight: 700;">'.$apponum.'</td>
+                                                        <td>'.substr($title,0,30).'</td>
+                                                        <td>'.substr($docname,0,20).'</td>
+                                                        <td>'.substr($scheduledate,0,10).' '.$start_time.' - '.$end_time.'</td>
+                                                    </tr>';
+                                                }
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </center>
+                        </div>
                     </td>
                 </tr>
             </table>
