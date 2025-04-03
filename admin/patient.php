@@ -170,42 +170,37 @@
                             </tr>
                         </table>
                     </td>
-                </tr>
-                <tr class="menu-row">
-                    <td class="menu-btn menu-icon-dashbord">
-                        <a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Dashboard</p></div></a>
-                    </td>
-                </tr>
-                <tr class="menu-row">
-                    <td class="menu-btn menu-icon-doctor">
-                        <a href="doctors.php" class="non-style-link-menu"><div><p class="menu-text">Doctors</p></div></a>
-                    </td>
-                </tr>
-                <tr class="menu-row">
-                    <td class="menu-btn menu-icon-schedule">
-                        <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">Schedule</p></div></a>
-                    </td>
-                </tr>
-                <tr class="menu-row">
-                    <td class="menu-btn menu-icon-appoinment">
-                        <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Appointment</p></div></a>
-                    </td>
-                </tr>
-                <tr class="menu-row">
-                    <td class="menu-btn menu-icon-patient menu-active menu-icon-patient-active">
-                        <a href="patient.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Patients</p></div></a>
-                    </td>
-                </tr>
-                <tr class="menu-row">
-                <td class="menu-btn menu-icon-attendance">
-    <a href="attendance.php" class="non-style-link-menu">
-        <div>
-            <p class="menu-texts" style="margin-left: 40px;">Attendance</p>
-        </div>
-    </a>
-</td>
-</tr>
-  
+                    </tr>
+                    <tr class="menu-row">
+                        <td class="menu-btn menu-icon-dashbord">
+                            <a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Dashboard</p></div></a>
+                        </td>
+                    </tr>
+                    <tr class="menu-row">
+                        <td class="menu-btn menu-icon-doctor">
+                            <a href="doctors.php" class="non-style-link-menu"><div><p class="menu-text">Doctors</p></div></a>
+                        </td>
+                    </tr>
+                    <tr class="menu-row">
+                        <td class="menu-btn menu-icon-schedule">
+                            <a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">Schedule</p></div></a>
+                        </td>
+                    </tr>
+                    <tr class="menu-row">
+                        <td class="menu-btn menu-icon-appoinment">
+                            <a href="appointment.php" class="non-style-link-menu"><div><p class="menu-text">Appointment</p></div></a>
+                        </td>
+                    </tr>
+                    <tr class="menu-row">
+                        <td class="menu-btn menu-icon-patient menu-active menu-icon-patient-active">
+                            <a href="patient.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">Patients</p></div></a>
+                        </td>
+                    </tr>
+                    <tr class="menu-row">
+                        <td class="menu-btn menu-icon-attendance">
+                            <a href="attendance.php" class="non-style-link-menu"><div><p class="menu-text">Attendance</p></div></a>
+                        </td>
+                    </tr>
             </table>
         </div>
         <div class="dash-body">

@@ -196,11 +196,25 @@
                                                     $title = $row["title"];
                                                     $docname = $row["docname"];
                                                     $scheduledate = $row["scheduledate"];
-                                                    $start_time = $row["start_time"]; // Updated to match database
+                                                    $start_time = $row["start_time"];
 
                                                     if($scheduleid == "") {
                                                         break;
                                                     }
+
+                                                    // Check if the user has already booked this session
+                                                    $booking_check_sql = "SELECT COUNT(*) as count FROM appointment WHERE pid = ? AND scheduleid = ?";
+                                                    $stmt_check = $database->prepare($booking_check_sql);
+                                                    $stmt_check->bind_param("ii", $userid, $scheduleid);
+                                                    $stmt_check->execute();
+                                                    $booking_result = $stmt_check->get_result();
+                                                    $booking_row = $booking_result->fetch_assoc();
+                                                    $already_booked = $booking_row['count'] > 0;
+
+                                                    // Determine button state
+                                                    $button_text = $already_booked ? "Already Booked" : "Book Now";
+                                                    $button_disabled = $already_booked ? "disabled" : "";
+                                                    $button_link = $already_booked ? "#" : "booking.php?id=" . $scheduleid;
 
                                                     echo '
                                                     <td style="width: 25%;">
@@ -216,7 +230,7 @@
                                                                     ' . $scheduledate . '<br>Starts: <b>@' . substr($start_time, 0, 5) . '</b> (24h)
                                                                 </div>
                                                                 <br>
-                                                                <a href="booking.php?id=' . $scheduleid . '"><button class="login-btn btn-primary-soft btn" style="padding-top:11px;padding-bottom:11px;width:100%"><font class="tn-in-text">Book Now</font></button></a>
+                                                                <a href="' . $button_link . '"><button class="login-btn btn-primary-soft btn ' . $button_disabled . '" style="padding-top:11px;padding-bottom:11px;width:100%" ' . ($already_booked ? 'disabled' : '') . '><font class="tn-in-text">' . $button_text . '</font></button></a>
                                                             </div>
                                                         </div>
                                                     </td>';
