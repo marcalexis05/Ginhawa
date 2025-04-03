@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 03, 2025 at 02:46 PM
+-- Generation Time: Apr 03, 2025 at 09:31 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -72,21 +72,6 @@ INSERT INTO `appointment` (`appoid`, `pid`, `apponum`, `scheduleid`, `appodate`)
 -- --------------------------------------------------------
 
 --
--- Table structure for table `chat_messages`
---
-
-CREATE TABLE `chat_messages` (
-  `id` int(11) NOT NULL,
-  `sender_id` int(11) NOT NULL,
-  `receiver_id` int(11) NOT NULL,
-  `message` text NOT NULL,
-  `timestamp` datetime DEFAULT current_timestamp(),
-  `sender_type` enum('patient','doctor') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `doctor`
 --
 
@@ -97,19 +82,20 @@ CREATE TABLE `doctor` (
   `docpassword` varchar(255) DEFAULT NULL,
   `doctel` text DEFAULT NULL,
   `specialties` int(2) DEFAULT NULL,
-  `ptid` varchar(10) DEFAULT NULL
+  `ptid` varchar(10) DEFAULT NULL,
+  `archived` tinyint(4) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `doctor`
 --
 
-INSERT INTO `doctor` (`docid`, `docemail`, `docname`, `docpassword`, `doctel`, `specialties`, `ptid`) VALUES
-(1, 'doctor@ginhawa.com', 'Test Doctor', '123', '0110000000', 1, NULL),
-(5, 'marcalexis_099@gmail.com', 'Marc Alexis', '$2y$10$LW4V9FmKDbo0YoXMYIycTu1cTtcN6WdbseAaGHWlbWSqejZqeZ3VC', '+639074301972', 14, 'PT002'),
-(6, 'vjlamsenlamsen328@gmail.com', 'Layla', '$2y$10$R8fEebjlLFadN8SqAZpf0uHPxu/zzo1UR66ic1wgLBtPPA5Sktt22', '+639073121311', 1, 'PT003'),
-(7, 'garciamarc1900@gmail.com', 'maria santiago', '$2y$10$FDLa/qVIffHIIq4zEEuBkOmQ1xHwMwcoeT1Sb9Z5o7ql7nvIgF61i', '+639604385093', 6, 'PT004'),
-(8, 'royethnalang@gmail.com', 'Val', '$2y$10$AOf3reHbs9MYu/154LPMqO8J0Xywz86g4L8W6PPMyLegalMzFZnze', '+639075151412', 45, 'PT005');
+INSERT INTO `doctor` (`docid`, `docemail`, `docname`, `docpassword`, `doctel`, `specialties`, `ptid`, `archived`) VALUES
+(1, 'doctor@ginhawa.com', 'Test Doctor', '123', '0110000000', 1, NULL, 0),
+(5, 'marcalexis_099@gmail.com', 'Marc Alexis', '$2y$10$LW4V9FmKDbo0YoXMYIycTu1cTtcN6WdbseAaGHWlbWSqejZqeZ3VC', '+639074301972', 14, 'PT002', 1),
+(6, 'vjlamsenlamsen328@gmail.com', 'Layla', '$2y$10$R8fEebjlLFadN8SqAZpf0uHPxu/zzo1UR66ic1wgLBtPPA5Sktt22', '+639073121311', 1, 'PT003', 1),
+(7, 'garciamarc1900@gmail.com', 'maria santiago', '$2y$10$FDLa/qVIffHIIq4zEEuBkOmQ1xHwMwcoeT1Sb9Z5o7ql7nvIgF61i', '+639604385093', 6, 'PT004', 0),
+(8, 'royethnalang@gmail.com', 'Val', '$2y$10$AOf3reHbs9MYu/154LPMqO8J0Xywz86g4L8W6PPMyLegalMzFZnze', '+639075151412', 45, 'PT005', 1);
 
 -- --------------------------------------------------------
 
@@ -171,7 +157,9 @@ INSERT INTO `doctor_attendance` (`id`, `doctor_id`, `docemail`, `time_in`, `time
 (40, 5, 'marcalexis_099@gmail.com', '2025-04-03 05:03:04', '2025-04-03 05:40:16', '2025-04-03'),
 (41, 5, 'marcalexis_099@gmail.com', '2025-04-03 05:45:05', '2025-04-03 05:48:21', '2025-04-03'),
 (42, 5, 'marcalexis_099@gmail.com', '2025-04-03 06:02:28', '2025-04-03 06:02:39', '2025-04-03'),
-(43, 5, 'marcalexis_099@gmail.com', '2025-04-03 06:03:40', NULL, '2025-04-03');
+(43, 5, 'marcalexis_099@gmail.com', '2025-04-03 06:03:40', NULL, '2025-04-03'),
+(44, 5, 'marcalexis_099@gmail.com', '2025-04-04 00:14:05', '2025-04-04 00:14:44', '2025-04-04'),
+(45, 5, 'marcalexis_099@gmail.com', '2025-04-04 00:28:28', '2025-04-04 00:29:28', '2025-04-04');
 
 -- --------------------------------------------------------
 
@@ -280,7 +268,9 @@ INSERT INTO `patient_requests` (`request_id`, `patient_id`, `doctor_id`, `title`
 (17, 27, 5, 'Addict', '2025-04-04', '14:00:00', '30', '14:30:00', '2025-04-03 04:04:29', ''),
 (18, 27, 5, 'Depress', '2025-04-04', '16:00:00', '30', '16:30:00', '2025-04-03 04:12:38', 'approved'),
 (19, 23, 5, 'Addicted', '2025-04-03', '12:30:00', '30', '13:00:00', '2025-04-03 05:17:48', 'approved'),
-(20, 27, 5, 'GG', '2025-04-03', '09:00:00', '30', '09:30:00', '2025-04-03 06:03:22', 'approved');
+(20, 27, 5, 'GG', '2025-04-03', '09:00:00', '30', '09:30:00', '2025-04-03 06:03:22', 'approved'),
+(21, 25, 8, 'depression', '2025-04-10', '08:00:00', '30', '08:30:00', '2025-04-03 23:01:41', 'pending'),
+(22, 27, 8, 'Addicted', '2025-04-05', '14:00:00', '30', '14:30:00', '2025-04-04 00:04:43', 'pending');
 
 -- --------------------------------------------------------
 
@@ -478,13 +468,6 @@ ALTER TABLE `appointment`
   ADD KEY `scheduleid` (`scheduleid`);
 
 --
--- Indexes for table `chat_messages`
---
-ALTER TABLE `chat_messages`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `sender_id` (`sender_id`,`receiver_id`);
-
---
 -- Indexes for table `doctor`
 --
 ALTER TABLE `doctor`
@@ -556,12 +539,6 @@ ALTER TABLE `appointment`
   MODIFY `appoid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
--- AUTO_INCREMENT for table `chat_messages`
---
-ALTER TABLE `chat_messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `doctor`
 --
 ALTER TABLE `doctor`
@@ -571,7 +548,7 @@ ALTER TABLE `doctor`
 -- AUTO_INCREMENT for table `doctor_attendance`
 --
 ALTER TABLE `doctor_attendance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `password_resets`
@@ -589,7 +566,7 @@ ALTER TABLE `patient`
 -- AUTO_INCREMENT for table `patient_requests`
 --
 ALTER TABLE `patient_requests`
-  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `schedule`
