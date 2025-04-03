@@ -14,6 +14,7 @@ if ($_POST) {
     $date = $_POST["date"];
     $start_time = $_POST["start_time"]; // e.g., "15:00:00"
     $duration = (int)$_POST["duration"]; // e.g., "30" (minutes)
+    $gmeet_link = !empty($_POST["gmeet_link"]) ? $_POST["gmeet_link"] : NULL; // Optional GMeet link
 
     // Calculate end_time
     $start_datetime = strtotime($start_time);
@@ -67,14 +68,14 @@ if ($_POST) {
         exit;
     }
 
-    // No conflict and under limit, insert the new session
-    $sql = "INSERT INTO schedule (docid, title, scheduledate, start_time, end_time) VALUES (?, ?, ?, ?, ?)";
+    // No conflict and under limit, insert the new session with GMeet link
+    $sql = "INSERT INTO schedule (docid, title, scheduledate, start_time, end_time, gmeet_link) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $database->prepare($sql);
     if ($stmt === false) {
         die("Prepare failed: " . $database->error);
     }
 
-    $stmt->bind_param("issss", $docid, $title, $date, $start_time, $end_time);
+    $stmt->bind_param("isssss", $docid, $title, $date, $start_time, $end_time, $gmeet_link);
     $result = $stmt->execute();
 
     if ($result) {

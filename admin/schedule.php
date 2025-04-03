@@ -220,6 +220,10 @@
                             </div>
                         </a>
                     </td>
+                    <td width="10%">
+                        <button class="btn-label" style="display:flex;justify-content:center;align-items:center;"><img src="../img/calendar.svg" width="100%"></button>
+                    </td>
+
                 </tr>
                 <tr>
                     <td colspan="4" >
@@ -382,13 +386,13 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">Add New Session.</p><br>
+                                    <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">Add New Session</p><br>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
                                     <form action="add-session.php" method="POST" class="add-new-form" onsubmit="return validateForm()">
-                                        <label for="title" class="form-label">Session Title : </label>
+                                        <label for="title" class="form-label">Session Title: </label>
                                 </td>
                             </tr>
                             <tr>
@@ -403,7 +407,7 @@
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                    <select name="docid" id="" class="box" >
+                                    <select name="docid" id="" class="box" required>
                                         <option value="" disabled selected hidden>Choose Doctor Name from the list</option><br/>
                                         ';
                                         $list11 = $database->query("SELECT * FROM doctor WHERE archived = 0 ORDER BY docname ASC;");
@@ -474,6 +478,16 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td class="label-td" colspan="2">
+                                    <label for="gmeet_link" class="form-label">Google Meet Link (Optional): </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label-td" colspan="2">
+                                    <input type="url" name="gmeet_link" id="gmeet_link" class="input-text" placeholder="e.g., https://meet.google.com/abc-defg-hij"><br>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td colspan="2">
                                     <input type="reset" value="Reset" class="login-btn btn-primary-soft btn" >    
                                     <input type="submit" value="Place this Session" class="login-btn btn-primary btn" name="shedulesubmit">
@@ -495,7 +509,7 @@
                     <div class="popup">
                     <center>
                         <br><br>
-                        <h2>Session Placed.</h2>
+                        <h2>Session Placed</h2>
                         <a class="close" href="schedule.php">×</a>
                         <div class="content">
                             '.substr($titleget,0,40).' was scheduled.<br><br>
@@ -576,7 +590,7 @@
             if ($id === null) {
                 echo "Error: No session ID provided for viewing.";
             } else {
-                $sqlmain = "SELECT schedule.scheduleid, schedule.title, doctor.docname, schedule.scheduledate, schedule.start_time, schedule.end_time 
+                $sqlmain = "SELECT schedule.scheduleid, schedule.title, doctor.docname, schedule.scheduledate, schedule.start_time, schedule.end_time, schedule.gmeet_link 
                             FROM schedule 
                             INNER JOIN doctor ON schedule.docid = doctor.docid 
                             WHERE schedule.scheduleid = $id AND doctor.archived = 0";
@@ -591,6 +605,7 @@
                     $scheduledate = $row["scheduledate"];
                     $start_time = date('h:i A', strtotime($row["start_time"]));
                     $end_time = date('h:i A', strtotime($row["end_time"]));
+                    $gmeet_link = $row["gmeet_link"] ?: "Not provided";
                     $sqlmain12 = "SELECT * 
                                   FROM appointment 
                                   INNER JOIN patient ON patient.pid = appointment.pid 
@@ -608,7 +623,7 @@
                                     <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
                                         <tr>
                                             <td>
-                                                <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">View Details.</p><br><br>
+                                                <p style="padding: 0;margin: 0;text-align: left;font-size: 25px;font-weight: 500;">View Details</p><br><br>
                                             </td>
                                         </tr>
                                         <tr>
@@ -649,6 +664,16 @@
                                         <tr>
                                             <td class="label-td" colspan="2">
                                                 '.$start_time.' - '.$end_time.'<br><br>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label-td" colspan="2">
+                                                <label for="gmeet" class="form-label">Google Meet Link: </label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label-td" colspan="2">
+                                                '.($gmeet_link == "Not provided" ? $gmeet_link : '<a href="'.$gmeet_link.'" target="_blank">'.$gmeet_link.'</a>').'<br><br>
                                             </td>
                                         </tr>
                                         <tr>
@@ -774,6 +799,7 @@
         let today = new Date();
         today.setHours(0, 0, 0, 0);
         let title = document.getElementById('title').value.trim();
+        let gmeetLink = document.getElementById('gmeet_link').value.trim();
 
         if (title === '') {
             alert('Session title cannot be empty');
@@ -796,6 +822,10 @@
         let endHour = Math.floor(endMinutes / 60);
         if (hours < 8 || endHour > 18 || (hours < 13 && endHour > 12)) {
             alert('Time must be between 8:00 AM - 6:00 PM, excluding 12:00 PM - 1:00 PM');
+            return false;
+        }
+        if (gmeetLink && !gmeetLink.match(/^https:\/\/meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}$/)) {
+            alert('Please enter a valid Google Meet link (e.g., https://meet.google.com/abc-defg-hij)');
             return false;
         }
         return true;

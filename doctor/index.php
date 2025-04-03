@@ -1,3 +1,40 @@
+<?php
+session_start();
+
+if (!isset($_SESSION["user"]) || empty($_SESSION["user"]) || $_SESSION['usertype'] != 'd') {
+    header("location: ../login.php");
+    exit;
+}
+
+$useremail = $_SESSION["user"];
+include("../connection.php");
+
+$userrow = $database->query("SELECT * FROM doctor WHERE docemail='$useremail'");
+$userfetch = $userrow->fetch_assoc();
+$userid = $userfetch["docid"];
+$username = $userfetch["docname"];
+
+$_SESSION['doctor_id'] = $userid;
+
+// Notification queries
+$request_count_query = "SELECT COUNT(*) as pending_count FROM patient_requests WHERE doctor_id = $userid AND status = 'pending'";
+$request_count_result = $database->query($request_count_query);
+$pending_count = $request_count_result->fetch_assoc()['pending_count'];
+$requests_query = "SELECT pr.*, p.pname FROM patient_requests pr 
+                  INNER JOIN patient p ON pr.patient_id = p.pid 
+                  WHERE pr.doctor_id = $userid AND pr.status = 'pending'";
+$requests_result = $database->query($requests_query);
+
+// Today's date
+date_default_timezone_set('Asia/Manila');
+$today = date('Y-m-d');
+
+// Fetch counts
+$patientrow = $database->query("SELECT * FROM patient");
+$doctorrow = $database->query("SELECT * FROM doctor");
+$appointmentrow = $database->query("SELECT * FROM appointment WHERE appodate>='$today'");
+$schedulerow = $database->query("SELECT * FROM schedule WHERE docid='$userid' AND scheduledate='$today'");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,26 +50,56 @@
         .dashbord-tables, .doctor-heade { animation: transitionIn-Y-over 0.5s; }
         .filter-container { animation: transitionIn-Y-bottom 0.5s; }
         .sub-table, #anim { animation: transitionIn-Y-bottom 0.5s; }
-        .notification-bell { position: relative; display: inline-block; }
+        .notification-bell { position: relative; display: inline-block; cursor: pointer; }
         .notification-count { 
             position: absolute; 
             top: -5px; 
             right: -5px; 
-            background: red; 
+            background-color: red; 
             color: white; 
             border-radius: 50%; 
             padding: 2px 6px; 
-            font-size: 12px;
+            font-size: 12px; 
         }
+        .notification-dropdown { 
+            display: none; 
+            position: absolute; 
+            background-color: white; 
+            min-width: 350px; 
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); 
+            z-index: 1; 
+            right: 0; 
+            border-radius: 5px; 
+            max-height: 300px; 
+            overflow-y: auto; 
+        }
+        .notification-item { 
+            padding: 10px; 
+            border-bottom: 1px solid #ddd; 
+        }
+        .notification-item:last-child { 
+            border-bottom: none; 
+        }
+        .notification-actions { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-top: 10px; 
+        }
+        .btn-approve, .btn-reject { 
+            color: white; 
+            border: none; 
+            padding: 5px 10px; 
+            border-radius: 3px; 
+            cursor: pointer; 
+        }
+        .btn-approve { background-color: #28a745; }
+        .btn-reject { background-color: #dc3545; }
         .bell-icon { 
             width: 30px; 
             height: 30px; 
-            cursor: pointer; 
-            fill: #333;
+            fill: #333; 
         }
-        .bell-icon:hover { 
-            fill: #007bff;
-        }
+        .bell-icon:hover { fill: #007bff; }
         #chat-container {position: fixed; bottom: 20px; right: 20px; width: 300px; height: 400px; background: white; border: 1px solid #ccc; display: none; flex-direction: column;}
         #chat-header {padding: 10px; background: #007bff; color: white; display: flex; justify-content: space-between;}
         #chat-messages {flex: 1; overflow-y: auto; padding: 10px;}
@@ -40,7 +107,6 @@
         #send-btn {width: 25%; padding: 10px; background: #007bff; color: white; border: none; cursor: pointer;}
         #send-btn:hover {background: #0056b3;}
         #patient-select {width: 100%; padding: 5px; margin-bottom: 10px;}
-        /* Ensure the dashboard items are styled consistently */
         .dashboard-items {
             padding: 20px;
             margin: auto;
@@ -73,30 +139,41 @@
             background-repeat: no-repeat;
             background-position: center;
         }
+        #rejectionModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 5px;
+            width: 300px;
+            text-align: center;
+        }
+        .modal-content select {
+            width: 100%;
+            padding: 5px;
+            margin: 10px 0;
+        }
+        .modal-content button {
+            padding: 5px 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .modal-content .btn-submit { background-color: #007bff; color: white; }
+        .modal-content .btn-cancel { background-color: #6c757d; color: white; }
     </style>
 </head>
 <body>
-    <?php
-    session_start();
-    if (!isset($_SESSION["user"]) || empty($_SESSION["user"]) || $_SESSION['usertype'] != 'd') {
-        header("location: ../login.php");
-        exit;
-    }
-
-    $useremail = $_SESSION["user"];
-    include("../connection.php");
-
-    $userrow = $database->query("SELECT * FROM doctor WHERE docemail='$useremail'");
-    $userfetch = $userrow->fetch_assoc();
-    $userid = $userfetch["docid"];
-    $username = $userfetch["docname"];
-
-    $_SESSION['doctor_id'] = $userid;
-
-    $notification_query = $database->query("SELECT COUNT(*) as count FROM patient_requests WHERE doctor_id='$userid' AND status='pending'");
-    $notification_count = $notification_query->fetch_assoc()['count'];
-    ?>
-
     <div class="container">
         <div class="menu">
             <table class="menu-container" border="0">
@@ -154,38 +231,45 @@
                     <td colspan="1" class="nav-bar">
                         <p style="font-size:23px;padding-left:12px;font-weight:600;margin-left:20px;">Dashboard</p>
                     </td>
-                    <td width="25%">
-                        <a href="requests.php" class="non-style-link">
-                            <div class="notification-bell">
-                                <svg class="bell-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-                                </svg>
-                                <?php if ($notification_count > 0) { ?>
-                                    <span class="notification-count"><?php echo $notification_count; ?></span>
-                                <?php } ?>
-                            </div>
-                        </a>
-                    </td>
                     <td width="15%">
                         <p style="font-size:14px;color:rgb(119,119,119);padding:0;margin:0;text-align:right;">Today's Date</p>
-                        <p class="heading-sub12" style="padding:0;margin:0;">
-                            <?php 
-                            date_default_timezone_set('Asia/Manila');
-                            $today = date('Y-m-d');
-                            echo $today;
-                            $patientrow = $database->query("SELECT * FROM patient");
-                            $doctorrow = $database->query("SELECT * FROM doctor");
-                            $appointmentrow = $database->query("SELECT * FROM appointment WHERE appodate>='$today'");
-                            $schedulerow = $database->query("SELECT * FROM schedule WHERE scheduledate='$today'");
-                            ?>
-                        </p>
+                        <p class="heading-sub12" style="padding:0;margin:0;"><?php echo $today; ?></p>
                     </td>
                     <td width="10%">
-                        <button class="btn-label" style="display:flex;justify-content:center;align-items:center;"><img src="../img/calendar.svg" width="100%"></button>
+                        <div class="notification-bell" onclick="toggleNotifications()">
+                            <svg class="bell-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                            </svg>
+                            <?php if ($pending_count > 0) { ?>
+                                <span class="notification-count"><?php echo $pending_count; ?></span>
+                            <?php } ?>
+                            <div class="notification-dropdown" id="notificationDropdown" style="display: none;">
+                                <?php
+                                if ($requests_result->num_rows > 0) {
+                                    while ($request = $requests_result->fetch_assoc()) {
+                                        $request_id = $request['request_id'];
+                                        $start_time = date('h:i A', strtotime($request["start_time"]));
+                                        $end_time = date('h:i A', strtotime($request["end_time"]));
+                                        echo '<div class="notification-item">';
+                                        echo '<strong>' . htmlspecialchars($request['pname']) . '</strong><br>';
+                                        echo 'Title: ' . htmlspecialchars($request['title']) . '<br>';
+                                        echo 'Date: ' . $request['session_date'] . ' ' . $start_time . ' - ' . $end_time . '<br>';
+                                        echo '<div class="notification-actions">';
+                                        echo '<a href="handle_patient_request.php?action=approve&id=' . $request_id . '"><button class="btn-approve">Approve</button></a>';
+                                        echo '<button class="btn-reject" onclick="showRejectionModal(' . $request_id . ')">Reject</button>';
+                                        echo '</div>';
+                                        echo '</div>';
+                                    }
+                                } else {
+                                    echo '<div class="notification-item">No pending requests</div>';
+                                }
+                                ?>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="4">
+                    <td colspan="3">
                         <center>
                             <table class="filter-container doctor-header" style="border:none;width:95%" border="0">
                                 <tr>
@@ -204,7 +288,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="4">
+                    <td colspan="3">
                         <table border="0" width="100%">
                             <tr>
                                 <td width="50%">
@@ -324,6 +408,28 @@
         </div>
     </div>
 
+    <!-- Rejection Modal -->
+    <div id="rejectionModal">
+        <div class="modal-content">
+            <h3>Reason for Rejection</h3>
+            <form id="rejectionForm" method="POST" action="handle_patient_request.php">
+                <input type="hidden" name="action" value="reject">
+                <input type="hidden" name="id" id="rejectRequestId">
+                <select name="rejection_reason" required>
+                    <option value="">Select a reason</option>
+                    <option value="Schedule Conflict">Schedule Conflict</option>
+                    <option value="Insufficient Information">Insufficient Information</option>
+                    <option value="Not Available">Not Available</option>
+                    <option value="Other">Other</option>
+                </select>
+                <div>
+                    <button type="submit" class="btn-submit">Submit</button>
+                    <button type="button" class="btn-cancel" onclick="closeRejectionModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="chat-container">
         <div id="chat-header">
             <span id="chat-with">Chat</span>
@@ -413,6 +519,29 @@
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
         });
+
+        function toggleNotifications() {
+            var dropdown = document.getElementById('notificationDropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.notification-bell') && !event.target.closest('#rejectionModal')) {
+                var dropdown = document.getElementById('notificationDropdown');
+                if (dropdown.style.display === 'block') {
+                    dropdown.style.display = 'none';
+                }
+            }
+        }
+
+        function showRejectionModal(requestId) {
+            document.getElementById('rejectRequestId').value = requestId;
+            document.getElementById('rejectionModal').style.display = 'block';
+        }
+
+        function closeRejectionModal() {
+            document.getElementById('rejectionModal').style.display = 'none';
+        }
     </script>
 </body>
 </html>

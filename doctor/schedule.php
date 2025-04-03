@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
     <link rel="icon" href="../Images/G-icon.png">
-    <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <title>Schedule</title>
     <style>
@@ -20,16 +19,15 @@
         .success-msg { color: green; text-align: center; margin: 10px; }
         .form-label { display: block; margin: 10px 0 5px; }
         .notification-bell { position: relative; display: inline-block; cursor: pointer; }
-        .notification-bell img { width: 30px; height: 30px; }
         .notification-count { position: absolute; top: -5px; right: -5px; background-color: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; }
         .notification-dropdown { display: none; position: absolute; background-color: white; min-width: 350px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; right: 0; border-radius: 5px; max-height: 300px; overflow-y: auto; }
         .notification-item { padding: 10px; border-bottom: 1px solid #ddd; }
         .notification-item:last-child { border-bottom: none; }
-        .notification-actions { display: flex; justify-content: space-between; margin-top: 10px; }
-        .btn-approve { background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
-        .btn-reject { background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
         .bell-icon { width: 30px; height: 30px; fill: #333; }
         .bell-icon:hover { fill: #007bff; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+        .popup { position: relative; background: white; padding: 20px; border-radius: 10px; width: 400px; margin: 100px auto; }
+        .close { position: absolute; top: 10px; right: 10px; font-size: 24px; cursor: pointer; text-decoration: none; color: #000; }
     </style>
 </head>
 <body>
@@ -45,15 +43,20 @@
     $userfetch = $userrow->fetch_assoc();
     $userid = $userfetch["docid"];
     $username = $userfetch["docname"];
-    $request_count_query = "SELECT COUNT(*) as pending_count FROM patient_requests WHERE doctor_id = $userid AND status = 'pending'";
-    $request_count_result = $database->query($request_count_query);
-    $pending_count = $request_count_result->fetch_assoc()['pending_count'];
-    $requests_query = "SELECT pr.*, p.pname FROM patient_requests pr 
-                      INNER JOIN patient p ON pr.patient_id = p.pid 
-                      WHERE pr.doctor_id = $userid AND pr.status = 'pending'";
-    $requests_result = $database->query($requests_query);
 
-    // Calculate min and max dates for Flatpickr
+    // Fetch doctor's pending session requests
+    $requests_query = "SELECT sr.*, d.docname 
+                       FROM session_requests sr 
+                       INNER JOIN doctor d ON sr.docid = d.docid 
+                       WHERE sr.docid = $userid AND sr.status = 'pending'";
+    $requests_result = $database->query($requests_query);
+    if ($requests_result === false) {
+        echo "Error in session requests query: " . $database->error;
+        $pending_count = 0;
+    } else {
+        $pending_count = $requests_result->num_rows;
+    }
+
     date_default_timezone_set('Asia/Kolkata');
     $today = date('Y-m-d');
     $oneWeekLater = date('Y-m-d', strtotime('+7 days'));
@@ -119,23 +122,20 @@
                             <?php } ?>
                             <div class="notification-dropdown" id="notificationDropdown" style="display: none;">
                                 <?php
-                                if ($requests_result->num_rows > 0) {
+                                if ($requests_result && $requests_result->num_rows > 0) {
                                     while ($request = $requests_result->fetch_assoc()) {
                                         $request_id = $request['request_id'];
-                                        $start_time = date('h:i A', strtotime($request["start_time"]));
-                                        $end_time = date('h:i A', strtotime($request["end_time"]));
+                                        $start_time = date('h:i A', strtotime($request['session_time']));
                                         echo '<div class="notification-item">';
-                                        echo '<strong>' . htmlspecialchars($request['pname']) . '</strong><br>';
+                                        echo '<strong>' . htmlspecialchars($request['docname']) . '</strong><br>';
                                         echo 'Title: ' . htmlspecialchars($request['title']) . '<br>';
-                                        echo 'Date: ' . $request['session_date'] . ' ' . $start_time . ' - ' . $end_time . '<br>';
-                                        echo '<div class="notification-actions">';
-                                        echo '<a href="handle_patient_request.php?action=approve&id=' . $request_id . '"><button class="btn-approve">Approve</button></a>';
-                                        echo '<a href="handle_patient_request.php?action=reject&id=' . $request_id . '"><button class="btn-reject">Reject</button></a>';
-                                        echo '</div>';
+                                        echo 'Date: ' . $request['session_date'] . '<br>';
+                                        echo 'Time: ' . $start_time . '<br>';
+                                        echo 'Status: Pending<br>';
                                         echo '</div>';
                                     }
                                 } else {
-                                    echo '<div class="notification-item">No pending requests</div>';
+                                    echo '<div class="notification-item">No pending session requests</div>';
                                 }
                                 ?>
                             </div>
@@ -179,9 +179,6 @@
                     $sqlmain .= " AND schedule.scheduledate='$sheduledate'";
                 }
                 $result = $database->query($sqlmain);
-                if(isset($_GET['success'])) {
-                    echo '<p class="success-msg">'.$_GET['success'].'</p>';
-                }
                 if(isset($_GET['error'])) {
                     echo '<p class="error-msg">'.$_GET['error'].'</p>';
                 }
@@ -238,7 +235,7 @@
                 <h2>Request New Session</h2>
                 <a class="close" onclick="document.getElementById('requestPopup').style.display='none'">×</a>
                 <div class="content">
-                    <form action="submit-request.php" method="post" onsubmit="return validateForm()">
+                    <form action="submit-request.php" method="post">
                         <label for="title" class="form-label">Session Title:</label>
                         <input type="text" name="title" id="title" class="input-text" placeholder="Enter session title" required>
                         <label for="session_date" class="form-label">Session Date:</label>
@@ -274,6 +271,20 @@
                             <button type="submit" class="btn-primary btn">Submit Request</button>
                         </div>
                     </form>
+                </div>
+            </center>
+        </div>
+    </div>
+    <div id="successPopup" class="overlay" style="display:none;">
+        <div class="popup">
+            <center>
+                <h2>Success</h2>
+                <a class="close" onclick="document.getElementById('successPopup').style.display='none'">×</a>
+                <div class="content" id="successMessage">
+                    Your session request has been submitted successfully!
+                </div>
+                <div style="display: flex; justify-content: center; margin-top: 20px;">
+                    <button class="btn-primary btn" onclick="document.getElementById('successPopup').style.display='none'">OK</button>
                 </div>
             </center>
         </div>
@@ -342,37 +353,52 @@
         }
     }
     ?>
-    <!-- Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-    // Initialize Flatpickr for filter and session request dates
     document.addEventListener('DOMContentLoaded', function() {
         flatpickr('#date', {
             minDate: '<?php echo $today; ?>',
             maxDate: '<?php echo $oneWeekLater; ?>',
-            disable: [
-                function(date) {
-                    return date.getDay() === 0; // Disable Sundays
-                }
-            ],
+            disable: [function(date) { return date.getDay() === 0; }],
             dateFormat: 'Y-m-d',
-            onOpen: function(selectedDates, dateStr, instance) {
-                instance.redraw();
-            }
+            onOpen: function(selectedDates, dateStr, instance) { instance.redraw(); }
         });
 
         flatpickr('#session_date', {
             minDate: '<?php echo $today; ?>',
             maxDate: '<?php echo $oneWeekLater; ?>',
-            disable: [
-                function(date) {
-                    return date.getDay() === 0; // Disable Sundays
-                }
-            ],
+            disable: [function(date) { return date.getDay() === 0; }],
             dateFormat: 'Y-m-d',
-            onOpen: function(selectedDates, dateStr, instance) {
-                instance.redraw();
-            }
+            onOpen: function(selectedDates, dateStr, instance) { instance.redraw(); }
+        });
+
+        // Handle form submission with AJAX
+        document.querySelector('#requestPopup form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!validateForm()) return;
+
+            let formData = new FormData(this);
+            fetch('submit-request.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('requestPopup').style.display = 'none';
+                    document.getElementById('successMessage').innerText = data.message;
+                    document.getElementById('successPopup').style.display = 'block';
+                    setTimeout(() => {
+                        location.reload(); // Refresh to update session list and notifications
+                    }, 2000);
+                } else {
+                    alert(data.message); // Show error message
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting the request.');
+            });
         });
     });
 

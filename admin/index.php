@@ -37,11 +37,69 @@
         .bell-icon { 
             width: 30px; 
             height: 30px; 
-            cursor: pointer; 
             fill: #333;
         }
         .bell-icon:hover { 
-            fill: #007bff;
+            fill: #357960;
+        }
+        /* Added styles for notification dropdown */
+        .notification-dropdown { 
+            display: none; 
+            position: absolute; 
+            background-color: white; 
+            min-width: 350px; 
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); 
+            z-index: 1; 
+            right: 0; 
+            border-radius: 5px; 
+            max-height: 300px; 
+            overflow-y: auto; 
+        }
+        .notification-item { 
+            padding: 10px; 
+            border-bottom: 1px solid #ddd; 
+        }
+        .notification-item:last-child { 
+            border-bottom: none; 
+        }
+        .btn-edit { 
+            background-color: #357960; 
+            color: white; 
+            border: none; 
+            padding: 5px 10px; 
+            border-radius: 3px; 
+            cursor: pointer; 
+        }
+        /* New styles for edit modal */
+        .edit-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .edit-modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .edit-modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            text-decoration: none;
+            color: #333;
         }
     </style>
 </head>
@@ -64,6 +122,42 @@
         $active_count = 0;
     } else {
         $active_count = $active_doctors->fetch_assoc()['count'];
+    }
+
+    // Fetch approved session requests
+    $notify_query = "SELECT sr.*, d.docname 
+                     FROM session_requests sr 
+                     INNER JOIN doctor d ON sr.docid = d.docid 
+                     WHERE sr.status = 'approved'";
+    $notify_result = $database->query($notify_query);
+    $notify_count = ($notify_result && $notify_result->num_rows > 0) ? $notify_result->num_rows : 0;
+
+    // Handle form submission for editing session
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_session'])) {
+        $request_id = $_POST['request_id'];
+        $title = $_POST['title'];
+        $session_date = $_POST['session_date'];
+        $session_time = $_POST['session_time'];
+        $gmeet_link = $_POST['gmeet_link'];
+
+        // Insert into schedule table
+        $insert_query = "INSERT INTO schedule (title, docid, scheduledate, start_time, gmeet_link) 
+                         SELECT ?, docid, ?, ?, ? 
+                         FROM session_requests 
+                         WHERE request_id = ?";
+        $stmt = $database->prepare($insert_query);
+        $stmt->bind_param("ssssi", $title, $session_date, $session_time, $gmeet_link, $request_id);
+        $stmt->execute();
+
+        // Update session request status to 'processed'
+        $update_query = "UPDATE session_requests SET status = 'processed' WHERE request_id = ?";
+        $stmt = $database->prepare($update_query);
+        $stmt->bind_param("i", $request_id);
+        $stmt->execute();
+
+        // Redirect to refresh the page
+        header("Location: index.php");
+        exit;
     }
     ?>
     
@@ -149,14 +243,34 @@
                         </form>
                     </td>
                     <td width="25%">
-                        <a href="attendance.php" class="non-style-link">
-                            <div class="notification-bell">
+                        <!-- Updated notification bell with dropdown -->
+                        <a href="#" class="non-style-link">
+                            <div class="notification-bell" onclick="toggleNotifications()">
                                 <svg class="bell-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
                                 </svg>
-                                <?php if ($active_count > 0) { ?>
-                                    <span class="notification-count"><?php echo $active_count; ?></span>
+                                <?php if ($notify_count > 0) { ?>
+                                    <span class="notification-count"><?php echo $notify_count; ?></span>
                                 <?php } ?>
+                                <div class="notification-dropdown" id="notificationDropdown">
+                                    <?php
+                                    if ($notify_result && $notify_result->num_rows > 0) {
+                                        while ($notify = $notify_result->fetch_assoc()) {
+                                            $request_id = $notify['request_id'];
+                                            $start_time_12hr = date('h:i A', strtotime($notify['session_time']));
+                                            echo '<div class="notification-item">';
+                                            echo '<strong>' . htmlspecialchars($notify['docname']) . '</strong><br>';
+                                            echo 'Title: ' . htmlspecialchars($notify['title']) . '<br>';
+                                            echo 'Date: ' . htmlspecialchars($notify['session_date']) . '<br>';
+                                            echo 'Time: ' . $start_time_12hr . '<br>';
+                                            echo '<button class="btn-edit" onclick="showEditModal(' . $request_id . ', \'' . htmlspecialchars($notify['title']) . '\', \'' . $notify['session_date'] . '\', \'' . $notify['session_time'] . '\')">Edit</button>';
+                                            echo '</div>';
+                                        }
+                                    } else {
+                                        echo '<div class="notification-item">No approved session requests</div>';
+                                    }
+                                    ?>
+                                </div>
                             </div>
                         </a>
                     </td>
@@ -366,5 +480,98 @@
             </table>
         </div>
     </div>
+
+    <!-- Edit Session Modal -->
+    <div id="editModal" class="edit-modal">
+        <div class="edit-modal-content">
+            <a class="edit-modal-close" href="#" onclick="hideEditModal()">×</a>
+            <center>
+                <h2>Edit Session Request</h2>
+                <form method="post" action="">
+                    <input type="hidden" name="request_id" id="edit_request_id">
+                    <table width="100%" border="0">
+                        <tr>
+                            <td class="label-td">
+                                <label for="title" class="form-label">Session Title</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td">
+                                <input type="text" name="title" id="edit_title" class="input-text" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td">
+                                <label for="session_date" class="form-label">Session Date</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td">
+                                <input type="date" name="session_date" id="edit_session_date" class="input-text" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td">
+                                <label for="session_time" class="form-label">Start Time</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td">
+                                <input type="time" name="session_time" id="edit_session_time" class="input-text" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td">
+                                <label for="gmeet_link" class="form-label">Google Meet Link</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td">
+                                <input type="url" name="gmeet_link" id="edit_gmeet_link" class="input-text" placeholder="https://meet.google.com/xxx-xxxx-xxx">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-td" style="text-align: center; padding-top: 20px;">
+                                <button type="submit" name="edit_session" class="login-btn btn-primary btn">Save Changes</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </center>
+        </div>
+    </div>
+
+    <!-- Updated JavaScript -->
+    <script>
+        function toggleNotifications() {
+            var dropdown = document.getElementById('notificationDropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.notification-bell') && !event.target.closest('.edit-modal')) {
+                var dropdown = document.getElementById('notificationDropdown');
+                var modal = document.getElementById('editModal');
+                if (dropdown.style.display === 'block') {
+                    dropdown.style.display = 'none';
+                }
+                if (modal.style.display === 'block') {
+                    modal.style.display = 'none';
+                }
+            }
+        }
+
+        function showEditModal(requestId, title, sessionDate, sessionTime) {
+            document.getElementById('edit_request_id').value = requestId;
+            document.getElementById('edit_title').value = title;
+            document.getElementById('edit_session_date').value = sessionDate;
+            document.getElementById('edit_session_time').value = sessionTime;
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        function hideEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+    </script>
 </body>
 </html>

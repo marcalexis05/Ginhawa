@@ -202,6 +202,9 @@
                                                         break;
                                                     }
 
+                                                    // Convert start_time to 12-hour format
+                                                    $start_time_12hr = date('h:i A', strtotime($start_time));
+
                                                     // Check if the user has already booked this session
                                                     $booking_check_sql = "SELECT COUNT(*) as count FROM appointment WHERE pid = ? AND scheduleid = ?";
                                                     $stmt_check = $database->prepare($booking_check_sql);
@@ -227,7 +230,7 @@
                                                                     ' . substr($docname, 0, 30) . '
                                                                 </div>
                                                                 <div class="h4-search">
-                                                                    ' . $scheduledate . '<br>Starts: <b>@' . substr($start_time, 0, 5) . '</b> (24h)
+                                                                    ' . $scheduledate . '<br>Starts: <b>' . $start_time_12hr . '</b>
                                                                 </div>
                                                                 <br>
                                                                 <a href="' . $button_link . '"><button class="login-btn btn-primary-soft btn ' . $button_disabled . '" style="padding-top:11px;padding-bottom:11px;width:100%" ' . ($already_booked ? 'disabled' : '') . '><font class="tn-in-text">' . $button_text . '</font></button></a>

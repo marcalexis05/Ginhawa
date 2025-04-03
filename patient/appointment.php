@@ -15,6 +15,15 @@
         .sub-table {
             animation: transitionIn-Y-bottom 0.5s;
         }
+        .btn-green {
+            background-color: #28a745; /* Green color */
+            color: white;
+        }
+        .btn-gray {
+            background-color: #6c757d; /* Gray color */
+            color: white;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -41,7 +50,7 @@
     $userid = $userfetch["pid"];
     $username = $userfetch["pname"];
 
-    $sqlmain = "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, schedule.scheduledate, schedule.start_time, appointment.apponum, appointment.appodate 
+    $sqlmain = "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, schedule.scheduledate, schedule.start_time, appointment.apponum, appointment.appodate, schedule.gmeet_link 
                 FROM schedule 
                 INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid 
                 INNER JOIN patient ON patient.pid = appointment.pid 
@@ -54,7 +63,7 @@
 
     if($_POST && !empty($_POST["sheduledate"])) {
         $sheduledate = $_POST["sheduledate"];
-        $sqlmain = "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, schedule.scheduledate, schedule.start_time, appointment.apponum, appointment.appodate 
+        $sqlmain = "SELECT appointment.appoid, schedule.scheduleid, schedule.title, doctor.docname, patient.pname, schedule.scheduledate, schedule.start_time, appointment.apponum, appointment.appodate, schedule.gmeet_link 
                     FROM schedule 
                     INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid 
                     INNER JOIN patient ON patient.pid = appointment.pid 
@@ -200,13 +209,29 @@
                                                     $title = $row["title"];
                                                     $docname = $row["docname"];
                                                     $scheduledate = $row["scheduledate"];
-                                                    $start_time = $row["start_time"]; // Updated to match database
+                                                    $start_time = $row["start_time"];
                                                     $apponum = $row["apponum"];
                                                     $appodate = $row["appodate"];
                                                     $appoid = $row["appoid"];
+                                                    $gmeet_link = $row["gmeet_link"];
 
                                                     if($scheduleid == "") {
                                                         break;
+                                                    }
+
+                                                    // Convert start_time to 12-hour format
+                                                    $start_time_12hr = date('h:i A', strtotime($start_time));
+
+                                                    // Determine GMeet link accessibility
+                                                    $is_scheduled_date = ($today == $scheduledate);
+                                                    if ($gmeet_link) {
+                                                        if ($is_scheduled_date) {
+                                                            $gmeet_display = '<a href="' . $gmeet_link . '" target="_blank"><button class="btn btn-green" style="padding-top:11px;padding-bottom:11px;width:100%">Link is Available</button></a>';
+                                                        } else {
+                                                            $gmeet_display = '<button class="btn btn-gray" style="padding-top:11px;padding-bottom:11px;width:100%" disabled>Meet Locked</button>';
+                                                        }
+                                                    } else {
+                                                        $gmeet_display = '<button class="btn btn-gray" style="padding-top:11px;padding-bottom:11px;width:100%" disabled>No GMeet Link</button>';
                                                     }
 
                                                     echo '
@@ -227,9 +252,11 @@
                                                                     ' . substr($docname, 0, 30) . '
                                                                 </div>
                                                                 <div class="h4-search">
-                                                                    Scheduled Date: ' . $scheduledate . '<br>Starts: <b>@' . substr($start_time, 0, 5) . '</b> (24h)
+                                                                    Scheduled Date: ' . $scheduledate . '<br>Starts: <b>' . $start_time_12hr . '</b>
                                                                 </div>
                                                                 <br>
+                                                                ' . $gmeet_display . '
+                                                                <div style="margin-bottom: 15px;"></div> <!-- Space between GMeet and Cancel -->
                                                                 <a href="?action=drop&id=' . $appoid . '&title=' . $title . '&doc=' . $docname . '"><button class="login-btn btn-primary-soft btn" style="padding-top:11px;padding-bottom:11px;width:100%"><font class="tn-in-text">Cancel Booking</font></button></a>
                                                             </div>
                                                         </div>
