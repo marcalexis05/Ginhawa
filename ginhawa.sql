@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 03, 2025 at 09:31 PM
+-- Generation Time: Apr 04, 2025 at 01:20 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -42,6 +42,30 @@ INSERT INTO `admin` (`aemail`, `apassword`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `admin_notifications`
+--
+
+CREATE TABLE `admin_notifications` (
+  `id` int(11) NOT NULL,
+  `doctor_id` int(11) NOT NULL,
+  `request_id` int(11) NOT NULL,
+  `message` text NOT NULL,
+  `status` enum('pending','read','processed') DEFAULT 'pending',
+  `timestamp` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admin_notifications`
+--
+
+INSERT INTO `admin_notifications` (`id`, `doctor_id`, `request_id`, `message`, `status`, `timestamp`) VALUES
+(1, 1, 25, 'Dr. Test Doctor approved a session request from Marc Alexis Evangelista: Depression on 2025-04-08 from 08:00:00 to 08:30:00', 'pending', '2025-04-04 06:45:28'),
+(2, 1, 26, 'Dr. Test Doctor approved a session request from Marc Alexis Evangelista: Try on 2025-04-09 from 08:00:00 to 08:30:00', 'pending', '2025-04-04 07:17:37'),
+(3, 1, 28, 'Dr. Test Doctor approved a session request from Marc Alexis Evangelista: Wehn on 2025-04-11 from 08:00:00 to 08:30:00', 'pending', '2025-04-04 07:19:57');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `appointment`
 --
 
@@ -66,8 +90,9 @@ INSERT INTO `appointment` (`appoid`, `pid`, `apponum`, `scheduleid`, `appodate`)
 (10, 23, 1, 26, '2025-04-01'),
 (11, 27, 1, 27, '2025-04-01'),
 (31, 26, 2, 45, '2025-04-02'),
-(37, 23, 1, 57, '2025-04-03'),
-(38, 27, 2, 58, '2025-04-03');
+(39, 23, 1, 59, '2025-04-04'),
+(40, 23, 1, 50, '2025-04-04'),
+(41, 23, 1, 62, '2025-04-04');
 
 -- --------------------------------------------------------
 
@@ -91,11 +116,11 @@ CREATE TABLE `doctor` (
 --
 
 INSERT INTO `doctor` (`docid`, `docemail`, `docname`, `docpassword`, `doctel`, `specialties`, `ptid`, `archived`) VALUES
-(1, 'doctor@ginhawa.com', 'Test Doctor', '123', '0110000000', 1, NULL, 0),
-(5, 'marcalexis_099@gmail.com', 'Marc Alexis', '$2y$10$LW4V9FmKDbo0YoXMYIycTu1cTtcN6WdbseAaGHWlbWSqejZqeZ3VC', '+639074301972', 14, 'PT002', 1),
-(6, 'vjlamsenlamsen328@gmail.com', 'Layla', '$2y$10$R8fEebjlLFadN8SqAZpf0uHPxu/zzo1UR66ic1wgLBtPPA5Sktt22', '+639073121311', 1, 'PT003', 1),
+(1, 'doctor@ginhawa.com', 'Test Doctor', '$2y$10$i7l.98Bi7CL6SbM3ZeKQce6B.bAG7sykvZvXpJfhylwoo/81QTBMC', '', 1, '', 0),
+(5, 'marcalexis_099@gmail.com', 'Marc Alexis', '$2y$10$LW4V9FmKDbo0YoXMYIycTu1cTtcN6WdbseAaGHWlbWSqejZqeZ3VC', '+639074301972', 14, 'PT002', 0),
+(6, 'vjlamsenlamsen328@gmail.com', 'Layla', '$2y$10$R8fEebjlLFadN8SqAZpf0uHPxu/zzo1UR66ic1wgLBtPPA5Sktt22', '+639073121311', 1, 'PT003', 0),
 (7, 'garciamarc1900@gmail.com', 'maria santiago', '$2y$10$FDLa/qVIffHIIq4zEEuBkOmQ1xHwMwcoeT1Sb9Z5o7ql7nvIgF61i', '+639604385093', 6, 'PT004', 0),
-(8, 'royethnalang@gmail.com', 'Val', '$2y$10$AOf3reHbs9MYu/154LPMqO8J0Xywz86g4L8W6PPMyLegalMzFZnze', '+639075151412', 45, 'PT005', 1);
+(8, 'royethnalang@gmail.com', 'Val', '$2y$10$AOf3reHbs9MYu/154LPMqO8J0Xywz86g4L8W6PPMyLegalMzFZnze', '+639075151412', 45, 'PT005', 0);
 
 -- --------------------------------------------------------
 
@@ -159,7 +184,11 @@ INSERT INTO `doctor_attendance` (`id`, `doctor_id`, `docemail`, `time_in`, `time
 (42, 5, 'marcalexis_099@gmail.com', '2025-04-03 06:02:28', '2025-04-03 06:02:39', '2025-04-03'),
 (43, 5, 'marcalexis_099@gmail.com', '2025-04-03 06:03:40', NULL, '2025-04-03'),
 (44, 5, 'marcalexis_099@gmail.com', '2025-04-04 00:14:05', '2025-04-04 00:14:44', '2025-04-04'),
-(45, 5, 'marcalexis_099@gmail.com', '2025-04-04 00:28:28', '2025-04-04 00:29:28', '2025-04-04');
+(45, 5, 'marcalexis_099@gmail.com', '2025-04-04 00:28:28', '2025-04-04 00:29:28', '2025-04-04'),
+(46, 1, 'doctor@ginhawa.com', '2025-04-04 03:46:09', '2025-04-04 03:52:02', '2025-04-04'),
+(47, 1, 'doctor@ginhawa.com', '2025-04-04 04:51:53', '2025-04-04 05:11:30', '2025-04-04'),
+(48, 1, 'doctor@ginhawa.com', '2025-04-04 05:51:34', '2025-04-04 06:27:21', '2025-04-04'),
+(49, 1, 'doctor@ginhawa.com', '2025-04-04 06:44:17', NULL, '2025-04-04');
 
 -- --------------------------------------------------------
 
@@ -241,36 +270,43 @@ CREATE TABLE `patient_requests` (
   `duration` enum('30','60','90','120') NOT NULL DEFAULT '60',
   `end_time` time NOT NULL,
   `request_date` datetime NOT NULL,
-  `status` enum('pending','approved','rejected') NOT NULL DEFAULT 'pending'
+  `status` enum('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+  `rejection_reason` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `patient_requests`
 --
 
-INSERT INTO `patient_requests` (`request_id`, `patient_id`, `doctor_id`, `title`, `session_date`, `start_time`, `duration`, `end_time`, `request_date`, `status`) VALUES
-(1, 23, 5, 'Anxiety', '2025-04-02', '15:00:00', '30', '15:30:00', '2025-04-02 13:15:22', 'approved'),
-(2, 27, 5, 'Depression', '2025-04-03', '14:30:00', '30', '15:00:00', '2025-04-02 20:24:02', ''),
-(3, 27, 5, 'Anxiety', '2025-04-03', '15:30:00', '30', '16:00:00', '2025-04-02 20:30:29', 'approved'),
-(4, 23, 5, 'Depression', '2025-04-03', '13:00:00', '30', '13:30:00', '2025-04-02 20:44:04', 'approved'),
-(5, 27, 5, 'Anxious', '2025-04-04', '16:00:00', '30', '16:30:00', '2025-04-02 20:49:41', 'approved'),
-(6, 27, 5, 'Anxiety', '2025-04-04', '15:00:00', '30', '15:30:00', '2025-04-02 21:23:49', 'approved'),
-(7, 27, 5, 'anxiety', '2025-04-05', '15:30:00', '30', '16:00:00', '2025-04-02 21:26:13', 'approved'),
-(8, 26, 5, 'Anxiety', '2025-04-02', '14:00:00', '120', '16:00:00', '2025-04-02 23:35:28', 'rejected'),
-(9, 26, 6, 'Anxiety', '2025-04-02', '14:00:00', '30', '14:30:00', '2025-04-02 23:43:35', 'pending'),
-(10, 26, 5, 'Anxious', '2025-04-02', '08:00:00', '30', '08:30:00', '2025-04-02 23:51:26', 'rejected'),
-(11, 26, 5, 'Anxiety', '2025-04-03', '15:00:00', '30', '15:30:00', '2025-04-03 00:37:24', 'approved'),
-(12, 26, 5, 'Anxiety', '2025-04-05', '14:30:00', '60', '03:00:00', '0000-00-00 00:00:00', 'approved'),
-(13, 26, 5, 'Depression', '2025-04-06', '14:30:00', '30', '15:00:00', '2025-04-03 01:29:13', 'approved'),
-(14, 26, 5, 'Anxiety', '2025-04-05', '15:00:00', '30', '15:30:00', '2025-04-03 01:36:17', 'approved'),
-(15, 23, 8, 'Anxiety', '2025-04-07', '14:30:00', '30', '15:00:00', '2025-04-03 03:48:43', 'pending'),
-(16, 26, 5, 'Depression', '2025-04-04', '14:30:00', '60', '15:30:00', '2025-04-03 04:02:39', 'approved'),
-(17, 27, 5, 'Addict', '2025-04-04', '14:00:00', '30', '14:30:00', '2025-04-03 04:04:29', ''),
-(18, 27, 5, 'Depress', '2025-04-04', '16:00:00', '30', '16:30:00', '2025-04-03 04:12:38', 'approved'),
-(19, 23, 5, 'Addicted', '2025-04-03', '12:30:00', '30', '13:00:00', '2025-04-03 05:17:48', 'approved'),
-(20, 27, 5, 'GG', '2025-04-03', '09:00:00', '30', '09:30:00', '2025-04-03 06:03:22', 'approved'),
-(21, 25, 8, 'depression', '2025-04-10', '08:00:00', '30', '08:30:00', '2025-04-03 23:01:41', 'pending'),
-(22, 27, 8, 'Addicted', '2025-04-05', '14:00:00', '30', '14:30:00', '2025-04-04 00:04:43', 'pending');
+INSERT INTO `patient_requests` (`request_id`, `patient_id`, `doctor_id`, `title`, `session_date`, `start_time`, `duration`, `end_time`, `request_date`, `status`, `rejection_reason`) VALUES
+(1, 23, 5, 'Anxiety', '2025-04-02', '15:00:00', '30', '15:30:00', '2025-04-02 13:15:22', 'approved', NULL),
+(2, 27, 5, 'Depression', '2025-04-03', '14:30:00', '30', '15:00:00', '2025-04-02 20:24:02', '', NULL),
+(3, 27, 5, 'Anxiety', '2025-04-03', '15:30:00', '30', '16:00:00', '2025-04-02 20:30:29', 'approved', NULL),
+(4, 23, 5, 'Depression', '2025-04-03', '13:00:00', '30', '13:30:00', '2025-04-02 20:44:04', 'approved', NULL),
+(5, 27, 5, 'Anxious', '2025-04-04', '16:00:00', '30', '16:30:00', '2025-04-02 20:49:41', 'approved', NULL),
+(6, 27, 5, 'Anxiety', '2025-04-04', '15:00:00', '30', '15:30:00', '2025-04-02 21:23:49', 'approved', NULL),
+(7, 27, 5, 'anxiety', '2025-04-05', '15:30:00', '30', '16:00:00', '2025-04-02 21:26:13', 'approved', NULL),
+(8, 26, 5, 'Anxiety', '2025-04-02', '14:00:00', '120', '16:00:00', '2025-04-02 23:35:28', 'rejected', NULL),
+(9, 26, 6, 'Anxiety', '2025-04-02', '14:00:00', '30', '14:30:00', '2025-04-02 23:43:35', 'pending', NULL),
+(10, 26, 5, 'Anxious', '2025-04-02', '08:00:00', '30', '08:30:00', '2025-04-02 23:51:26', 'rejected', NULL),
+(11, 26, 5, 'Anxiety', '2025-04-03', '15:00:00', '30', '15:30:00', '2025-04-03 00:37:24', 'approved', NULL),
+(12, 26, 5, 'Anxiety', '2025-04-05', '14:30:00', '60', '03:00:00', '0000-00-00 00:00:00', 'approved', NULL),
+(13, 26, 5, 'Depression', '2025-04-06', '14:30:00', '30', '15:00:00', '2025-04-03 01:29:13', 'approved', NULL),
+(14, 26, 5, 'Anxiety', '2025-04-05', '15:00:00', '30', '15:30:00', '2025-04-03 01:36:17', 'approved', NULL),
+(15, 23, 8, 'Anxiety', '2025-04-07', '14:30:00', '30', '15:00:00', '2025-04-03 03:48:43', 'pending', NULL),
+(16, 26, 5, 'Depression', '2025-04-04', '14:30:00', '60', '15:30:00', '2025-04-03 04:02:39', 'approved', NULL),
+(17, 27, 5, 'Addict', '2025-04-04', '14:00:00', '30', '14:30:00', '2025-04-03 04:04:29', '', NULL),
+(18, 27, 5, 'Depress', '2025-04-04', '16:00:00', '30', '16:30:00', '2025-04-03 04:12:38', 'approved', NULL),
+(19, 23, 5, 'Addicted', '2025-04-03', '12:30:00', '30', '13:00:00', '2025-04-03 05:17:48', 'approved', NULL),
+(20, 27, 5, 'GG', '2025-04-03', '09:00:00', '30', '09:30:00', '2025-04-03 06:03:22', 'approved', NULL),
+(21, 25, 8, 'depression', '2025-04-10', '08:00:00', '30', '08:30:00', '2025-04-03 23:01:41', 'pending', NULL),
+(22, 27, 8, 'Addicted', '2025-04-05', '14:00:00', '30', '14:30:00', '2025-04-04 00:04:43', 'pending', NULL),
+(23, 23, 1, 'Depression', '2025-04-07', '08:00:00', '30', '08:30:00', '2025-04-04 03:51:24', '', NULL),
+(24, 23, 1, 'Depression', '2025-04-05', '08:00:00', '30', '08:30:00', '2025-04-04 06:26:18', 'approved', NULL),
+(25, 23, 1, 'Depression', '2025-04-08', '08:00:00', '30', '08:30:00', '2025-04-04 06:45:17', 'approved', NULL),
+(26, 23, 1, 'Try', '2025-04-09', '08:00:00', '30', '08:30:00', '2025-04-04 07:17:24', 'approved', NULL),
+(27, 23, 7, 'Try', '2025-04-11', '08:00:00', '30', '08:30:00', '2025-04-04 07:19:18', 'pending', NULL),
+(28, 23, 1, 'Wehn', '2025-04-11', '08:00:00', '30', '08:30:00', '2025-04-04 07:19:48', 'approved', NULL);
 
 -- --------------------------------------------------------
 
@@ -285,17 +321,23 @@ CREATE TABLE `schedule` (
   `scheduledate` date DEFAULT NULL,
   `start_time` time NOT NULL,
   `duration` enum('30','60','90','120') NOT NULL DEFAULT '60',
-  `end_time` time NOT NULL
+  `end_time` time NOT NULL,
+  `gmeet_link` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `schedule`
 --
 
-INSERT INTO `schedule` (`scheduleid`, `docid`, `title`, `scheduledate`, `start_time`, `duration`, `end_time`) VALUES
-(50, '5', 'Depression', '2025-04-04', '14:30:00', '60', '15:30:00'),
-(57, '5', 'Addicted', '2025-04-03', '12:30:00', '30', '13:00:00'),
-(58, '5', 'GG', '2025-04-03', '09:00:00', '30', '09:30:00');
+INSERT INTO `schedule` (`scheduleid`, `docid`, `title`, `scheduledate`, `start_time`, `duration`, `end_time`, `gmeet_link`) VALUES
+(50, '5', 'Depression', '2025-04-04', '14:30:00', '60', '15:30:00', 'https://meet.google.com/nes-pnkm-mmn'),
+(59, '1', 'Depression', '2025-04-07', '08:00:00', '60', '08:30:00', 'https://meet.google.com/nes-pnkm-mmn'),
+(60, '1', 'Addiction', '2025-04-04', '13:00:00', '60', '14:30:00', 'https://meet.google.com/nes-pnkm-mmn'),
+(61, '1', 'Depression', '2025-04-05', '08:00:00', '30', '08:30:00', NULL),
+(62, '1', 'Depression', '2025-04-08', '08:00:00', '30', '08:30:00', NULL),
+(63, '5', 'Depression', '2025-03-31', '10:14:00', '60', '00:00:00', 'https://meet.google.com/nes-pnkm-mmn'),
+(64, '1', 'Try', '2025-04-09', '08:00:00', '30', '08:30:00', NULL),
+(65, '1', 'Wehn', '2025-04-11', '08:00:00', '30', '08:30:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -320,7 +362,7 @@ CREATE TABLE `session_requests` (
 
 INSERT INTO `session_requests` (`request_id`, `docid`, `num_sessions`, `session_date`, `session_time`, `status`, `request_date`, `title`) VALUES
 (1, 5, 5, '2025-03-30', '11:08:00', 'rejected', '2025-03-30 02:08:48', ''),
-(2, 5, 5, '2025-03-31', '10:14:00', 'approved', '2025-03-30 02:12:45', ''),
+(2, 5, 5, '2025-03-31', '10:14:00', '', '2025-03-30 02:12:45', ''),
 (3, 5, 5, '2025-03-30', '11:21:00', 'approved', '2025-03-30 02:22:01', ''),
 (4, 6, 2, '2025-03-31', '11:23:00', 'approved', '2025-03-30 02:23:29', ''),
 (5, 5, 2, '2025-03-31', '12:07:00', 'approved', '2025-03-30 03:07:24', '');
@@ -460,6 +502,12 @@ ALTER TABLE `admin`
   ADD PRIMARY KEY (`aemail`);
 
 --
+-- Indexes for table `admin_notifications`
+--
+ALTER TABLE `admin_notifications`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `appointment`
 --
 ALTER TABLE `appointment`
@@ -533,10 +581,16 @@ ALTER TABLE `webuser`
 --
 
 --
+-- AUTO_INCREMENT for table `admin_notifications`
+--
+ALTER TABLE `admin_notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `appointment`
 --
 ALTER TABLE `appointment`
-  MODIFY `appoid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `appoid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `doctor`
@@ -548,7 +602,7 @@ ALTER TABLE `doctor`
 -- AUTO_INCREMENT for table `doctor_attendance`
 --
 ALTER TABLE `doctor_attendance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `password_resets`
@@ -566,13 +620,13 @@ ALTER TABLE `patient`
 -- AUTO_INCREMENT for table `patient_requests`
 --
 ALTER TABLE `patient_requests`
-  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `schedule`
 --
 ALTER TABLE `schedule`
-  MODIFY `scheduleid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `scheduleid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT for table `session_requests`
