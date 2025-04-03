@@ -1,0 +1,21 @@
+{
+  "name": "ginhawa",
+  "version": "1.0.0",
+  "description": "![](https://github.com/hshnudr/edoc-echanneling/blob/main/Screenshots/Screenshot%20(1).png)",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcalexis05/Ginhawa.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marcalexis05/Ginhawa/issues"
+  },
+  "homepage": "https://github.com/marcalexis05/Ginhawa#readme"
+}

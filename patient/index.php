@@ -12,6 +12,10 @@
         .dashbord-tables{animation: transitionIn-Y-over 0.5s;}
         .filter-container{animation: transitionIn-Y-bottom 0.5s;}
         .sub-table,.anime{animation: transitionIn-Y-bottom 0.5s;}
+        #chat-container {position: fixed; bottom: 20px; right: 20px; width: 300px; height: 400px; background: white; border: 1px solid #ccc; display: none; flex-direction: column;}
+        #chat-header {padding: 10px; background: #007bff; color: white; display: flex; justify-content: space-between;}
+        #chat-messages {flex: 1; overflow-y: auto; padding: 10px;}
+        #chat-input {width: 100%; padding: 10px; border: none; border-top: 1px solid #ccc;}
     </style>
 </head>
 <body>
@@ -282,5 +286,73 @@
             </table>
         </div>
     </div>
+
+    <!-- Chat Interface -->
+    <div id="chat-container">
+        <div id="chat-header">
+            <span id="chat-with"></span>
+            <button onclick="toggleChat()" style="background: none; border: none; color: white; cursor: pointer;">X</button>
+        </div>
+        <div id="chat-messages"></div>
+        <input id="chat-input" type="text" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendMessage();">
+    </div>
+    <button onclick="toggleChat()" style="position: fixed; bottom: 20px; right: 20px;">Chat</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
+    <script>
+        const socket = io('http://localhost:3000');
+        const userId = '<?php echo $userid; ?>';
+        let selectedUserId = null;
+
+        socket.emit('join', userId);
+
+        function toggleChat() {
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.style.display = chatContainer.style.display === 'none' ? 'flex' : 'none';
+            if (chatContainer.style.display === 'flex' && !selectedUserId) {
+                loadUserList();
+            }
+        }
+
+        async function loadUserList() {
+            const response = await fetch('http://localhost:3000/api/doctors');
+            const doctors = await response.json();
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML = '<h3>Select a Doctor:</h3>';
+            doctors.forEach(doctor => {
+                chatMessages.innerHTML += `<p style="cursor: pointer;" onclick="selectUser('${doctor.docid}', '${doctor.docname}')">${doctor.docname}</p>`;
+            });
+        }
+
+        async function selectUser(id, name) {
+            selectedUserId = id;
+            document.getElementById('chat-with').textContent = `Chatting with: ${name}`;
+            const response = await fetch(`http://localhost:3000/api/chat/${userId}/${selectedUserId}`);
+            const messages = await response.json();
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML = '';
+            messages.forEach(msg => {
+                chatMessages.innerHTML += `<p><b>${msg.sender_id === userId ? 'You' : name}:</b> ${msg.message}</p>`;
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (message && selectedUserId) {
+                socket.emit('sendMessage', { senderId: userId, receiverId: selectedUserId, message });
+                input.value = '';
+            }
+        }
+
+        socket.on('receiveMessage', (msg) => {
+            if ((msg.sender_id === userId && msg.receiver_id === selectedUserId) || (msg.sender_id === selectedUserId && msg.receiver_id === userId)) {
+                const chatMessages = document.getElementById('chat-messages');
+                chatMessages.innerHTML += `<p><b>${msg.sender_id === userId ? 'You' : document.getElementById('chat-with').textContent.split(': ')[1]}:</b> ${msg.message}</p>`;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        });
+    </script>
 </body>
 </html>
