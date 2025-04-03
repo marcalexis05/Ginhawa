@@ -10,77 +10,9 @@
     <link rel="stylesheet" href="../css/admin.css">
     <title>Dashboard</title>
     <style>
-        .dashbord-tables { animation: transitionIn-Y-over 0.5s; }
-        .filter-container { animation: transitionIn-Y-bottom 0.5s; }
-        .sub-table, .anime { animation: transitionIn-Y-bottom 0.5s; }
-        
-        /* Status Section Styling */
-        .status-container {
-            background-color: #f9f9f9;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin: 20px 0;
-        }
-        .status-container .dashboard-items {
-            background-color: #ffffff;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .status-container .dashboard-items:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .status-container .h1-dashboard {
-            font-size: 36px;
-            color: #007B62;
-            margin-bottom: 5px;
-        }
-        .status-container .h3-dashboard {
-            font-size: 16px;
-            color: #333;
-        }
-        
-        /* Upcoming Booking Section Styling */
-        .booking-container {
-            background-color: #f9f9f9;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin: 20px 0;
-        }
-        .booking-container .sub-table {
-            width: 90%;
-            background-color: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .booking-container .table-headin {
-            background-color: #007B62;
-            color: #ffffff;
-            padding: 12px;
-            font-weight: 600;
-            text-align: center;
-        }
-        .booking-container tbody tr {
-            transition: background-color 0.2s;
-        }
-        .booking-container tbody tr:hover {
-            background-color: #f1faff;
-        }
-        .booking-container td {
-            padding: 15px;
-            text-align: center;
-            border-bottom: 1px solid #eee;
-        }
-        .booking-container .no-data {
-            padding: 20px;
-            text-align: center;
-            color: #666;
-        }
+        .dashbord-tables{animation: transitionIn-Y-over 0.5s;}
+        .filter-container{animation: transitionIn-Y-bottom 0.5s;}
+        .sub-table,.anime{animation: transitionIn-Y-bottom 0.5s;}
     </style>
 </head>
 <body>
@@ -341,5 +273,73 @@
             </table>
         </div>
     </div>
+
+    <!-- Chat Interface -->
+    <div id="chat-container">
+        <div id="chat-header">
+            <span id="chat-with"></span>
+            <button onclick="toggleChat()" style="background: none; border: none; color: white; cursor: pointer;">X</button>
+        </div>
+        <div id="chat-messages"></div>
+        <input id="chat-input" type="text" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendMessage();">
+    </div>
+    <button onclick="toggleChat()" style="position: fixed; bottom: 20px; right: 20px;">Chat</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
+    <script>
+        const socket = io('http://localhost:3000');
+        const userId = '<?php echo $userid; ?>';
+        let selectedUserId = null;
+
+        socket.emit('join', userId);
+
+        function toggleChat() {
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.style.display = chatContainer.style.display === 'none' ? 'flex' : 'none';
+            if (chatContainer.style.display === 'flex' && !selectedUserId) {
+                loadUserList();
+            }
+        }
+
+        async function loadUserList() {
+            const response = await fetch('http://localhost:3000/api/doctors');
+            const doctors = await response.json();
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML = '<h3>Select a Doctor:</h3>';
+            doctors.forEach(doctor => {
+                chatMessages.innerHTML += `<p style="cursor: pointer;" onclick="selectUser('${doctor.docid}', '${doctor.docname}')">${doctor.docname}</p>`;
+            });
+        }
+
+        async function selectUser(id, name) {
+            selectedUserId = id;
+            document.getElementById('chat-with').textContent = `Chatting with: ${name}`;
+            const response = await fetch(`http://localhost:3000/api/chat/${userId}/${selectedUserId}`);
+            const messages = await response.json();
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML = '';
+            messages.forEach(msg => {
+                chatMessages.innerHTML += `<p><b>${msg.sender_id === userId ? 'You' : name}:</b> ${msg.message}</p>`;
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (message && selectedUserId) {
+                socket.emit('sendMessage', { senderId: userId, receiverId: selectedUserId, message });
+                input.value = '';
+            }
+        }
+
+        socket.on('receiveMessage', (msg) => {
+            if ((msg.sender_id === userId && msg.receiver_id === selectedUserId) || (msg.sender_id === selectedUserId && msg.receiver_id === userId)) {
+                const chatMessages = document.getElementById('chat-messages');
+                chatMessages.innerHTML += `<p><b>${msg.sender_id === userId ? 'You' : document.getElementById('chat-with').textContent.split(': ')[1]}:</b> ${msg.message}</p>`;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        });
+    </script>
 </body>
 </html>
