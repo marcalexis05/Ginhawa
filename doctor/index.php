@@ -10,9 +10,9 @@
     <link rel="icon" href="../Images/G-icon.png">
     <title>Dashboard</title>
     <style>
-        .dashbord-tables,.doctor-heade { animation: transitionIn-Y-over 0.5s; }
+        .dashbord-tables, .doctor-heade { animation: transitionIn-Y-over 0.5s; }
         .filter-container { animation: transitionIn-Y-bottom 0.5s; }
-        .sub-table,#anim { animation: transitionIn-Y-bottom 0.5s; }
+        .sub-table, #anim { animation: transitionIn-Y-bottom 0.5s; }
         .notification-bell { position: relative; display: inline-block; }
         .notification-count { 
             position: absolute; 
@@ -40,6 +40,39 @@
         #send-btn {width: 25%; padding: 10px; background: #007bff; color: white; border: none; cursor: pointer;}
         #send-btn:hover {background: #0056b3;}
         #patient-select {width: 100%; padding: 5px; margin-bottom: 10px;}
+        /* Ensure the dashboard items are styled consistently */
+        .dashboard-items {
+            padding: 20px;
+            margin: auto;
+            width: 95%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .dashboard-items:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .h1-dashboard {
+            font-size: 36px;
+            color: #007B62;
+            margin-bottom: 5px;
+        }
+        .h3-dashboard {
+            font-size: 16px;
+            color: #333;
+        }
+        .dashboard-icons {
+            width: 40px;
+            height: 40px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
     </style>
 </head>
 <body>
@@ -178,44 +211,36 @@
                                     <center>
                                         <table class="filter-container" style="border:none;" border="0">
                                             <tr>
-                                                <td colspan="4">
+                                                <td colspan="3">
                                                     <p style="font-size:20px;font-weight:600;padding-left:12px;">Status</p>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td style="width:25%;">
-                                                    <div class="dashboard-items" style="padding:20px;margin:auto;width:95%;display:flex">
+                                                <td style="width:33.33%;">
+                                                    <div class="dashboard-items">
                                                         <div>
-                                                            <div class="h1-dashboard"><?php echo $doctorrow ? $doctorrow->num_rows : 0 ?></div><br>
-                                                            <div class="h3-dashboard">All Doctors</div>
-                                                        </div>
-                                                        <div class="btn-icon-back dashboard-icons" style="background-image:url('../img/icons/doctors-hover.svg');"></div>
-                                                    </div>
-                                                </td>
-                                                <td style="width:25%;">
-                                                    <div class="dashboard-items" style="padding:20px;margin:auto;width:95%;display:flex;">
-                                                        <div>
-                                                            <div class="h1-dashboard"><?php echo $patientrow ? $patientrow->num_rows : 0 ?></div><br>
+                                                            <div class="h1-dashboard"><?php echo $patientrow ? $patientrow->num_rows : 0 ?></div>
+                                                            <br>
                                                             <div class="h3-dashboard">All Patients</div>
                                                         </div>
                                                         <div class="btn-icon-back dashboard-icons" style="background-image:url('../img/icons/patients-hover.svg');"></div>
                                                     </div>
                                                 </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width:25%;">
-                                                    <div class="dashboard-items" style="padding:20px;margin:auto;width:95%;display:flex;">
+                                                <td style="width:33.33%;">
+                                                    <div class="dashboard-items">
                                                         <div>
-                                                            <div class="h1-dashboard"><?php echo $appointmentrow ? $appointmentrow->num_rows : 0 ?></div><br>
+                                                            <div class="h1-dashboard"><?php echo $appointmentrow ? $appointmentrow->num_rows : 0 ?></div>
+                                                        <br>
                                                             <div class="h3-dashboard">New Booking</div>
                                                         </div>
                                                         <div class="btn-icon-back dashboard-icons" style="background-image:url('../img/icons/book-hover.svg');"></div>
                                                     </div>
                                                 </td>
-                                                <td style="width:25%;">
-                                                    <div class="dashboard-items" style="padding:20px;margin:auto;width:95%;display:flex;padding-top:21px;padding-bottom:21px;">
+                                                <td style="width:33.33%;">
+                                                    <div class="dashboard-items">
                                                         <div>
-                                                            <div class="h1-dashboard"><?php echo $schedulerow ? $schedulerow->num_rows : 0 ?></div><br>
+                                                            <div class="h1-dashboard"><?php echo $schedulerow ? $schedulerow->num_rows : 0 ?></div>
+                                                            <br>
                                                             <div class="h3-dashboard" style="font-size:15px">Today Sessions</div>
                                                         </div>
                                                         <div class="btn-icon-back dashboard-icons" style="background-image:url('../img/icons/session-iceblue.svg');"></div>
