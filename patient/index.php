@@ -13,7 +13,6 @@
         .dashbord-tables { animation: transitionIn-Y-over 0.5s; }
         .filter-container { animation: transitionIn-Y-bottom 0.5s; }
         .sub-table, .anime { animation: transitionIn-Y-bottom 0.5s; }
-        /* Ensure the dashboard items are styled consistently */
         .dashboard-items {
             padding: 20px;
             margin: auto;
@@ -144,7 +143,14 @@
                             $patientrow = $database->query("select * from patient;");
                             $doctorrow = $database->query("select * from doctor;");
                             $appointmentrow = $database->query("select * from appointment where appodate>='$today';");
-                            $schedulerow = $database->query("select * from schedule where scheduledate='$today';");
+                            // Updated query to count only today's sessions for this patient
+                            $sql_today_sessions = "SELECT * FROM schedule 
+                                                  INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid 
+                                                  WHERE appointment.pid = ? AND schedule.scheduledate = ?";
+                            $stmt_today = $database->prepare($sql_today_sessions);
+                            $stmt_today->bind_param("is", $userid, $today);
+                            $stmt_today->execute();
+                            $schedulerow = $stmt_today->get_result();
                             ?>
                         </p>
                     </td>
