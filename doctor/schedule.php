@@ -208,6 +208,12 @@
                 <tr>
                     <td colspan="4" style="padding-top:10px;width: 100%;">
                         <?php
+                        if (isset($_GET['message'])) {
+                            echo '<p class="success-msg">' . htmlspecialchars($_GET['message']) . '</p>';
+                        }
+                        if (isset($_GET['error'])) {
+                            echo '<p class="error-msg">' . htmlspecialchars($_GET['error']) . '</p>';
+                        }
                         $sqlmain = "SELECT schedule.scheduleid, schedule.title, doctor.docname, schedule.scheduledate, schedule.start_time, schedule.end_time, schedule.gmeet_link 
                                   FROM schedule INNER JOIN doctor ON schedule.docid = doctor.docid 
                                   WHERE doctor.docid = $userid";
@@ -241,12 +247,6 @@
                     $sheduledate = $_POST["sheduledate"];
                     $sqlmain .= " AND schedule.scheduledate='$sheduledate'";
                     $result = $database->query($sqlmain);
-                }
-                if (isset($_GET['success'])) {
-                    echo '<p class="success-msg">' . htmlspecialchars($_GET['success']) . '</p>';
-                }
-                if (isset($_GET['error'])) {
-                    echo '<p class="error-msg">' . htmlspecialchars($_GET['error']) . '</p>';
                 }
                 ?>
                 <tr>

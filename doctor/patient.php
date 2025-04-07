@@ -16,6 +16,37 @@
         .sub-table {
             animation: transitionIn-Y-bottom 0.5s;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -38,7 +69,58 @@
     $userfetch = $userrow->fetch_assoc();
     $userid = $userfetch["docid"];
     $username = $userfetch["docname"];
+
+    // Include PHPMailer
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+    require '../vendor/autoload.php'; // Adjust path if PHPMailer is installed via Composer
+
+    // Handle email sending
+    if(isset($_POST['send_recommendation'])) {
+        $patient_id = $_POST['patient_id'];
+        $subject = $_POST['subject'];
+        $message = $_POST['message'];
+
+        // Fetch patient email
+        $patient_query = $database->query("SELECT pemail FROM patient WHERE pid='$patient_id'");
+        $patient = $patient_query->fetch_assoc();
+        $patient_email = $patient['pemail'];
+
+        // PHPMailer setup
+        $mail = new PHPMailer(true);
+        try {
+            // Server settings
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'your-email@gmail.com'; // Your Gmail address
+            $mail->Password = 'your-app-password';    // Your Gmail App Password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            // Recipients
+            $mail->setFrom('your-email@gmail.com', $username);
+            $mail->addAddress($patient_email);
+
+            // Content
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body    = nl2br($message);
+            $mail->AltBody = strip_tags($message);
+
+            $mail->send();
+
+            // Optionally store in database
+            $database->query("INSERT INTO doctor_recommendations (doctor_id, patient_id, subject, message, sent_date) 
+                            VALUES ('$userid', '$patient_id', '$subject', '$message', NOW())");
+
+            echo '<script>alert("Recommendation sent successfully!");</script>';
+        } catch (Exception $e) {
+            echo '<script>alert("Failed to send recommendation. Error: ' . $mail->ErrorInfo . '");</script>';
+        }
+    }
     ?>
+
     <div class="container">
         <div class="menu">
             <table class="menu-container" border="0">
@@ -89,6 +171,7 @@
                 </tr>
             </table>
         </div>
+
         <?php       
         $selecttype = "My";
         $current = "My Cases Only";
@@ -99,7 +182,6 @@
                 $selecttype = "my";
             }
             if(isset($_POST["filter"])) {
-                // Check if "showonly" is set and has a valid value
                 if(isset($_POST["showonly"]) && $_POST["showonly"] == 'all') {
                     $sqlmain = "select * from patient";
                     $selecttype = "All";
@@ -115,6 +197,7 @@
             $selecttype = "My";
         }
         ?>
+
         <div class="dash-body">
             <table border="0" width="100%" style="border-spacing: 0;margin:0;padding:0;margin-top:25px;">
                 <tr>
@@ -224,14 +307,15 @@
                                                 $dob = $row["pdob"];
                                                 $tel = $row["ptel"];
                                                 echo '<tr>
-                                                    <td>  '.substr($name, 0, 35).'</td>
+                                                    <td> '.substr($name, 0, 35).'</td>
                                                     <td>'.substr($clientid, 0, 12).'</td>
                                                     <td>'.substr($tel, 0, 10).'</td>
                                                     <td>'.substr($email, 0, 20).'</td>
                                                     <td>'.substr($dob, 0, 10).'</td>
                                                     <td>
-                                                        <div style="display:flex;justify-content: center;">
+                                                        <div style="display:flex;justify-content: center;gap: 10px;">
                                                             <a href="?action=view&id='.$pid.'" class="non-style-link"><button class="btn-primary-soft btn button-icon btn-view" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
+                                                            <button class="btn-primary-soft btn button-icon btn-recommend" onclick="openRecommendationModal('.$pid.')" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Recommend</font></button>
                                                         </div>
                                                     </td>
                                                 </tr>';
@@ -247,6 +331,29 @@
             </table>
         </div>
     </div>
+
+    <!-- Recommendation Modal -->
+    <div id="recommendationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRecommendationModal()">&times;</span>
+            <h2>Send Recommendation</h2>
+            <form method="post" action="">
+                <input type="hidden" name="patient_id" id="modal_patient_id">
+                <div>
+                    <label for="subject">Subject:</label><br>
+                    <input type="text" name="subject" id="subject" class="input-text" style="width: 100%;" required>
+                </div>
+                <div>
+                    <label for="message">Message:</label><br>
+                    <textarea name="message" id="message" rows="5" class="input-text" style="width: 100%;" required placeholder="Enter your recommendations, advice, or notes here..."></textarea>
+                </div>
+                <div style="margin-top: 10px;">
+                    <input type="submit" name="send_recommendation" value="Send" class="login-btn btn-primary btn">
+                </div>
+            </form>
+        </div>
+    </div>
+
     <?php 
     if($_GET) {
         $id = $_GET["id"];
@@ -342,10 +449,27 @@
                 </center>
                 <br><br>
             </div>
-        </div>
-        ';
+        </div>';
     }
     ?>
-</div>
+
+    <script>
+        function openRecommendationModal(patientId) {
+            document.getElementById('recommendationModal').style.display = 'block';
+            document.getElementById('modal_patient_id').value = patientId;
+        }
+
+        function closeRecommendationModal() {
+            document.getElementById('recommendationModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            var modal = document.getElementById('recommendationModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
 </body>
 </html>

@@ -35,14 +35,14 @@ if ($check_result->num_rows == 0) {
 }
 $check_stmt->close();
 
-// Delete the session
+// Delete the session (dependent records in session_requests and appointment will be deleted automatically)
 $sql = "DELETE FROM schedule WHERE scheduleid = ? AND docid = ?";
 $stmt = $database->prepare($sql);
 $stmt->bind_param("ii", $scheduleid, $docid);
 
 if ($stmt->execute()) {
     if ($stmt->affected_rows > 0) {
-        header("Location: schedule.php?success=Session cancelled successfully");
+        header("Location: schedule.php?message=Session cancelled successfully");
     } else {
         header("Location: schedule.php?error=No session was deleted");
     }

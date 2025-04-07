@@ -8,14 +8,84 @@
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
     <link rel="icon" href="../Images/G-icon.png">
+    <!-- SweetAlert2 CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <title>Appointments</title>
     <style>
-        .popup{
-            animation: transitionIn-Y-bottom 0.5s;
+        .popup { animation: transitionIn-Y-bottom 0.5s; }
+        .sub-table { animation: transitionIn-Y-bottom 0.5s; }
+        /* Notification styles from schedule.php */
+        .notification-bell { position: relative; display: inline-block; cursor: pointer; }
+        .notification-count { 
+            position: absolute; 
+            top: -5px; 
+            right: -5px; 
+            background-color: red; 
+            color: white; 
+            border-radius: 50%; 
+            padding: 2px 6px; 
+            font-size: 12px; 
         }
-        .sub-table{
-            animation: transitionIn-Y-bottom 0.5s;
+        .notification-dropdown { 
+            display: none; 
+            position: absolute; 
+            background-color: white; 
+            min-width: 350px; 
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); 
+            z-index: 1; 
+            right: 0; 
+            border-radius: 5px; 
+            max-height: 300px; 
+            overflow-y: auto; 
         }
+        .notification-item { 
+            padding: 10px; 
+            border-bottom: 1px solid #ddd; 
+        }
+        .notification-item:last-child { border-bottom: none; }
+        .notification-actions { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-top: 10px; 
+        }
+        .btn-approve { background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+        .btn-reject { background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+        .bell-icon { width: 30px; height: 30px; fill: #333; }
+        .bell-icon:hover { fill: #007bff; }
+        .gmeet-link { color: #007bff; text-decoration: underline; cursor: pointer; }
+        .gmeet-link:hover { color: #0056b3; }
+        .rejection-modal { 
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0,0,0,0.5); 
+        }
+        .modal-content { 
+            background-color: white; 
+            margin: 15% auto; 
+            padding: 20px; 
+            border-radius: 5px; 
+            width: 300px; 
+            text-align: center; 
+        }
+        .modal-content select { 
+            width: 100%; 
+            padding: 5px; 
+            margin: 10px 0; 
+        }
+        .modal-content button { 
+            padding: 5px 10px; 
+            margin: 5px; 
+            border: none; 
+            border-radius: 3px; 
+            cursor: pointer; 
+        }
+        .btn-submit { background-color: #dc3545; color: white; }
+        .btn-cancel { background-color: #6c757d; color: white; }
     </style>
 </head>
 <body>
@@ -40,6 +110,16 @@
     $userfetch = $userrow->fetch_assoc();
     $userid = $userfetch["docid"];
     $username = $userfetch["docname"];
+
+    // Notification logic from schedule.php
+    $request_count_query = "SELECT COUNT(*) as pending_count FROM patient_requests WHERE doctor_id = $userid AND status = 'pending'";
+    $request_count_result = $database->query($request_count_query);
+    $pending_count = $request_count_result->fetch_assoc()['pending_count'];
+
+    $requests_query = "SELECT pr.*, p.pname FROM patient_requests pr 
+                      INNER JOIN patient p ON pr.patient_id = p.pid 
+                      WHERE pr.doctor_id = $userid AND pr.status = 'pending'";
+    $requests_result = $database->query($requests_query);
     ?>
 
     <div class="container">
@@ -120,7 +200,38 @@
                         </p>
                     </td>
                     <td width="10%">
-                        <button class="btn-label" style="display: flex;justify-content: center;align-items: center;"><img src="../img/calendar.svg" width="100%"></button>
+                        <!-- Notification bell from schedule.php -->
+                        <div class="notification-bell" onclick="toggleNotifications()">
+                            <svg class="bell-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                            </svg>
+                            <?php if ($pending_count > 0) { ?>
+                                <span class="notification-count"><?php echo $pending_count; ?></span>
+                            <?php } ?>
+                            <div class="notification-dropdown" id="notificationDropdown" style="display: none;">
+                                <?php
+                                if ($requests_result->num_rows > 0) {
+                                    while ($request = $requests_result->fetch_assoc()) {
+                                        $request_id = $request['request_id'];
+                                        $start_time = DateTime::createFromFormat('H:i:s', $request["start_time"]);
+                                        $start_time_display = $start_time ? $start_time->format('h:i A') : 'Invalid Time';
+                                        $gmeet_request = $request['gmeet_request'] ? '<br><strong>Google Meet Requested</strong>' : '';
+                                        echo '<div class="notification-item">';
+                                        echo '<strong>' . htmlspecialchars($request['pname']) . '</strong><br>';
+                                        echo 'Title: ' . htmlspecialchars($request['title']) . '<br>';
+                                        echo 'Date: ' . $request['session_date'] . ' ' . $start_time_display . $gmeet_request . '<br>';
+                                        echo '<div class="notification-actions">';
+                                        echo '<a href="handle_patient_request.php?action=approve&id=' . $request_id . '"><button class="btn-approve">Approve</button></a>';
+                                        echo '<button class="btn-reject" onclick="showRejectionModal(' . $request_id . ')">Reject</button>';
+                                        echo '</div>';
+                                        echo '</div>';
+                                    }
+                                } else {
+                                    echo '<div class="notification-item">No pending requests</div>';
+                                }
+                                ?>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -246,6 +357,27 @@
             </table>
         </div>
     </div>
+    <!-- Rejection Modal from schedule.php -->
+    <div id="rejectionModal" class="rejection-modal">
+        <div class="modal-content">
+            <h3>Reason for Rejection</h3>
+            <form id="rejectionForm" method="POST" action="handle_patient_request.php">
+                <input type="hidden" name="action" value="reject">
+                <input type="hidden" name="id" id="rejectRequestId">
+                <select name="rejection_reason" required>
+                    <option value="">Select a reason</option>
+                    <option value="Schedule Conflict">Schedule Conflict</option>
+                    <option value="Insufficient Information">Insufficient Information</option>
+                    <option value="Not Available">Not Available</option>
+                    <option value="Other">Other</option>
+                </select>
+                <div>
+                    <button type="submit" class="btn-submit">Reject</button>
+                    <button type="button" class="btn-cancel" onclick="closeRejectionModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <?php
     if($_GET){
         $id = $_GET["id"];
@@ -275,6 +407,31 @@
         }
     }
     ?>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="scrollAnimation.js"></script>
+    <script>
+    function toggleNotifications() {
+        var dropdown = document.getElementById('notificationDropdown');
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    }
+
+    window.onclick = function(event) {
+        if (!event.target.closest('.notification-bell') && !event.target.closest('#rejectionModal')) {
+            var dropdown = document.getElementById('notificationDropdown');
+            if (dropdown.style.display === 'block') {
+                dropdown.style.display = 'none';
+            }
+        }
+    }
+
+    function showRejectionModal(requestId) {
+        document.getElementById('rejectRequestId').value = requestId;
+        document.getElementById('rejectionModal').style.display = 'block';
+    }
+
+    function closeRejectionModal() {
+        document.getElementById('rejectionModal').style.display = 'none';
+    }
+    </script>
 </body>
 </html>
