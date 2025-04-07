@@ -255,11 +255,11 @@
                                                         $button_disabled = "disabled";
                                                         $button_link = "#";
                                                     } elseif ($already_booked_date) {
-                                                        $button_text = "Day Booked";
+                                                        $button_text = "Date Occupied";
                                                         $button_disabled = "disabled";
                                                         $button_link = "#";
                                                     } elseif ($other_patient_booked) {
-                                                        $button_text = "Booked by Another";
+                                                        $button_text = "Booked by Another Client";
                                                         $button_disabled = "disabled";
                                                         $button_link = "#";
                                                     } else {

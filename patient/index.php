@@ -160,7 +160,7 @@
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-doctor">
-                        <a href="doctors.php" class="non-style-link-menu"><div><p class="menu-text">All Doctors</p></a></div>
+                        <a href="doctors.php" class="non-style-link-menu"><div><p class="menu-text">All Professionals</p></a></div>
                     </td>
                 </tr>
                 <tr class="menu-row">
@@ -248,14 +248,14 @@
                                         <h3>Welcome!</h3>
                                         <h1><?php echo $username; ?>.</h1>
                                         <p>Haven't any idea about doctors? no problem let's jumping to 
-                                            <a href="doctors.php" class="non-style-link"><b>"All Doctors"</b></a> section or 
+                                            <a href="doctors.php" class="non-style-link"><b>"All Professionals"</b></a> section or 
                                             <a href="schedule.php" class="non-style-link"><b>"Sessions"</b></a><br>
-                                            Track your past and future appointments history.<br>
-                                            Also find out the expected arrival time of your doctor or medical consultant.<br><br>
+                                            Track your past and future appointme    nts history.<br>
+                                            Also find out the expected available time of your consultant.<br><br>
                                         </p>
-                                        <h3>Channel a Doctor Here</h3>
+                                        <h3>Channel a Professional Here</h3>
                                         <form action="schedule.php" method="post" style="display: flex">
-                                            <input type="search" name="search" class="input-text" placeholder="Search Doctor and We will Find The Session Available" list="doctors" style="width:45%;">
+                                            <input type="search" name="search" class="input-text" placeholder="Search Professionals and We will Find The Session Available" list="doctors" style="width:45%;">
                                             <?php
                                             echo '<datalist id="doctors">';
                                             $list11 = $database->query("select docname,docemail from doctor;");

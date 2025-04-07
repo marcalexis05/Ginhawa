@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../css/admin.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <title>Doctors</title>
+    <title>Professionals</title>
     <style>
         .popup { animation: transitionIn-Y-bottom 0.5s; }
         .sub-table { animation: transitionIn-Y-bottom 0.5s; }
@@ -72,7 +72,7 @@
                     <td class="menu-btn menu-icon-home"><a href="index.php" class="non-style-link-menu"><div><p class="menu-text">Home</p></div></a></td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-doctor menu-active menu-icon-doctor-active"><a href="doctors.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">All Doctors</p></div></a></td>
+                    <td class="menu-btn menu-icon-doctor menu-active menu-icon-doctor-active"><a href="doctors.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">All Professionals</p></div></a></td>
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-session"><a href="schedule.php" class="non-style-link-menu"><div><p class="menu-text">Scheduled Sessions</p></div></a></td>
@@ -91,7 +91,7 @@
                     <td width="13%"><a href="doctors.php"><button class="login-btn btn-primary-soft btn btn-icon-back" style="padding:11px;margin-left:20px;width:125px"><font class="tn-in-text">Back</font></button></a></td>
                     <td>
                         <form action="" method="post" class="header-search">
-                            <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Doctor name or Email" list="doctors">  
+                            <input type="search" name="search" class="input-text header-searchbar" placeholder="Search Professional name or Email" list="doctors">  
                             <?php
                             echo '<datalist id="doctors">';
                             $list11 = $database->query("SELECT docname,docemail FROM doctor");
@@ -119,7 +119,7 @@
                 </tr>
                 <tr>
                     <td colspan="4" style="padding-top:10px;">
-                        <p class="heading-main12" style="margin-left:45px;font-size:18px;color:rgb(49,49,49)">All Doctors (<?php echo $list11->num_rows; ?>)</p>
+                        <p class="heading-main12" style="margin-left:45px;font-size:18px;color:rgb(49,49,49)">All Professionals (<?php echo $list11->num_rows; ?>)</p>
                     </td>
                 </tr>
                 <?php
@@ -137,7 +137,7 @@
                                 <table width="93%" class="sub-table scrolldown" border="0">
                                     <thead>
                                         <tr>
-                                            <th class="table-headin">Doctor Name</th>
+                                            <th class="table-headin">Professionals Name</th>
                                             <th class="table-headin">Email</th>
                                             <th class="table-headin">Specialties</th>
                                             <th class="table-headin">Events</th>
