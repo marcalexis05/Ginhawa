@@ -2,42 +2,22 @@
 session_start();
 include("../connection.php");
 
-// Check session and GET parameters
-if (!isset($_SESSION["user"]) || $_SESSION['usertype'] != 'd' || !isset($_GET['action']) || !isset($_GET['id'])) {
-    header("location: ../login.php");
+if (!isset($_SESSION["user"]) || $_SESSION['usertype'] != 'a' || !isset($_GET['action']) || !isset($_GET['id'])) {
+    header("Location: ../login.php");
     exit();
 }
 
-// Verify database connection
 if (!$database) {
     header("Location: schedule.php?error=Database connection failed: " . mysqli_connect_error());
     exit();
 }
 
-$request_id = $_GET['id'];
+$request_id = $database->real_escape_string($_GET['id']);
 $action = $_GET['action'];
 
-// Fetch doctor ID
-$user_query = $database->query("SELECT docid FROM doctor WHERE docemail='" . $database->real_escape_string($_SESSION["user"]) . "'");
-if ($user_query === false) {
-    header("Location: schedule.php?error=Failed to fetch doctor ID: " . $database->error);
-    exit();
-}
-$user_result = $user_query->fetch_assoc();
-if (!$user_result) {
-    header("Location: schedule.php?error=Doctor not found");
-    exit();
-}
-$userid = $user_result["docid"];
-
-// Fetch patient request
-$request_query = $database->query("SELECT * FROM patient_requests WHERE request_id='$request_id' AND doctor_id='$userid'");
-if ($request_query === false) {
-    header("Location: schedule.php?error=Request query failed: " . $database->error);
-    exit();
-}
-if ($request_query->num_rows == 0) {
-    header("Location: schedule.php?error=Invalid request");
+$request_query = $database->query("SELECT * FROM session_requests WHERE request_id='$request_id'");
+if ($request_query === false || $request_query->num_rows == 0) {
+    header("Location: schedule.php?error=" . ($request_query === false ? "Request query failed: " . $database->error : "Invalid request"));
     exit();
 }
 $request = $request_query->fetch_assoc();
@@ -45,69 +25,69 @@ $request = $request_query->fetch_assoc();
 $status = $action == 'approve' ? 'approved' : 'rejected';
 
 if ($action == 'approve') {
-    // Check constraints before approving
+    $docid = $request['docid'];
+    $schedule_id = $request['schedule_id'];
     $session_date = $request['session_date'];
     $start_time = $request['start_time'];
     $end_time = $request['end_time'];
     $duration = $request['duration'];
-    $patient_id = $request['patient_id']; // Add this to get the requesting patient
 
-    // Check max sessions per day
-    $doctor_check = $database->query("SELECT COUNT(*) FROM schedule 
-        WHERE docid = '$userid' AND scheduledate = '$session_date'");
-    if ($doctor_check === false) {
-        header("Location: schedule.php?error=Max sessions check failed: " . $database->error);
-        exit();
-    }
-    if ($doctor_check->fetch_row()[0] >= 5) {
-        header("Location: schedule.php?error=Cannot approve: Maximum of 5 sessions reached for this day");
+    $start_dt = DateTime::createFromFormat('H:i:s', $start_time);
+    $end_dt = DateTime::createFromFormat('H:i:s', $end_time);
+    if (!$start_dt || !$end_dt || $end_dt <= $start_dt) {
+        header("Location: schedule.php?error=Invalid time range in request");
         exit();
     }
 
-    // Check for overlapping sessions
-    $overlap_check = $database->query("SELECT * FROM schedule 
-        WHERE docid = '$userid' AND scheduledate = '$session_date' 
-        AND ((start_time < '$end_time' AND end_time > '$start_time'))");
-    if ($overlap_check === false) {
-        header("Location: schedule.php?error=Overlap check failed: " . $database->error);
-        exit();
-    }
-    if ($overlap_check->num_rows > 0) {
-        header("Location: schedule.php?error=Cannot approve: Time slot overlaps with an existing session");
+    $doctor_check = $database->query("SELECT COUNT(*) FROM schedule WHERE docid = '$docid' AND scheduledate = '$session_date'");
+    if ($doctor_check === false || $doctor_check->fetch_row()[0] >= 5) {
+        header("Location: schedule.php?error=" . ($doctor_check === false ? "Max sessions check failed: " . $database->error : "Cannot approve: Maximum of 5 sessions reached for this day"));
         exit();
     }
 
-    // Insert into schedule with requested_by
-    $sql = "INSERT INTO schedule (docid, title, scheduledate, start_time, duration, end_time, requested_by) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $database->prepare($sql);
-    if ($stmt === false) {
-        header("Location: schedule.php?error=Failed to prepare insert statement: " . $database->error);
+    $overlap_check = $database->query("SELECT * FROM schedule WHERE docid = '$docid' AND scheduledate = '$session_date' AND ((start_time < '$end_time' AND end_time > '$start_time')) AND scheduleid != '$schedule_id'");
+    if ($overlap_check === false || $overlap_check->num_rows > 0) {
+        header("Location: schedule.php?error=" . ($overlap_check === false ? "Overlap check failed: " . $database->error : "Cannot approve: Time slot overlaps with an existing session"));
         exit();
     }
-    $stmt->bind_param("isssssi", $userid, $request['title'], $session_date, $start_time, $duration, $end_time, $patient_id);
-    if (!$stmt->execute()) {
-        header("Location: schedule.php?error=Failed to insert into schedule: " . $stmt->error);
+
+    // Check if gmeet_request exists and is true
+    $gmeet_link = isset($request['gmeet_request']) && $request['gmeet_request'] ? '' : null;
+    if ($schedule_id) {
+        $sql = "UPDATE schedule SET gmeet_link = ? WHERE scheduleid = ?";
+        $stmt = $database->prepare($sql);
+        if ($stmt === false || !$stmt->bind_param("si", $gmeet_link, $schedule_id) || !$stmt->execute()) {
+            header("Location: schedule.php?error=Failed to update schedule: " . ($stmt === false ? $database->error : $stmt->error));
+            $stmt->close();
+            exit();
+        }
         $stmt->close();
-        exit();
+    } else {
+        // If it's a new session, insert it
+        $title = $request['title'];
+        $sql = "INSERT INTO schedule (docid, title, scheduledate, start_time, end_time, gmeet_link) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $database->prepare($sql);
+        if ($stmt === false || !$stmt->bind_param("isssss", $docid, $title, $session_date, $start_time, $end_time, $gmeet_link) || !$stmt->execute()) {
+            header("Location: schedule.php?error=Failed to insert schedule: " . ($stmt === false ? $database->error : $stmt->error));
+            $stmt->close();
+            exit();
+        }
+        $stmt->close();
     }
-    $stmt->close();
 }
 
-// Update patient request status
-$sql = "UPDATE patient_requests SET status = ? WHERE request_id = ?";
+$sql = "UPDATE session_requests SET status = ? WHERE request_id = ?";
 $stmt = $database->prepare($sql);
-if ($stmt === false) {
-    header("Location: schedule.php?error=Failed to prepare update statement: " . $database->error);
-    exit();
-}
-$stmt->bind_param("si", $status, $request_id);
-if ($stmt->execute()) {
-    header("Location: schedule.php?success=Request " . $action . "d successfully");
+if ($stmt === false || !$stmt->bind_param("si", $status, $request_id) || !$stmt->execute()) {
+    header("Location: schedule.php?error=Failed to update request: " . ($stmt === false ? $database->error : $stmt->error));
 } else {
-    header("Location: schedule.php?error=Failed to update request: " . $stmt->error);
+    $message = "Request " . $action . "d successfully";
+    if (isset($request['gmeet_request']) && $request['gmeet_request'] && $action == 'approve') {
+        $message .= " (Edit Google Meet link as needed)";
+    }
+    header("Location: schedule.php?success=" . urlencode($message));
 }
-$stmt->close();
 
+$stmt->close();
 $database->close();
 ?>

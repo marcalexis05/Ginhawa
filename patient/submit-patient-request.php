@@ -2,83 +2,60 @@
 session_start();
 include("../connection.php");
 
-if (!isset($_SESSION["user"]) || $_SESSION['usertype'] != 'p' || !$_POST) {
+if (!isset($_SESSION["user"]) || $_SESSION['usertype'] != 'p') {
     header("location: ../login.php");
-    exit;
+    exit();
 }
 
-$patient_id = $_POST['patient_id'];
-$doctor_id = $_POST['doctor_id'];
-$title = $_POST['title'];
-$session_date = $_POST['session_date'];
-$start_time = $_POST['start_time'];
-$duration = $_POST['duration'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $title = $database->real_escape_string($_POST["title"]);
+    $session_date = $database->real_escape_string($_POST["session_date"]);
+    $start_time = $database->real_escape_string($_POST["start_time"]);
+    $duration = (int)$_POST["duration"];
+    $gmeet_request = isset($_POST["gmeet_request"]) ? 1 : 0;
+    $patient_id = (int)$_POST["patient_id"];
+    $doctor_id = (int)$_POST["doctor_id"];
 
-date_default_timezone_set('Asia/Kolkata');
-$today = date('Y-m-d');
-$current_time = date('H:i:s');
-
-// Check if the session is for today and the start time has passed
-if ($session_date === $today) {
-    if ($start_time <= $current_time) {
-        header("Location: doctors.php?error=Cannot request a session for a time that has already passed today");
+    // Calculate end_time
+    $start_datetime = DateTime::createFromFormat('H:i:s', $start_time);
+    if ($start_datetime === false) {
+        header("Location: doctors.php?error=Invalid start time format");
         exit();
     }
-}
+    $end_datetime = clone $start_datetime;
+    $total_minutes = $start_datetime->format('H') * 60 + $start_datetime->format('i') + $duration;
+    $break_start = 12 * 60; // 12:00 PM
+    $break_end = 13 * 60;   // 1:00 PM
+    if ($total_minutes > $break_start && ($start_datetime->format('H') * 60 + $start_datetime->format('i')) < $break_end) {
+        $total_minutes += ($break_end - $break_start); // Add break time
+    }
+    $end_datetime->setTime(floor($total_minutes / 60), $total_minutes % 60);
+    $end_time = $end_datetime->format('H:i:s');
 
-$start_datetime = new DateTime("$session_date $start_time");
-$start_datetime->modify("+$duration minutes");
-$end_time = $start_datetime->format('H:i:s');
+    // Validate time constraints
+    $start_hour = (int)$start_datetime->format('H');
+    $end_hour = (int)$end_datetime->format('H');
+    if ($start_hour < 8 || $end_hour >= 18) {
+        header("Location: doctors.php?error=Session must be between 08:00 and 18:00");
+        exit();
+    }
 
-if ($session_date < $today) {
-    header("Location: doctors.php?error=Session date cannot be in the past");
-    exit();
-}
-if (empty($title)) {
-    header("Location: doctors.php?error=Session title cannot be empty");
-    exit();
-}
+    // Insert into patient_requests table
+    $sql = "INSERT INTO patient_requests (patient_id, doctor_id, title, session_date, start_time, end_time, duration, gmeet_request, request_date, status) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), 'pending')";
+    $stmt = $database->prepare($sql);
+    $stmt->bind_param("iissssii", $patient_id, $doctor_id, $title, $session_date, $start_time, $end_time, $duration, $gmeet_request);
 
-$patient_check = $database->query("SELECT COUNT(*) FROM appointment a 
-    INNER JOIN schedule s ON a.scheduleid = s.scheduleid 
-    WHERE a.pid = '$patient_id' AND s.scheduledate = '$session_date'");
-if ($patient_check->fetch_row()[0] > 0) {
-    header("Location: doctors.php?error=You can only book 1 session per day");
-    exit();
-}
+    if ($stmt->execute()) {
+        header("Location: doctors.php?success=Session request submitted successfully");
+    } else {
+        header("Location: doctors.php?error=Failed to submit request: " . $stmt->error);
+    }
 
-$doctor_check = $database->query("SELECT COUNT(*) FROM schedule 
-    WHERE docid = '$doctor_id' AND scheduledate = '$session_date'");
-if ($doctor_check->fetch_row()[0] >= 5) {
-    header("Location: doctors.php?error=Doctor has reached the maximum of 5 sessions for this day");
-    exit();
-}
-
-$overlap_check = $database->query("SELECT * FROM schedule 
-    WHERE docid = '$doctor_id' AND scheduledate = '$session_date' 
-    AND ((start_time < '$end_time' AND end_time > '$start_time'))");
-if ($overlap_check->num_rows > 0) {
-    header("Location: doctors.php?error=Time slot overlaps with an existing session");
-    exit();
-}
-
-$check = $database->query("SELECT * FROM patient_requests 
-    WHERE patient_id = '$patient_id' AND doctor_id = '$doctor_id' AND status = 'pending'");
-if ($check->num_rows > 0) {
-    header("Location: doctors.php?action=request&id=$doctor_id&error=Request already pending!");
-    exit;
-}
-
-$sql = "INSERT INTO patient_requests (patient_id, doctor_id, title, session_date, start_time, duration, end_time, request_date, status) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), 'pending')";
-$stmt = $database->prepare($sql);
-$stmt->bind_param("iisssss", $patient_id, $doctor_id, $title, $session_date, $start_time, $duration, $end_time);
-
-if ($stmt->execute()) {
-    header("Location: doctors.php?action=request&id=$doctor_id&success=Request submitted successfully!");
+    $stmt->close();
 } else {
-    header("Location: doctors.php?action=request&id=$doctor_id&error=Failed to submit request: " . $database->error);
+    header("Location: doctors.php?error=Invalid request method");
 }
 
-$stmt->close();
+$database->close();
 ?>

@@ -42,7 +42,6 @@
         .bell-icon:hover { 
             fill: #357960;
         }
-        /* Added styles for notification dropdown */
         .notification-dropdown { 
             display: none; 
             position: absolute; 
@@ -62,16 +61,21 @@
         .notification-item:last-child { 
             border-bottom: none; 
         }
-        .btn-edit { 
+        .btn-view { 
             background-color: #357960; 
             color: white; 
             border: none; 
-            padding: 5px 10px; 
-            border-radius: 3px; 
+            padding: 6px 12px; 
+            border-radius: 4px; 
             cursor: pointer; 
+            font-size: 14px; 
+            font-weight: 500; 
+            transition: background-color 0.3s; 
         }
-        /* New styles for edit modal */
-        .edit-modal {
+        .btn-view:hover { 
+            background-color: #2a5f4a; 
+        }
+        .view-modal {
             display: none;
             position: fixed;
             top: 0;
@@ -81,7 +85,7 @@
             background: rgba(0,0,0,0.5);
             z-index: 1000;
         }
-        .edit-modal-content {
+        .view-modal-content {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -93,13 +97,27 @@
             max-height: 80vh;
             overflow-y: auto;
         }
-        .edit-modal-close {
+        .view-modal-close {
             position: absolute;
             top: 10px;
             right: 10px;
             font-size: 20px;
             text-decoration: none;
             color: #333;
+        }
+        .btn-remove {
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        .btn-remove:hover {
+            background-color: #cc3333;
         }
     </style>
 </head>
@@ -132,22 +150,9 @@
     $notify_result = $database->query($notify_query);
     $notify_count = ($notify_result && $notify_result->num_rows > 0) ? $notify_result->num_rows : 0;
 
-    // Handle form submission for editing session
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_session'])) {
+    // Handle remove action
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['remove_session'])) {
         $request_id = $_POST['request_id'];
-        $title = $_POST['title'];
-        $session_date = $_POST['session_date'];
-        $session_time = $_POST['session_time'];
-        $gmeet_link = $_POST['gmeet_link'];
-
-        // Insert into schedule table
-        $insert_query = "INSERT INTO schedule (title, docid, scheduledate, start_time, gmeet_link) 
-                         SELECT ?, docid, ?, ?, ? 
-                         FROM session_requests 
-                         WHERE request_id = ?";
-        $stmt = $database->prepare($insert_query);
-        $stmt->bind_param("ssssi", $title, $session_date, $session_time, $gmeet_link, $request_id);
-        $stmt->execute();
 
         // Update session request status to 'processed'
         $update_query = "UPDATE session_requests SET status = 'processed' WHERE request_id = ?";
@@ -243,7 +248,6 @@
                         </form>
                     </td>
                     <td width="25%">
-                        <!-- Updated notification bell with dropdown -->
                         <a href="#" class="non-style-link">
                             <div class="notification-bell" onclick="toggleNotifications()">
                                 <svg class="bell-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -257,13 +261,14 @@
                                     if ($notify_result && $notify_result->num_rows > 0) {
                                         while ($notify = $notify_result->fetch_assoc()) {
                                             $request_id = $notify['request_id'];
-                                            $start_time_12hr = date('h:i A', strtotime($notify['session_time']));
+                                            $start_time_12hr = date('h:i A', strtotime($notify['start_time']));
+                                            $end_time_12hr = isset($notify['end_time']) ? date('h:i A', strtotime($notify['end_time'])) : 'N/A';
                                             echo '<div class="notification-item">';
                                             echo '<strong>' . htmlspecialchars($notify['docname']) . '</strong><br>';
                                             echo 'Title: ' . htmlspecialchars($notify['title']) . '<br>';
                                             echo 'Date: ' . htmlspecialchars($notify['session_date']) . '<br>';
                                             echo 'Time: ' . $start_time_12hr . '<br>';
-                                            echo '<button class="btn-edit" onclick="showEditModal(' . $request_id . ', \'' . htmlspecialchars($notify['title']) . '\', \'' . $notify['session_date'] . '\', \'' . $notify['session_time'] . '\')">Edit</button>';
+                                            echo '<button class="btn-view" onclick="showViewModal(' . $request_id . ', \'' . htmlspecialchars($notify['title']) . '\', \'' . $notify['session_date'] . '\', \'' . $start_time_12hr . '\', \'' . $end_time_12hr . '\')">View</button>';
                                             echo '</div>';
                                         }
                                     } else {
@@ -278,8 +283,6 @@
                         <p style="font-size:14px;color:rgb(119,119,119);padding:0;margin:0;text-align:right;">Today's Date</p>
                         <p class="heading-sub12" style="padding:0;margin:0;">
                             <?php 
-                            date_default_timezone_set('Asia/Manila');
-                            $today = date('Y-m-d');
                             echo $today;
                             $patientrow = $database->query("select * from patient;");
                             $doctorrow = $database->query("select * from doctor;");
@@ -481,58 +484,58 @@
         </div>
     </div>
 
-    <!-- Edit Session Modal -->
-    <div id="editModal" class="edit-modal">
-        <div class="edit-modal-content">
-            <a class="edit-modal-close" href="#" onclick="hideEditModal()">×</a>
+    <!-- View Session Modal -->
+    <div id="viewModal" class="view-modal">
+        <div class="view-modal-content">
+            <a class="view-modal-close" href="#" onclick="hideViewModal()">×</a>
             <center>
-                <h2>Edit Session Request</h2>
+                <h2>View Session Request</h2>
                 <form method="post" action="">
-                    <input type="hidden" name="request_id" id="edit_request_id">
+                    <input type="hidden" name="request_id" id="view_request_id">
                     <table width="100%" border="0">
                         <tr>
                             <td class="label-td">
-                                <label for="title" class="form-label">Session Title</label>
+                                <label class="form-label">Session Title:</label>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td">
-                                <input type="text" name="title" id="edit_title" class="input-text" required>
+                                <span id="view_title"></span>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td">
-                                <label for="session_date" class="form-label">Session Date</label>
+                                <label class="form-label">Session Date:</label>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td">
-                                <input type="date" name="session_date" id="edit_session_date" class="input-text" required>
+                                <span id="view_session_date"></span>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td">
-                                <label for="session_time" class="form-label">Start Time</label>
+                                <label class="form-label">Start Time:</label>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td">
-                                <input type="time" name="session_time" id="edit_session_time" class="input-text" required>
+                                <span id="view_start_time"></span>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td">
-                                <label for="gmeet_link" class="form-label">Google Meet Link</label>
+                                <label class="form-label">End Time:</label>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td">
-                                <input type="url" name="gmeet_link" id="edit_gmeet_link" class="input-text" placeholder="https://meet.google.com/xxx-xxxx-xxx">
+                                <span id="view_end_time"></span>
                             </td>
                         </tr>
                         <tr>
                             <td class="label-td" style="text-align: center; padding-top: 20px;">
-                                <button type="submit" name="edit_session" class="login-btn btn-primary btn">Save Changes</button>
+                                <button type="submit" name="remove_session" class="btn-remove">Remove</button>
                             </td>
                         </tr>
                     </table>
@@ -541,7 +544,6 @@
         </div>
     </div>
 
-    <!-- Updated JavaScript -->
     <script>
         function toggleNotifications() {
             var dropdown = document.getElementById('notificationDropdown');
@@ -549,9 +551,9 @@
         }
 
         window.onclick = function(event) {
-            if (!event.target.closest('.notification-bell') && !event.target.closest('.edit-modal')) {
+            if (!event.target.closest('.notification-bell') && !event.target.closest('.view-modal')) {
                 var dropdown = document.getElementById('notificationDropdown');
-                var modal = document.getElementById('editModal');
+                var modal = document.getElementById('viewModal');
                 if (dropdown.style.display === 'block') {
                     dropdown.style.display = 'none';
                 }
@@ -561,16 +563,17 @@
             }
         }
 
-        function showEditModal(requestId, title, sessionDate, sessionTime) {
-            document.getElementById('edit_request_id').value = requestId;
-            document.getElementById('edit_title').value = title;
-            document.getElementById('edit_session_date').value = sessionDate;
-            document.getElementById('edit_session_time').value = sessionTime;
-            document.getElementById('editModal').style.display = 'block';
+        function showViewModal(requestId, title, sessionDate, startTime, endTime) {
+            document.getElementById('view_request_id').value = requestId;
+            document.getElementById('view_title').textContent = title;
+            document.getElementById('view_session_date').textContent = sessionDate;
+            document.getElementById('view_start_time').textContent = startTime;
+            document.getElementById('view_end_time').textContent = endTime;
+            document.getElementById('viewModal').style.display = 'block';
         }
 
-        function hideEditModal() {
-            document.getElementById('editModal').style.display = 'none';
+        function hideViewModal() {
+            document.getElementById('viewModal').style.display = 'none';
         }
     </script>
 </body>

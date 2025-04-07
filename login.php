@@ -39,6 +39,33 @@
             height: 18px;
             margin-right: 10px;
         }
+
+        /* Styling for the back button */
+        .back-btn {
+            position: absolute;
+            top: 10px; /* Adjusted for top-left corner */
+            left: 10px; /* Adjusted for top-left corner */
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            text-decoration: none; /* Remove underline from link */
+            color: inherit; /* Inherit text color */
+        }
+
+        .back-icon {
+            width: 20px;
+            height: 20px;
+            filter: invert(46%) sepia(68%) saturate(1350%) hue-rotate(90deg) brightness(95%) contrast(90%); /* Makes it green */
+            margin-right: 5px; /* Space between icon and text */
+        }
+
+        .back-text {
+            font-size: 12px; /* Small font size for "Back" */
+            color: green; /* Default color, adjust if needed */
+        }
     </style>
 </head>
 <body>
@@ -252,7 +279,12 @@
     ?>
 
     <center>
-    <div class="container">
+    <div class="container" style="position: relative;">
+        <!-- Back Button with Text in Top-Left Corner -->
+        <a href="landing.html" class="back-btn">
+            <img src="https://cdn-icons-png.flaticon.com/512/271/271220.png" alt="Back" class="back-icon">
+            <span class="back-text">Back</span>
+        </a>
         <table border="0" style="margin: 0; padding: 0; width: 60%;">
             <tr>
                 <td>
@@ -304,7 +336,6 @@
                             </tr>
                             <tr>
                                 <td>
-                                    
                                     <a href="<?php echo $googleLoginUrl; ?>" class="google-login-btn">
                                         <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo">
                                         Sign in with Google

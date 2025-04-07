@@ -45,6 +45,50 @@
             background-repeat: no-repeat;
             background-position: center;
         }
+        .notification-bell { 
+            position: relative; 
+            display: inline-block; 
+            cursor: pointer; 
+        }
+        .notification-count { 
+            position: absolute; 
+            top: -5px; 
+            right: -5px; 
+            background-color: red; 
+            color: white; 
+            border-radius: 50%; 
+            padding: 2px 6px; 
+            font-size: 12px; 
+        }
+        .notification-dropdown { 
+            display: none; 
+            position: absolute; 
+            background-color: white; 
+            min-width: 350px; 
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); 
+            z-index: 1; 
+            right: 0; 
+            border-radius: 5px; 
+            max-height: 300px; 
+            overflow-y: auto; 
+        }
+        .notification-item { 
+            padding: 10px; 
+            border-bottom: 1px solid #ddd; 
+            background-color: #f8d7da; 
+            position: relative; 
+        }
+        .notification-item:last-child { border-bottom: none; }
+        .notification-close { 
+            position: absolute; 
+            top: 5px; 
+            right: 5px; 
+            cursor: pointer; 
+            font-size: 18px; 
+            color: #721c24; 
+        }
+        .bell-icon { width: 30px; height: 30px; fill: #333; }
+        .bell-icon:hover { fill: #007bff; }
     </style>
 </head>
 <body>
@@ -73,6 +117,17 @@
 
     $userid = $userfetch["pid"];
     $username = $userfetch["pname"];
+
+    // Fetch rejected requests
+    $rejected_requests_query = "SELECT pr.*, d.docname 
+                               FROM patient_requests pr 
+                               INNER JOIN doctor d ON pr.doctor_id = d.docid 
+                               WHERE pr.patient_id = ? AND pr.status = 'rejected'";
+    $stmt = $database->prepare($rejected_requests_query);
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $rejected_requests = $stmt->get_result();
+    $rejected_count = $rejected_requests->num_rows;
     ?>
     <div class="container">
         <div class="menu">
@@ -143,7 +198,6 @@
                             $patientrow = $database->query("select * from patient;");
                             $doctorrow = $database->query("select * from doctor;");
                             $appointmentrow = $database->query("select * from appointment where appodate>='$today';");
-                            // Updated query to count only today's sessions for this patient
                             $sql_today_sessions = "SELECT * FROM schedule 
                                                   INNER JOIN appointment ON schedule.scheduleid = appointment.scheduleid 
                                                   WHERE appointment.pid = ? AND schedule.scheduledate = ?";
@@ -155,9 +209,34 @@
                         </p>
                     </td>
                     <td width="10%">
-                        <button class="btn-label" style="display: flex;justify-content: center;align-items: center;">
-                            <img src="../img/calendar.svg" width="100%">
-                        </button>
+                        <div class="notification-bell" onclick="toggleNotifications()">
+                            <svg class="bell-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                            </svg>
+                            <?php if ($rejected_count > 0) { ?>
+                                <span class="notification-count"><?php echo $rejected_count; ?></span>
+                            <?php } ?>
+                            <div class="notification-dropdown" id="notificationDropdown">
+                                <?php
+                                if ($rejected_requests->num_rows > 0) {
+                                    while ($request = $rejected_requests->fetch_assoc()) {
+                                        $start_time = DateTime::createFromFormat('H:i:s', $request["start_time"]);
+                                        $start_time_display = $start_time ? $start_time->format('h:i A') : 'Invalid Time';
+                                        echo '<div class="notification-item" id="notification-' . $request['request_id'] . '">';
+                                        echo '<p><strong>Request Rejected</strong><br>';
+                                        echo 'Session: ' . htmlspecialchars($request['title']) . '<br>';
+                                        echo 'Doctor: ' . htmlspecialchars($request['docname']) . '<br>';
+                                        echo 'Date: ' . $request['session_date'] . ' ' . $start_time_display . '<br>';
+                                        echo 'Reason: ' . htmlspecialchars($request['rejection_reason']) . '</p>';
+                                        echo '<span class="notification-close" onclick="dismissNotification(' . $request['request_id'] . ')">×</span>';
+                                        echo '</div>';
+                                    }
+                                } else {
+                                    echo '<div class="notification-item">No rejected requests</div>';
+                                }
+                                ?>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -314,5 +393,48 @@
             </table>
         </div>
     </div>
+    <script>
+    function toggleNotifications() {
+        var dropdown = document.getElementById('notificationDropdown');
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    }
+
+    window.onclick = function(event) {
+        if (!event.target.closest('.notification-bell')) {
+            var dropdown = document.getElementById('notificationDropdown');
+            if (dropdown.style.display === 'block') {
+                dropdown.style.display = 'none';
+            }
+        }
+    }
+
+    function dismissNotification(requestId) {
+        fetch('dismiss_notification.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'request_id=' + requestId
+        }).then(response => {
+            if (response.ok) {
+                document.getElementById('notification-' + requestId).style.display = 'none';
+                updateNotificationCount();
+            }
+        });
+    }
+
+    function updateNotificationCount() {
+        var items = document.querySelectorAll('.notification-item:not([style*="display: none"])');
+        var countSpan = document.querySelector('.notification-count');
+        if (items.length > 0) {
+            countSpan.textContent = items.length;
+            countSpan.style.display = 'block';
+        } else {
+            countSpan.style.display = 'none';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        updateNotificationCount();
+    });
+    </script>
 </body>
 </html>

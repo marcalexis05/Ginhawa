@@ -39,13 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'age' => $age // Add age to session
         );
 
-        // Debugging: Print session data (commented out to avoid header issue)
-        // print_r($_SESSION["personal"]);
-        
         header("Location: create-account.php");
         exit;
     }
 }
+
+// Check if returning from create-account.php and pre-fill form with session data
+$personal = $_SESSION['personal'] ?? [];
+$fromCreateAccount = isset($_GET['from']) && $_GET['from'] === 'create-account';
 ?>
 
 <!DOCTYPE html>
@@ -59,7 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="css/main.css">  
     <link rel="stylesheet" href="css/signup.css">
     <link rel="icon" href="./Images/G-icon.png">
-        
     <title>Sign Up</title>
     <style>
         .input-text[readonly] {
@@ -174,22 +174,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </tr>
             <tr>
                 <td class="label-td">
-                    <input type="text" name="fname" class="input-text" placeholder="First Name" required>
+                    <input type="text" name="fname" class="input-text" placeholder="First Name" value="<?php echo $fromCreateAccount ? htmlspecialchars($personal['fname'] ?? '') : ''; ?>" required>
                     <span id="fnameError" style="color:red;"></span>
                 </td>
                 <td class="label-td">
-                    <input type="text" name="mname" class="input-text" placeholder="Middle Name (Optional)">
+                    <input type="text" name="mname" class="input-text" placeholder="Middle Name (Optional)" value="<?php echo $fromCreateAccount ? htmlspecialchars($personal['mname'] ?? '') : ''; ?>">
                 </td>
             </tr>
             <tr>
                 <td class="label-td" colspan="2">
-                    <input type="text" name="lname" class="input-text" placeholder="Last Name" required>
+                    <input type="text" name="lname" class="input-text" placeholder="Last Name" value="<?php echo $fromCreateAccount ? htmlspecialchars($personal['lname'] ?? '') : ''; ?>" required>
                     <span id="lnameError" style="color:red;"></span>
                 </td>
             </tr>
             <tr>
                 <td class="label-td" colspan="2">
-                    <input type="text" name="suffix" class="input-text" placeholder="Suffix (Optional)">
+                    <input type="text" name="suffix" class="input-text" placeholder="Suffix (Optional)" value="<?php echo $fromCreateAccount ? htmlspecialchars($personal['suffix'] ?? '') : ''; ?>">
                 </td>
             </tr>
             <tr>
@@ -201,16 +201,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <td class="label-td" colspan="2">
                     <select name="sex" class="input-text" required>
                         <option value="">Select Sex</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
+                        <option value="male" <?php echo $fromCreateAccount && ($personal['sex'] ?? '') === 'male' ? 'selected' : ''; ?>>Male</option>
+                        <option value="female" <?php echo $fromCreateAccount && ($personal['sex'] ?? '') === 'female' ? 'selected' : ''; ?>>Female</option>
+                        <option value="other" <?php echo $fromCreateAccount && ($personal['sex'] ?? '') === 'other' ? 'selected' : ''; ?>>Other</option>
                     </select>
                     <span id="sexError" style="color:red;"></span>
                 </td>
             </tr>
             <tr>
                 <td class="label-td" colspan="2">
-                    <input type="hidden" name="nic" value="<?php echo isset($clientId) ? $clientId : ''; ?>">
+                    <input type="hidden" name="nic" value="<?php echo $fromCreateAccount ? htmlspecialchars($personal['nic'] ?? '') : ''; ?>">
                 </td>
             </tr>
             <tr>
@@ -220,7 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </tr>
             <tr>
                 <td class="label-td" colspan="2">
-                    <input type="date" name="dob" class="input-text" required min="<?php echo $minDate; ?>" max="<?php echo $maxDate; ?>">
+                    <input type="date" name="dob" class="input-text" required min="<?php echo $minDate; ?>" max="<?php echo $maxDate; ?>" value="<?php echo $fromCreateAccount ? htmlspecialchars($personal['dob'] ?? '') : ''; ?>">
                     <span id="dobError" style="color:red;"></span>
                 </td>
             </tr>
@@ -231,7 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </tr>
             <tr>
                 <td class="label-td" colspan="2">
-                    <input type="number" name="age" id="age" class="input-text" readonly>
+                    <input type="number" name="age" id="age" class="input-text" readonly value="<?php echo $fromCreateAccount ? htmlspecialchars($personal['age'] ?? '') : ''; ?>">
                 </td>
             </tr>
             <tr>

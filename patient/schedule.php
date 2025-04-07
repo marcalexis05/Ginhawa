@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="../css/animations.css">  
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
+    <link rel="icon" href="../Images/G-icon.png">
+
     <title>Sessions</title>
     <style>
         .popup {
@@ -14,6 +16,20 @@
         }
         .sub-table {
             animation: transitionIn-Y-bottom 0.5s;
+        }
+        /* Style for disabled buttons */
+        .btn-primary-soft:disabled,
+        .btn-primary-soft[disabled] {
+            background-color: #357960; /* Teal color for disabled state */
+            color: #ffffff; /* White text for contrast */
+            cursor: not-allowed; /* Disabled cursor */
+            opacity: 0.7; /* Slightly faded */
+        }
+        /* Prevent hover effects on disabled buttons */
+        .btn-primary-soft:disabled:hover,
+        .btn-primary-soft[disabled]:hover {
+            background-color: #357960; /* Maintain same background */
+            color: #ffffff; /* Maintain same text color */
         }
     </style>
 </head>
@@ -195,6 +211,7 @@
                                                     $scheduleid = $row["scheduleid"];
                                                     $title = $row["title"];
                                                     $docname = $row["docname"];
+                                                    $docid = $row["docid"];
                                                     $scheduledate = $row["scheduledate"];
                                                     $start_time = $row["start_time"];
 
@@ -205,19 +222,51 @@
                                                     // Convert start_time to 12-hour format
                                                     $start_time_12hr = date('h:i A', strtotime($start_time));
 
-                                                    // Check if the user has already booked this session
+                                                    // Check if the user has already booked this specific session
                                                     $booking_check_sql = "SELECT COUNT(*) as count FROM appointment WHERE pid = ? AND scheduleid = ?";
                                                     $stmt_check = $database->prepare($booking_check_sql);
                                                     $stmt_check->bind_param("ii", $userid, $scheduleid);
                                                     $stmt_check->execute();
                                                     $booking_result = $stmt_check->get_result();
                                                     $booking_row = $booking_result->fetch_assoc();
-                                                    $already_booked = $booking_row['count'] > 0;
+                                                    $already_booked_session = $booking_row['count'] > 0;
+
+                                                    // Check if the user has already booked any session on this date
+                                                    $date_booking_check_sql = "SELECT COUNT(*) as count FROM appointment INNER JOIN schedule ON appointment.scheduleid = schedule.scheduleid WHERE appointment.pid = ? AND schedule.scheduledate = ?";
+                                                    $stmt_date_check = $database->prepare($date_booking_check_sql);
+                                                    $stmt_date_check->bind_param("is", $userid, $scheduledate);
+                                                    $stmt_date_check->execute();
+                                                    $date_booking_result = $stmt_date_check->get_result();
+                                                    $date_booking_row = $date_booking_result->fetch_assoc();
+                                                    $already_booked_date = $date_booking_row['count'] > 0;
+
+                                                    // Check if another patient has booked this doctor at the same date and time
+                                                    $other_booking_check_sql = "SELECT COUNT(*) as count FROM appointment INNER JOIN schedule ON appointment.scheduleid = schedule.scheduleid WHERE schedule.docid = ? AND schedule.scheduledate = ? AND schedule.start_time = ? AND appointment.pid != ?";
+                                                    $stmt_other_check = $database->prepare($other_booking_check_sql);
+                                                    $stmt_other_check->bind_param("issi", $docid, $scheduledate, $start_time, $userid);
+                                                    $stmt_other_check->execute();
+                                                    $other_booking_result = $stmt_other_check->get_result();
+                                                    $other_booking_row = $other_booking_result->fetch_assoc();
+                                                    $other_patient_booked = $other_booking_row['count'] > 0;
 
                                                     // Determine button state
-                                                    $button_text = $already_booked ? "Already Booked" : "Book Now";
-                                                    $button_disabled = $already_booked ? "disabled" : "";
-                                                    $button_link = $already_booked ? "#" : "booking.php?id=" . $scheduleid;
+                                                    if ($already_booked_session) {
+                                                        $button_text = "Already Booked";
+                                                        $button_disabled = "disabled";
+                                                        $button_link = "#";
+                                                    } elseif ($already_booked_date) {
+                                                        $button_text = "Day Booked";
+                                                        $button_disabled = "disabled";
+                                                        $button_link = "#";
+                                                    } elseif ($other_patient_booked) {
+                                                        $button_text = "Booked by Another";
+                                                        $button_disabled = "disabled";
+                                                        $button_link = "#";
+                                                    } else {
+                                                        $button_text = "Book Now";
+                                                        $button_disabled = "";
+                                                        $button_link = "booking.php?id=" . $scheduleid;
+                                                    }
 
                                                     echo '
                                                     <td style="width: 25%;">
@@ -233,7 +282,7 @@
                                                                     ' . $scheduledate . '<br>Starts: <b>' . $start_time_12hr . '</b>
                                                                 </div>
                                                                 <br>
-                                                                <a href="' . $button_link . '"><button class="login-btn btn-primary-soft btn ' . $button_disabled . '" style="padding-top:11px;padding-bottom:11px;width:100%" ' . ($already_booked ? 'disabled' : '') . '><font class="tn-in-text">' . $button_text . '</font></button></a>
+                                                                <a href="' . $button_link . '"><button class="login-btn btn-primary-soft btn ' . $button_disabled . '" style="padding-top:11px;padding-bottom:11px;width:100%" ' . ($button_disabled ? 'disabled' : '') . '><font class="tn-in-text">' . $button_text . '</font></button></a>
                                                             </div>
                                                         </div>
                                                     </td>';

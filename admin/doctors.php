@@ -1,15 +1,14 @@
 <?php
 session_start();
 
-// Check session and redirect if necessary before any output
 if (isset($_SESSION["user"])) {
     if (($_SESSION["user"] == "") || ($_SESSION['usertype'] != 'a')) {
         header("location: ../login.php");
-        exit; // Exit to ensure no further output after redirect
+        exit;
     }
 } else {
     header("location: ../login.php");
-    exit; // Exit to ensure no further output after redirect
+    exit;
 }
 
 include("../connection.php");
@@ -35,17 +34,26 @@ include("../connection.php");
         let iti;
 
         function validateForm() {
+            let name = document.forms["addNewForm"]["name"].value;
             let email = document.forms["addNewForm"]["email"].value;
             let tele = iti.getNumber();
+            let spec = document.forms["addNewForm"]["spec"].value;
             let password = document.forms["addNewForm"]["password"].value;
             let cpassword = document.forms["addNewForm"]["cpassword"].value;
 
             let valid = true;
 
+            document.getElementById("nameError").innerText = "";
             document.getElementById("emailError").innerText = "";
             document.getElementById("teleError").innerText = "";
+            document.getElementById("specError").innerText = "";
             document.getElementById("passwordError").innerText = "";
             document.getElementById("cpasswordError").innerText = "";
+
+            if (name.trim() === "") {
+                document.getElementById("nameError").innerText = "Name is required.";
+                valid = false;
+            }
 
             if (email === "") {
                 document.getElementById("emailError").innerText = "Email is required.";
@@ -60,6 +68,11 @@ include("../connection.php");
                 valid = false;
             } else {
                 document.getElementById("full_tele").value = tele;
+            }
+
+            if (spec === "") {
+                document.getElementById("specError").innerText = "Please select a specialty.";
+                valid = false;
             }
 
             if (password === "") {
@@ -79,8 +92,10 @@ include("../connection.php");
         }
 
         function realTimeValidation() {
+            const nameInput = document.querySelector('input[name="name"]');
             const emailInput = document.querySelector('input[name="email"]');
             const teleInput = document.querySelector('input[name="Tele"]');
+            const specInput = document.querySelector('select[name="spec"]');
             const passwordInput = document.querySelector('input[name="password"]');
             const cpasswordInput = document.querySelector('input[name="cpassword"]');
 
@@ -91,6 +106,15 @@ include("../connection.php");
                     initialCountry: "ph",
                 });
             }
+
+            nameInput?.addEventListener('input', function() {
+                const nameError = document.getElementById("nameError");
+                if (this.value.trim() === "") {
+                    nameError.innerText = "Name is required.";
+                } else {
+                    nameError.innerText = "";
+                }
+            });
 
             emailInput?.addEventListener('input', function() {
                 const emailError = document.getElementById("emailError");
@@ -112,6 +136,15 @@ include("../connection.php");
                 } else {
                     teleError.innerText = "";
                     document.getElementById("full_tele").value = iti.getNumber();
+                }
+            });
+
+            specInput?.addEventListener('change', function() {
+                const specError = document.getElementById("specError");
+                if (this.value === "") {
+                    specError.innerText = "Please select a specialty.";
+                } else {
+                    specError.innerText = "";
                 }
             });
 
@@ -157,10 +190,10 @@ include("../connection.php");
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
+                                    <a href="../logout.php" ><input type="button" value="Log out" class="logout-btn btn-primary-soft btn"></a>
                                 </td>
                             </tr>
-                    </table>
+                        </table>
                     </td>
                 </tr>
                 <tr class="menu-row" >
@@ -327,9 +360,7 @@ include("../connection.php");
                                             <td>
                                             <div style="display:flex;justify-content: center;">
                                             <a href="?action=edit&id='.$docid.'&error=0" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-edit"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Edit</font></button></a>
-                                               
                                             <a href="?action=view&id='.$docid.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-view"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
-                                               
                                             <a href="?action=archive&id='.$docid.'&name='.$name.'&archived='.$archived.'" class="non-style-link"><button  class="btn-primary-soft btn button-icon btn-delete"  style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">'.($archived == 1 ? 'Unarchive' : 'Archive').'</font></button></a>
                                             </div>
                                             </td>
@@ -347,7 +378,6 @@ include("../connection.php");
         </div>
     </div>
     <?php
-    // Feedback popups for archive success or error
     if (isset($_GET['success']) && $_GET['success'] == 'archive_updated') {
         echo '
         <div id="popup1" class="overlay">
@@ -399,14 +429,13 @@ include("../connection.php");
         </div>';
     }
 
-    // Action popups
     if (!empty($_GET) && isset($_GET["id"]) && isset($_GET["action"])) {
         $id = $_GET["id"];
         $action = $_GET["action"];
         if ($action == 'archive') {
             $nameget = $_GET["name"];
             $archived = $_GET["archived"];
-            $new_status = $archived == 1 ? 0 : 1; // Toggle archive status
+            $new_status = $archived == 1 ? 0 : 1;
             echo '
             <div id="popup1" class="overlay">
                 <div class="popup">
@@ -435,7 +464,7 @@ include("../connection.php");
             $spcil_array = $spcil_res->fetch_assoc();
             $spcil_name = $spcil_array["sname"];
             $tele = $row['doctel'];
-            $ptid = $row['ptid']; // Fetch the ptid
+            $ptid = $row['ptid'];
             echo '
             <div id="popup1" class="overlay">
                 <div class="popup">
@@ -528,7 +557,7 @@ include("../connection.php");
             $errorlist = array(
                 '1' => '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Already have an account for this Email address.</label>',
                 '2' => '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Password Confirmation Error! Reconfirm Password</label>',
-                '3' => '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;"></label>',
+                '3' => '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Invalid Request</label>',
                 '4' => "",
                 '0' => '',
             );
@@ -558,6 +587,7 @@ include("../connection.php");
                                             <tr>
                                                 <td class="label-td" colspan="2">
                                                     <input type="text" name="name" class="input-text" placeholder="Doctor Name" required><br>
+                                                    <span id="nameError" style="color:red;"></span>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -590,15 +620,17 @@ include("../connection.php");
                                             </tr>
                                             <tr>
                                                 <td class="label-td" colspan="2">
-                                                    <select name="spec" id="" class="box" >';
+                                                    <select name="spec" id="" class="box" required>
+                                                        <option value="">Select Specialty</option>';
                                                         $list11 = $database->query("select * from specialties order by sname asc;");
                                                         for ($y=0; $y<$list11->num_rows; $y++){
                                                             $row00=$list11->fetch_assoc();
                                                             $sn=$row00["sname"];
                                                             $id00=$row00["id"];
-                                                            echo "<option value=".$id00.">$sn</option><br/>";
+                                                            echo "<option value='$id00'>$sn</option>";
                                                         };
-                                                    echo ' </select><br>
+                                                    echo '</select><br>
+                                                    <span id="specError" style="color:red;"></span>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -666,7 +698,7 @@ include("../connection.php");
             $spcil_array = $spcil_res->fetch_assoc();
             $spcil_name = $spcil_array["sname"];
             $tele = $row['doctel'];
-            $ptid = $row['ptid']; // Fetch the ptid
+            $ptid = $row['ptid'];
 
             $error_1 = $_GET["error"];
             $errorlist = array(
@@ -742,9 +774,9 @@ include("../connection.php");
                                                             $row00=$list11->fetch_assoc();
                                                             $sn=$row00["sname"];
                                                             $id00=$row00["id"];
-                                                            echo "<option value=".$id00.">$sn</option><br/>";
+                                                            echo "<option value='$id00'>$sn</option>";
                                                         };
-                                                    echo ' </select><br><br>
+                                                    echo '</select><br><br>
                                                 </td>
                                             </tr>
                                             <tr>

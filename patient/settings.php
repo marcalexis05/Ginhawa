@@ -206,7 +206,7 @@
                         <h2></h2>
                         <a class="close" href="settings.php">×</a>
                         <div class="content">
-                            eDoc Web App<br>
+                            Ginhawa<br>
                         </div>
                         <div style="display: flex;justify-content: center;">
                             <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">

@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <title>Doctors</title>
     <style>
@@ -41,10 +40,9 @@
     $userfetch = $userrow->fetch_assoc();
     $userid = $userfetch["pid"];
     $username = $userfetch["pname"];
-    // Calculate min and max dates
     date_default_timezone_set('Asia/Kolkata');
-    $today = date('Y-m-d'); // e.g., 2025-04-04
-    $oneWeekLater = date('Y-m-d', strtotime('+7 days')); // e.g., 2025-04-11
+    $today = date('Y-m-d');
+    $oneWeekLater = date('Y-m-d', strtotime('+7 days'));
     ?>
     <div class="container">
         <div class="menu">
@@ -52,7 +50,7 @@
                 <tr>
                     <td style="padding:10px" colspan="2">
                         <table border="0" class="profile-container">
-                        <tr>
+                            <tr>
                                 <td width="30%" style="padding-left:20px">
                                     <img src="<?php echo isset($_SESSION['google_picture']) ? $_SESSION['google_picture'] : '../img/user.png'; ?>" 
                                          alt="" width="100%" style="border-radius:50%">
@@ -149,10 +147,7 @@
                                         <?php
                                         $result = $database->query($sqlmain);
                                         if ($result->num_rows == 0) {
-                                            echo '<tr><td colspan="4">
-<center><img src="../img/notfound.svg" width="25%">
-<p class="heading-main12" style="margin-left:45px;font-size:20px;color:rgb(49,49,49)">We couldn\'t find anything related to your keywords!</p><a class="non-style-link" href="doctors.php"><button class="login-btn btn-primary-soft btn" style="display:flex;justify-content:center;align-items:center;margin-left:20px;"> Show all Doctors </button></a></center>
-</td></tr>';
+                                            echo '<tr><td colspan="4"><center><img src="../img/notfound.svg" width="25%"><p class="heading-main12" style="margin-left:45px;font-size:20px;color:rgb(49,49,49)">We couldn\'t find anything related to your keywords!</p><a class="non-style-link" href="doctors.php"><button class="login-btn btn-primary-soft btn" style="display:flex;justify-content:center;align-items:center;margin-left:20px;"> Show all Doctors </button></a></center></td></tr>';
                                         } else {
                                             for ($x = 0; $x < $result->num_rows; $x++) {
                                                 $row = $result->fetch_assoc();
@@ -164,7 +159,7 @@
                                                 $spcil_array = $spcil_res->fetch_assoc();
                                                 $spcil_name = $spcil_array["sname"];
                                                 echo '<tr>
-                                                    <td> ' . substr($name, 0, 30) . '</td>
+                                                    <td>' . substr($name, 0, 30) . '</td>
                                                     <td>' . substr($email, 0, 20) . '</td>
                                                     <td>' . substr($spcil_name, 0, 20) . '</td>
                                                     <td>
@@ -187,29 +182,29 @@
                                                                     <input type="text" name="title" id="title' . $docid . '" class="input-text" placeholder="Enter session title" required>
                                                                     <label for="session_date' . $docid . '" class="form-label">Preferred Date:</label>
                                                                     <input type="text" name="session_date" id="session_date' . $docid . '" class="input-text" required>
-                                                                    <label for="start_time' . $docid . '" class="form-label">Start Time (8:00 AM - 5:30 PM):</label>
-                                                                    <select name="start_time" id="start_time' . $docid . '" class="input-text" required onchange="updateEndTime(' . $docid . ')">
+                                                                    <label for="start_time' . $docid . '" class="form-label">Start Time (8:00 AM - 5:00 PM):</label>
+                                                                    <select name="start_time" id="start_time' . $docid . '" class="input-text" required>
                                                                         <option value="">Select Start Time</option>';
                                                                         for ($h = 8; $h < 18; $h++) {
                                                                             foreach ([0, 30] as $m) {
-                                                                                if ($h == 12 && $m == 0) continue;
-                                                                                if ($h == 17 && $m == 30) break;
-                                                                                $time = sprintf("%02d:%02d:00", $h, $m);
+                                                                                if ($h == 12 || ($h == 17 && $m == 30)) continue; // Skip 12:00 PM and after 5:30 PM
+                                                                                $time = sprintf("%02d:%02d:00", $h, $m); // Value remains in 24-hour for backend
                                                                                 $ampm = $h >= 12 ? 'PM' : 'AM';
-                                                                                $display_h = $h > 12 ? $h - 12 : ($h == 0 ? 12 : $h);
-                                                                                echo "<option value='$time'>$display_h:" . ($m == 0 ? '00' : '30') . " $ampm</option>";
+                                                                                $display_h = $h > 12 ? $h - 12 : ($h == 12 ? 12 : $h); // Convert to 12-hour
+                                                                                $display_time = sprintf("%d:%02d %s", $display_h, $m, $ampm);
+                                                                                echo "<option value='$time'>$display_time</option>";
                                                                             }
                                                                         }
                                                 echo '          </select>
                                                                     <label for="duration' . $docid . '" class="form-label">Duration:</label>
-                                                                    <select name="duration" id="duration' . $docid . '" class="input-text" required onchange="updateEndTime(' . $docid . ')">
+                                                                    <select name="duration" id="duration' . $docid . '" class="input-text" required>
                                                                         <option value="30">30 minutes</option>
                                                                         <option value="60">1 hour</option>
                                                                         <option value="90">1 hour 30 minutes</option>
                                                                         <option value="120">2 hours</option>
                                                                     </select>
-                                                                    <label for="end_time' . $docid . '" class="form-label">End Time:</label>
-                                                                    <input type="text" name="end_time" id="end_time' . $docid . '" class="input-text" readonly>
+                                                                    <label for="gmeet_request' . $docid . '" class="form-label">Request Google Meet Link:</label>
+                                                                    <input type="checkbox" name="gmeet_request" id="gmeet_request' . $docid . '" value="1">
                                                                     <p><b>Note:</b> Opening: 8:00 AM, Break: 12:00 PM - 1:00 PM, Closing: 6:00 PM</p>
                                                                     <input type="hidden" name="patient_id" value="' . $userid . '">
                                                                     <input type="hidden" name="doctor_id" value="' . $docid . '">
@@ -264,13 +259,13 @@
                             <table width="80%" class="sub-table scrolldown add-doc-form-container" border="0">
                                 <tr><td><p style="padding:0;margin:0;text-align:left;font-size:25px;font-weight:500;">View Details.</p></td></tr>
                                 <tr><td class="label-td" colspan="2"><label for="name" class="form-label">Name: </label></td></tr>
-                                <tr><td class="label-td" colspan="2">' . $name . '</td></tr>
+                                <tr><td class="label-td" colspan="2">' . htmlspecialchars($name) . '</td></tr>
                                 <tr><td class="label-td" colspan="2"><label for="Email" class="form-label">Email: </label></td></tr>
-                                <tr><td class="label-td" colspan="2">' . $email . '</td></tr>
+                                <tr><td class="label-td" colspan="2">' . htmlspecialchars($email) . '</td></tr>
                                 <tr><td class="label-td" colspan="2"><label for="Tele" class="form-label">Telephone: </label></td></tr>
-                                <tr><td class="label-td" colspan="2">' . $tele . '</td></tr>
+                                <tr><td class="label-td" colspan="2">' . htmlspecialchars($tele) . '</td></tr>
                                 <tr><td class="label-td" colspan="2"><label for="spec" class="form-label">Specialties: </label></td></tr>
-                                <tr><td class="label-td" colspan="2">' . $spcil_name . '</td></tr>
+                                <tr><td class="label-td" colspan="2">' . htmlspecialchars($spcil_name) . '</td></tr>
                                 <tr><td colspan="2"><a href="doctors.php"><input type="button" value="OK" class="login-btn btn-primary-soft btn"></a></td></tr>
                             </table>
                         </div>
@@ -285,9 +280,9 @@
                     <center>
                         <h2>Redirect to Doctor\'s Sessions?</h2>
                         <a class="close" href="doctors.php">×</a>
-                        <div class="content">You want to view All sessions by (' . substr($name, 0, 40) . ').</div>
+                        <div class="content">You want to view All sessions by (' . htmlspecialchars(substr($name, 0, 40)) . ').</div>
                         <form action="schedule.php" method="post" style="display:flex">
-                            <input type="hidden" name="search" value="' . $name . '">
+                            <input type="hidden" name="search" value="' . htmlspecialchars($name) . '">
                             <div style="display:flex;justify-content:center;margin-left:45%;margin-top:6%;margin-bottom:6%;">
                                 <input type="submit" value="Yes" class="btn-primary btn">
                             </div>
@@ -298,26 +293,9 @@
         }
     }
     ?>
-    <!-- Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
-    function updateEndTime(docid) {
-        let startTime = document.getElementById('start_time' + docid).value;
-        let duration = parseInt(document.getElementById('duration' + docid).value);
-        if (startTime && duration) {
-            let [hours, minutes] = startTime.split(':').map(Number);
-            let totalMinutes = hours * 60 + minutes + duration;
-            let newHours = Math.floor(totalMinutes / 60);
-            let newMinutes = totalMinutes % 60;
-            let ampm = newHours >= 12 ? 'PM' : 'AM';
-            newHours = newHours > 12 ? newHours - 12 : (newHours == 0 ? 12 : newHours);
-            let endTime = `${newHours}:${newMinutes < 10 ? '0' + newMinutes : newMinutes} ${ampm}`;
-            document.getElementById('end_time' + docid).value = endTime;
-        }
-    }
-
-    // Initialize Flatpickr for each doctor's session_date input
     document.addEventListener('DOMContentLoaded', function() {
         <?php
         $result = $database->query($sqlmain);
@@ -326,8 +304,8 @@
             $docid = $row["docid"];
             echo "
             flatpickr('#session_date$docid', {
-                minDate: '$today', // e.g., '2025-04-04'
-                maxDate: '$oneWeekLater', // e.g., '2025-04-11'
+                minDate: '$today',
+                maxDate: '$oneWeekLater',
                 disable: [
                     function(date) {
                         return date.getDay() === 0; // Disable Sundays
@@ -344,21 +322,18 @@
     });
 
     function validateRequestForm(docid, event) {
-        event.preventDefault(); // Prevent form submission until validation completes
-
+        event.preventDefault();
         let title = document.getElementById('title' + docid).value.trim();
         let sessionDateStr = document.getElementById('session_date' + docid).value;
         let sessionDate = new Date(sessionDateStr);
         let startTime = document.getElementById('start_time' + docid).value;
-        let duration = document.getElementById('duration' + docid).value;
+        let duration = parseInt(document.getElementById('duration' + docid).value);
 
-        // Set timezone to Asia/Kolkata
         let currentTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
         currentTime = new Date(currentTime);
         let today = new Date(currentTime);
-        today.setHours(0, 0, 0, 0); // Reset time part for date comparison
+        today.setHours(0, 0, 0, 0);
 
-        // Check if session date is today and start time is in the past
         let isToday = sessionDate.getTime() === today.getTime();
         if (isToday && startTime) {
             let [startHours, startMinutes] = startTime.split(':').map(Number);
@@ -367,7 +342,7 @@
             let startTotalMinutes = startHours * 60 + startMinutes;
             let currentTotalMinutes = currentHours * 60 + currentMinutes;
 
-            if (startTotalMinutes <= currentTotalMinutes) { // Block past or current time
+            if (startTotalMinutes <= currentTotalMinutes) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
@@ -377,7 +352,6 @@
             }
         }
 
-        // Basic validations
         if (title === '') {
             Swal.fire({ icon: 'error', title: 'Oops...', text: 'Session title cannot be empty!' });
             return false;
@@ -390,15 +364,25 @@
             Swal.fire({ icon: 'error', title: 'Oops...', text: 'Please select start time and duration!' });
             return false;
         }
-        let [hours] = startTime.split(':').map(Number);
-        let endMinutes = (hours * 60 + parseInt(duration)) % 1440;
-        let endHour = Math.floor(endMinutes / 60);
-        if (hours < 8 || endHour > 18 || (hours < 13 && endHour > 12)) {
-            Swal.fire({ icon: 'error', title: 'Oops...', text: 'Time must be between 8:00 AM - 6:00 PM, excluding 12:00 PM - 1:00 PM!' });
+
+        let [startHours, startMinutes] = startTime.split(':').map(Number);
+        let totalMinutes = startHours * 60 + startMinutes + duration;
+        let breakStart = 12 * 60; // 12:00 PM in minutes
+        let breakEnd = 13 * 60;   // 1:00 PM in minutes
+        if (totalMinutes > breakStart && (startHours * 60 + startMinutes) < breakEnd) {
+            totalMinutes += (breakEnd - breakStart); // Add 1 hour for the break
+        }
+        let endHours = Math.floor(totalMinutes / 60);
+
+        if (startHours < 8 || endHours > 18) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Time must be between 8:00 AM - 6:00 PM, excluding 12:00 PM - 1:00 PM!'
+            });
             return false;
         }
 
-        // AJAX call to check existing appointments
         let patientId = <?php echo $userid; ?>;
         fetch('check_appointments.php', {
             method: 'POST',
@@ -414,7 +398,6 @@
                     text: 'You already have an appointment scheduled on this date!'
                 });
             } else {
-                // If no existing appointment, submit the form
                 document.querySelector('#requestPopup' + docid + ' form').submit();
             }
         })
@@ -427,7 +410,7 @@
             console.error('Error:', error);
         });
 
-        return false; // Prevent default submission until AJAX resolves
+        return false;
     }
 
     <?php
@@ -439,6 +422,5 @@
     }
     ?>
     </script>
-</div>
 </body>
 </html>

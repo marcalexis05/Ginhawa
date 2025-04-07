@@ -29,9 +29,14 @@ if (!isset($_SESSION['code_sent'])) {
 
     $subject = "Account Verification - Ginhawa Mental Health";
     $body = "
-        <h2>Welcome to Ginhawa Mental Health</h2>
-        <p>Your verification code is: <strong>$verificationCode</strong></p>
-        <p>This code will expire in 100 seconds. Please verify your account promptly.</p>
+        <h2>Ginhawa Mental Health Account Verification</h2>
+        <p>Dear Valued User,</p>
+        <p>Thank you for choosing Ginhawa Mental Health. To complete your account registration, please use the following verification code:</p>
+        <p><strong>Verification Code: $verificationCode</strong></p>
+        <p>Please note that this code will expire in 100 seconds. We kindly request that you enter this code promptly in the verification field provided on our website to activate your account.</p>
+        <p>If you did not initiate this registration, please disregard this email or contact our support team at support@ginhawamentalhealth.com.</p>
+        <p>Best regards,<br>
+        The Ginhawa Mental Health Team</p>
     ";
     sendEmail($email, $subject, $body);
     $_SESSION['code_sent'] = true;
@@ -98,11 +103,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_update->bind_param("sss", $verificationCode, $codeExpiry, $email);
             $stmt_update->execute();
 
-            $subject = "Account Verification - Ginhawa Mental Health (New Code)";
+            $subject = "Account Verification - Ginhawa Mental Health (New Verification Code)";
             $body = "
-                <h2>Welcome to Ginhawa Mental Health</h2>
-                <p>Your verification code is: <strong>$verificationCode</strong></p>
-                <p>This code will expire in 100 seconds. Please verify your account promptly.</p>
+                <h2>Ginhawa Mental Health Account Verification</h2>
+                <p>Dear Valued User,</p>
+                <p>We have received a request to resend your verification code for your Ginhawa Mental Health account. Please find your new verification code below:</p>
+                <p><strong>Verification Code: $verificationCode</strong></p>
+                <p>This code is valid for 100 seconds from the time of this email. Please enter it in the verification field on our website to complete your account activation.</p>
+                <p>If you did not request this code, please contact our support team immediately at support@ginhawamentalhealth.com to secure your account.</p>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Sincerely,<br>
+                The Ginhawa Mental Health Team</p>
             ";
             sendEmail($email, $subject, $body);
             $_SESSION['failed_attempts'] = 0;
@@ -263,7 +274,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (data.success) {
                 messageElement.innerHTML = `<label class='form-label' style='color:green;text-align:center;'>${data.message}</label>`;
-                // Reload the page to stay on the same page
                 window.location.reload();
             } else {
                 messageElement.innerHTML = `<label class='form-label' style='color:rgb(255, 62, 62);text-align:center;'>${data.message}</label>`;
