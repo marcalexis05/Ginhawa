@@ -153,7 +153,7 @@
                     <td class="menu-btn menu-icon-session menu-active menu-icon-session-active"><a href="schedule.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">My Sessions</p></div></a></td>
                 </tr>
                 <tr class="menu-row">
-                    <td class="menu-btn menu-icon-patient"><a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">My Patients</p></div></a></td>
+                    <td class="menu-btn menu-icon-patient"><a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">My Cases</p></div></a></td>
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-settings"><a href="settings.php" class="non-style-link-menu"><div><p class="menu-text">Settings</p></div></a></td>
@@ -423,8 +423,8 @@
                                     } else {
                                         echo '<tr><td class="label-td" colspan="2"><label class="form-label">Google Meet Link: </label>Not Requested</td></tr>';
                                     }
-                                    echo '<tr><td class="label-td" colspan="2"><label class="form-label"><b>Registered Patients:</b> (' . $result12->num_rows . ')</label></td></tr>
-                                    <tr><td colspan="4"><center><div class="abc scroll"><table width="100%" class="sub-table scrolldown" border="0"><thead><tr><th class="table-headin">Patient ID</th><th class="table-headin">Patient Name</th><th class="table-headin">Appointment Number</th><th class="table-headin">Patient Telephone</th></tr></thead><tbody>';
+                                    echo '<tr><td class="label-td" colspan="2"><label class="form-label"><b>Registered Cases:</b> (' . $result12->num_rows . ')</label></td></tr>
+                                    <tr><td colspan="4"><center><div class="abc scroll"><table width="100%" class="sub-table scrolldown" border="0"><thead><tr><th class="table-headin">Case ID</th><th class="table-headin">Case Name</th><th class="table-headin">Appointment Number</th><th class="table-headin">Case Telephone</th></tr></thead><tbody>';
                                     if ($result12->num_rows == 0) {
                                         echo '<tr><td colspan="4"><center><img src="../img/notfound.svg" width="25%"><p class="heading-main12" style="font-size:20px;color:rgb(49, 49, 49)">No registrations found!</p></center></td></tr>';
                                     } else {

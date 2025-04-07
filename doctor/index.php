@@ -116,7 +116,7 @@ $schedulerow = $database->query("SELECT * FROM schedule WHERE docid='$userid' AN
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-patient">
-                        <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">My Patients</p></div></a>
+                        <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">My Cases</p></div></a>
                     </td>
                 </tr>
                 <tr class="menu-row">
@@ -150,7 +150,7 @@ $schedulerow = $database->query("SELECT * FROM schedule WHERE docid='$userid' AN
                                         <h3>Welcome!</h3>
                                         <h1><?php echo $username ?>.</h1>
                                         <p>Thanks for joining with us. We are always trying to get you a complete service<br>
-                                        You can view your daily schedule, Reach Patients Appointment at home!<br><br>
+                                        You can view your daily schedule, Reach Cases Appointment at home!<br><br>
                                         </p>
                                         <a href="appointment.php" class="non-style-link"><button class="btn-primary btn" style="width:30%">View My Appointments</button></a>
                                         <br><br>
@@ -178,7 +178,7 @@ $schedulerow = $database->query("SELECT * FROM schedule WHERE docid='$userid' AN
                                                         <div>
                                                             <div class="h1-dashboard"><?php echo $patientrow ? $patientrow->num_rows : 0 ?></div>
                                                             <br>
-                                                            <div class="h3-dashboard">All Patients</div>
+                                                            <div class="h3-dashboard">All Cases</div>
                                                         </div>
                                                         <div class="btn-icon-back dashboard-icons" style="background-image:url('../img/icons/patients-hover.svg');"></div>
                                                     </div>
@@ -215,7 +215,7 @@ $schedulerow = $database->query("SELECT * FROM schedule WHERE docid='$userid' AN
                                                 <thead>
                                                     <tr>
                                                         <th class="table-headin">Session Title</th>
-                                                        <th class="table-headin">Patient Name</th>
+                                                        <th class="table-headin">Case Name</th>
                                                         <th class="table-headin">Scheduled Date</th>
                                                         <th class="table-headin">Time</th>
                                                     </tr>

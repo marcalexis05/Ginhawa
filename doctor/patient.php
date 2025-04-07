@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../css/main.css">  
     <link rel="stylesheet" href="../css/admin.css">
     <link rel="icon" href="../Images/G-icon.png">
-    <title>Patients</title>
+    <title>Cases</title>
     <style>
         .popup {
             animation: transitionIn-Y-bottom 0.5s;
@@ -79,7 +79,7 @@
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-patient menu-active menu-icon-patient-active">
-                        <a href="patient.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">My Patients</p></a></div>
+                        <a href="patient.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">My Cases</p></a></div>
                     </td>
                 </tr>
                 <tr class="menu-row">
@@ -91,7 +91,7 @@
         </div>
         <?php       
         $selecttype = "My";
-        $current = "My patients Only";
+        $current = "My Cases Only";
         if($_POST) {
             if(isset($_POST["search"])) {
                 $keyword = $_POST["search12"];
@@ -107,7 +107,7 @@
                 } else {
                     $sqlmain = "select * from appointment inner join patient on patient.pid=appointment.pid inner join schedule on schedule.scheduleid=appointment.scheduleid where schedule.docid=$userid;";
                     $selecttype = "My";
-                    $current = "My patients Only";
+                    $current = "My Cases Only";
                 }
             }
         } else {
@@ -123,7 +123,7 @@
                     </td>
                     <td>
                         <form action="" method="post" class="header-search">
-                            <input type="search" name="search12" class="input-text header-searchbar" placeholder="Search Patient name or Email" list="patient">  
+                            <input type="search" name="search12" class="input-text header-searchbar" placeholder="Search Case name or Email" list="patient">  
                             <?php
                             echo '<datalist id="patient">';
                             $list11 = $database->query($sqlmain);
@@ -157,7 +157,7 @@
                 </tr>
                 <tr>
                     <td colspan="4" style="padding-top:10px;">
-                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)"><?php echo $selecttype." Patients (".$list11->num_rows.")"; ?></p>
+                        <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)"><?php echo $selecttype." Cases (".$list11->num_rows.")"; ?></p>
                     </td>
                 </tr>
                 <tr>
@@ -171,8 +171,8 @@
                                     <td width="30%">
                                         <select name="showonly" id="" class="box filter-container-items" style="width:90%;height: 37px;margin: 0;">
                                             <option value="" disabled selected hidden><?php echo $current ?></option><br/>
-                                            <option value="my">My Patients Only</option><br/>
-                                            <option value="all">All Patients</option><br/>
+                                            <option value="my">My Cases Only</option><br/>
+                                            <option value="all">All Cases</option><br/>
                                         </select>
                                     </td>
                                     <td width="12%">
@@ -191,7 +191,7 @@
                                     <thead>
                                         <tr>
                                             <th class="table-headin">Name</th>
-                                            <th class="table-headin">ClientID</th>
+                                            <th class="table-headin">CaseID</th>
                                             <th class="table-headin">Mobile Number</th>
                                             <th class="table-headin">Email</th>
                                             <th class="table-headin">Date of Birth</th>
@@ -209,7 +209,7 @@
                                                         <img src="../img/notfound.svg" width="25%">
                                                         <br>
                                                         <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We couldn’t find anything related to your keywords!</p>
-                                                        <a class="non-style-link" href="patient.php"><button class="login-btn btn-primary-soft btn" style="display: flex;justify-content: center;align-items: center;margin-left:20px;">  Show all Patients  </button></a>
+                                                        <a class="non-style-link" href="patient.php"><button class="login-btn btn-primary-soft btn" style="display: flex;justify-content: center;align-items: center;margin-left:20px;">  Show all Cases  </button></a>
                                                     </center>
                                                     <br><br><br><br>
                                                 </td>
@@ -274,7 +274,7 @@
                             </tr>
                             <tr>
                                 <td class="label-td" colspan="2">
-                                    <label for="name" class="form-label">Patient ID: </label>
+                                    <label for="name" class="form-label">Case ID: </label>
                                 </td>
                             </tr>
                             <tr>

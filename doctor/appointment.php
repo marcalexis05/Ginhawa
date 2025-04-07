@@ -82,7 +82,7 @@
                 </tr>
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-patient">
-                        <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">My Patients</p></a></div>
+                        <a href="patient.php" class="non-style-link-menu"><div><p class="menu-text">My Cases</p></a></div>
                     </td>
                 </tr>
                 <tr class="menu-row">
@@ -172,7 +172,7 @@
                                 <table width="93%" class="sub-table scrolldown" border="0">
                                     <thead>
                                         <tr>
-                                            <th class="table-headin">Patient Name</th>
+                                            <th class="table-headin">Case Name</th>
                                             <th class="table-headin">Appointment Number</th>
                                             <th class="table-headin">Session Title</th>
                                             <th class="table-headin">Session Date & Time</th>
@@ -262,7 +262,7 @@
                         <a class="close" href="appointment.php">×</a>
                         <div class="content">
                             You want to delete this record<br><br>
-                            Patient Name: <b>'.substr($nameget,0,40).'</b><br>
+                            Case Name: <b>'.substr($nameget,0,40).'</b><br>
                             Appointment number: <b>'.substr($apponum,0,40).'</b><br><br>
                         </div>
                         <div style="display: flex;justify-content: center;">
