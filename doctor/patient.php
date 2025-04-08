@@ -19,33 +19,82 @@
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(0,0,0,0.5);
         }
         .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
+            background-color: #ffffff;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 700px;
+            font-family: Arial, sans-serif;
+        }
+        .modal-header {
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .modal-header h2 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
         }
         .close {
-            color: #aaa;
+            color: #666;
             float: right;
             font-size: 28px;
             font-weight: bold;
+            cursor: pointer;
         }
         .close:hover,
         .close:focus {
-            color: black;
+            color: #000;
             text-decoration: none;
+        }
+        .modal-body label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #444;
+        }
+        .modal-body input[type="text"],
+        .modal-body textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .modal-body textarea {
+            height: 200px;
+            resize: vertical;
+        }
+        .modal-footer {
+            text-align: right;
+            padding-top: 10px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .modal-footer input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
             cursor: pointer;
+            font-size: 16px;
+        }
+        .modal-footer input[type="submit"]:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
@@ -63,17 +112,14 @@
         header("location: ../login.php");
     }
 
-    // Import database
+    // Import database and email helper
     include("../connection.php");
+    include("../email_helper.php");
+
     $userrow = $database->query("select * from doctor where docemail='$useremail'");
     $userfetch = $userrow->fetch_assoc();
     $userid = $userfetch["docid"];
     $username = $userfetch["docname"];
-
-    // Include PHPMailer
-    use PHPMailer\PHPMailer\PHPMailer;
-    use PHPMailer\PHPMailer\Exception;
-    require '../vendor/autoload.php'; // Adjust path if PHPMailer is installed via Composer
 
     // Handle email sending
     if(isset($_POST['send_recommendation'])) {
@@ -81,42 +127,62 @@
         $subject = $_POST['subject'];
         $message = $_POST['message'];
 
-        // Fetch patient email
-        $patient_query = $database->query("SELECT pemail FROM patient WHERE pid='$patient_id'");
+        // Fetch patient details
+        $patient_query = $database->query("SELECT pemail, pname FROM patient WHERE pid='$patient_id'");
         $patient = $patient_query->fetch_assoc();
         $patient_email = $patient['pemail'];
+        $patient_name = $patient['pname'];
 
-        // PHPMailer setup
-        $mail = new PHPMailer(true);
-        try {
-            // Server settings
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'your-email@gmail.com'; // Your Gmail address
-            $mail->Password = 'your-app-password';    // Your Gmail App Password
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 587;
+        // Professional email content
+        $emailBody = "
+            <html>
+            <head>
+                <style>
+                    body { font-family: Arial, sans-serif; color: #333; }
+                    .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px; }
+                    .header { background-color: #f5f5f5; padding: 10px; text-align: center; border-bottom: 1px solid #e0e0e0; }
+                    .header h1 { margin: 0; font-size: 24px; color: #2c3e50; }
+                    .content { padding: 20px; }
+                    .footer { border-top: 1px solid #e0e0e0; padding: 10px; text-align: center; font-size: 12px; color: #777; }
+                    .signature { margin-top: 20px; }
+                </style>
+            </head>
+            <body>
+                <div class='container'>
+                    <div class='header'>
+                        <h1>Ginhawa Mental Health</h1>
+                    </div>
+                    <div class='content'>
+                        <p>Dear $patient_name,</p>
+                        <p>I hope this message finds you well. Below are my recommendations and advice tailored to your recent consultation:</p>
+                        <div style='margin: 20px 0; padding-left: 20px; border-left: 3px solid #4CAF50;'>
+                            " . nl2br(htmlspecialchars($message)) . "
+                        </div>
+                        <p>Please feel free to reach out if you have any questions or require further clarification. You can reply to this email or schedule a follow-up appointment through the Ginhawa platform.</p>
+                        <div class='signature'>
+                            <p>Best regards,</p>
+                            <p><strong>Dr. $username</strong><br>
+                            Ginhawa Mental Health<br>
+                            Email: $useremail<br>
+                            Phone: +63 907 515 1412</p>
+                        </div>
+                    </div>
+                    <div class='footer'>
+                        <p>This is an automated message from Ginhawa Mental Health. Please do not reply directly to this email unless instructed otherwise.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        ";
 
-            // Recipients
-            $mail->setFrom('your-email@gmail.com', $username);
-            $mail->addAddress($patient_email);
-
-            // Content
-            $mail->isHTML(true);
-            $mail->Subject = $subject;
-            $mail->Body    = nl2br($message);
-            $mail->AltBody = strip_tags($message);
-
-            $mail->send();
-
-            // Optionally store in database
+        // Send email using email_helper.php
+        if(sendEmail($patient_email, $subject, $emailBody)) {
+            // Store in database
             $database->query("INSERT INTO doctor_recommendations (doctor_id, patient_id, subject, message, sent_date) 
                             VALUES ('$userid', '$patient_id', '$subject', '$message', NOW())");
-
             echo '<script>alert("Recommendation sent successfully!");</script>';
-        } catch (Exception $e) {
-            echo '<script>alert("Failed to send recommendation. Error: ' . $mail->ErrorInfo . '");</script>';
+        } else {
+            echo '<script>alert("Failed to send recommendation. Please try again.");</script>';
         }
     }
     ?>
@@ -315,7 +381,7 @@
                                                     <td>
                                                         <div style="display:flex;justify-content: center;gap: 10px;">
                                                             <a href="?action=view&id='.$pid.'" class="non-style-link"><button class="btn-primary-soft btn button-icon btn-view" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">View</font></button></a>
-                                                            <button class="btn-primary-soft btn button-icon btn-recommend" onclick="openRecommendationModal('.$pid.')" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Recommend</font></button>
+                                                            <button class="btn-primary-soft btn button-icon btn-edit" onclick="openRecommendationModal('.$pid.')" style="padding-left: 40px;padding-top: 12px;padding-bottom: 12px;margin-top: 10px;"><font class="tn-in-text">Recommend</font></button>
                                                         </div>
                                                     </td>
                                                 </tr>';
@@ -335,22 +401,26 @@
     <!-- Recommendation Modal -->
     <div id="recommendationModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeRecommendationModal()">&times;</span>
-            <h2>Send Recommendation</h2>
-            <form method="post" action="">
-                <input type="hidden" name="patient_id" id="modal_patient_id">
-                <div>
-                    <label for="subject">Subject:</label><br>
-                    <input type="text" name="subject" id="subject" class="input-text" style="width: 100%;" required>
-                </div>
-                <div>
-                    <label for="message">Message:</label><br>
-                    <textarea name="message" id="message" rows="5" class="input-text" style="width: 100%;" required placeholder="Enter your recommendations, advice, or notes here..."></textarea>
-                </div>
-                <div style="margin-top: 10px;">
-                    <input type="submit" name="send_recommendation" value="Send" class="login-btn btn-primary btn">
-                </div>
-            </form>
+            <div class="modal-header">
+                <h2>Send Professional Recommendation</h2>
+                <span class="close" onclick="closeRecommendationModal()">×</span>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="">
+                    <input type="hidden" name="patient_id" id="modal_patient_id">
+                    <div>
+                        <label for="subject">Subject</label>
+                        <input type="text" name="subject" id="subject" required placeholder="e.g., Post-Consultation Recommendations">
+                    </div>
+                    <div>
+                        <label for="message">Message</label>
+                        <textarea name="message" id="message" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" name="send_recommendation" value="Send Recommendation">
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -457,18 +527,51 @@
         function openRecommendationModal(patientId) {
             document.getElementById('recommendationModal').style.display = 'block';
             document.getElementById('modal_patient_id').value = patientId;
+
+            // Fetch patient name via AJAX or pre-populate if available
+            fetchPatientName(patientId).then(patientName => {
+                const defaultMessage = `Dear ${patientName},
+
+I hope this message finds you well. Below are my recommendations and advice tailored to your recent consultation:
+
+- Practice mindfulness for 10 minutes daily.
+- Schedule a follow-up in two weeks to review progress.
+
+Please feel free to reach out if you have any questions or require further clarification. You can reply to this email or schedule a follow-up appointment through the Ginhawa platform.
+
+Best regards,
+Dr. <?php echo htmlspecialchars($username); ?>
+Ginhawa Mental Health
+Email: <?php echo htmlspecialchars($useremail); ?>
+Phone: +63 907 515 1412
+
+---
+
+This is an automated message from Ginhawa Mental Health. Please do not reply directly to this email unless instructed otherwise.`;
+                
+                document.getElementById('message').value = defaultMessage;
+            });
         }
 
         function closeRecommendationModal() {
             document.getElementById('recommendationModal').style.display = 'none';
         }
 
-        // Close modal when clicking outside of it
         window.onclick = function(event) {
             var modal = document.getElementById('recommendationModal');
             if (event.target == modal) {
                 modal.style.display = "none";
             }
+        }
+
+        // Function to fetch patient name dynamically
+        function fetchPatientName(patientId) {
+            return fetch('get_patient_name.php?pid=' + patientId)
+                .then(response => response.text())
+                .catch(error => {
+                    console.error('Error fetching patient name:', error);
+                    return 'Patient'; // Fallback name
+                });
         }
     </script>
 </body>
