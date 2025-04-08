@@ -5,140 +5,546 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Bot</title>
-
- 
     <link rel="icon" href="../Images/G-icon.png">
-
-
     <link rel="stylesheet" href="../otherStylesheet/common.css">
     <link rel="stylesheet" href="../otherStylesheet/chatBot.css">
-
 </head>
 <body>
-
-
     <div class="header">
         <div class="logo-cantainer">
             <h2 class="logo">Ginhawa.</h2>
         </div>
-
         <div class="nav-and-btn-cont">
             <div class="nav-list-cont">
                 <ul class="nav-ul">
-                    <li><a href="../index.html" >HOME</a></li>
-                    <li><a href="statistics.html">STATISTICS</a></li>
+                    <li><a href="../index.html">HOME</a></li>
                 </ul>
             </div>
-            
-
             <div class="hamBurger">
-                <diV class="line line1"></diV>
+                <div class="line line1"></div>
                 <div class="mid-line-cont">
                     <div class="line mid-line1"></div>
                     <div class="line mid-line2"></div>
                 </div>
-                <diV class="line line3"></diV>
+                <div class="line line3"></div>
             </div>
         </div>
-
     </div>
 
     <div class="mobile-view-nav-cont" id="mobile-nav">
-
         <div class="mobile-view-nav-head">
             <p>Menu</p>
         </div>
-
         <div class="mobile-view-nav-list">
-
             <ul>
-                <li ><a href="../index.html" class="mobile-view-list">HOME</a></li>
-                <li ><a href="statistics.html" class="mobile-view-list">STATISTICS</a></li>
+                <li><a href="../index.html" class="mobile-view-list">HOME</a></li>
+                <li><a href="statistics.html" class="mobile-view-list">STATISTICS</a></li>
             </ul>
-
         </div>
-
     </div>
 
-
-
-    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-    +++++++++++                   CHAT-BOT                        ++++++++++
-    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-
-
+    <!-- Chat-Based Chatbot Section with Voice Reply -->
     <div class="back-to-home">
-       <a href="../index.html"> <h1><i class="fas fa-long-arrow-alt-right back-to-home-arrow"></i></h1></a>
+        <a href="../index.html"><h1><i class="fas fa-long-arrow-alt-right back-to-home-arrow"></i></h1></a>
     </div>
-
 
     <div class="whole-bot-cont">
-
-
-
         <div class="the-head">
-            <p>Im Here for you  &#60;3</p>
+            <p>I'm Here for you <3</p>
         </div>
-
 
         <div class="bot-cont">
-
             <div class="bot-img-cont">
-
+                <!-- Optional: Add bot avatar image here if desired -->
             </div>
 
-            <div class="bot-page-btns">
-
-                <div class="start-convo-btn-cont">
-                    <button class="start-convo-btn btn">Start Conversation</button>
+            <div class="chat-interface">
+                <div class="chat-messages" id="chat-messages">
+                    <p class="bot-message">Hello! How can I assist you today?</p>
                 </div>
-
-                <div class="other-btn-cont">
-                    <button class="speak-btn btn">Listen me</button>
-                    <button class="stop-convo-btn btn">Stop Conversation</button>
+                <div class="chat-input-cont">
+                    <input type="text" id="user-input" class="chat-input" placeholder="Type your message...">
+                    <button id="send-btn" class="btn send-btn">Send</button>
                 </div>
-
             </div>
-            
-            <p class="listening-text">Listening...</p>
-
-            <p class="user-speech"></p>
-
         </div>
-
     </div>
 
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/1b2b6a64da.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/rivescript@latest/dist/rivescript.min.js"></script>
+    <script src="../otherJS/hamberger.js"></script>
 
-  
+    <!-- Inline JavaScript for Chat Functionality with Voice Reply -->
+    <script>
+$(document).ready(function() {
+    // Initialize RiveScript
+    let bot = new RiveScript();
 
+    // Load inline brain with 200 RiveScript entries
+    const inlineBrain = `
+        // Basic Greetings and Exits (4)
+        + hello
+        - Hi there! How can I help you today?
+        + hi
+        - Hello! What’s on your mind?
+        + bye
+        - Goodbye! Take care, and I’m here if you need me!
+        + goodbye
+        - See you later! Stay well!
 
+        // Original 50 Single-Word Emotional Triggers
+        + sad
+        - I’m sorry you’re feeling sad. Try some dark chocolate (antioxidants) or a walk in nature to lift your mood.
+        + anxious
+        - Anxiety’s tough, huh? Deep breathing and almonds (magnesium) might help. Want more tips?
+        + stressed
+        - Stress can be heavy. How about yoga or oatmeal (complex carbs) to ease it?
+        + depressed
+        - I’m here for you. Salmon (omega-3s) or sunlight might brighten your day. Want to talk?
+        + lonely
+        - Loneliness stinks. Call a friend or sip lavender tea for comfort.
+        + tired
+        - Feeling tired? Spinach (iron) or a quick dance could recharge you.
+        + angry
+        - Anger’s intense. Try kickboxing or walnuts (omega-3s) to cool off.
+        + overwhelmed
+        - Too much going on? A warm bath or chia seeds (omega-3s) might calm things down.
+        + nervous
+        - Nerves acting up? Green tea (L-theanine) or a grounding exercise could help.
+        + scared
+        - I’m here if you’re scared. Chamomile tea or deep breathing might soothe you.
+        + hopeless
+        - Hopelessness is rough. Eggs (vitamin D) or journaling could spark some light.
+        + bored
+        - Boredom’s a drag. Try painting or berries (antioxidants) for a boost.
+        + frustrated
+        - Frustration’s tricky. Punch a pillow or eat avocados (B vitamins) to unwind.
+        + worried
+        - Worrying a lot? Meditation or Brazil nuts (magnesium) might ease your mind.
+        + confused
+        - Feeling lost? A puzzle or oysters (zinc) might clear your head.
+        + upset
+        - I’m sorry you’re upset. Dark chocolate or a funny movie could help.
+        + exhausted
+        - Exhausted, huh? Oranges (vitamin C) or a nap might perk you up.
+        + restless
+        - Restless vibes? Jogging or pumpkin seeds (magnesium) could settle you.
+        + tense
+        - Tension’s no fun. Try tai chi or bananas (potassium) to relax.
+        + gloomy
+        - Feeling gloomy? Sunlight or blueberries (vitamin C) might brighten things.
+        + down
+        - Down in the dumps? Salmon (omega-3s) or dancing could lift you.
+        + irritable
+        - Irritability’s tough. A quick stretch or cashews (magnesium) might help.
+        + uneasy
+        - Uneasy feelings? Chamomile tea or yoga could smooth it out.
+        + drained
+        - Drained of energy? Spinach (folate) or a short walk might recharge you.
+        + lost
+        - Feeling lost? Journaling or lentils (B vitamins) could guide you back.
+        + blue
+        - Feeling blue? Try eggs (vitamin D) or listening to music.
+        + shaky
+        - Shaky nerves? Green tea (L-theanine) or a grounding exercise might steady you.
+        + empty
+        - Feeling empty? A warm meal with oats (carbs) or a hug from a pet could fill you up.
+        + hurt
+        - I’m sorry you’re hurting. Turmeric (anti-inflammatory) or a cozy book might help.
+        + afraid
+        - Fear’s tough. Try deep breathing or kefir (probiotics) for calm.
+        + panicked
+        - Panic’s overwhelming. Slow breaths or almonds (magnesium) could ease it.
+        + insecure
+        - Insecurity’s hard. Affirmations or chia seeds (omega-3s) might boost you.
+        + moody
+        - Mood swings? Dark chocolate (serotonin) or a dance break could balance you.
+        + low
+        - Feeling low? Sunlight or walnuts (healthy fats) might lift you up.
+        + unsettled
+        - Unsettled? A warm bath or sesame seeds (magnesium) could ground you.
+        + agitated
+        - Agitation’s rough. Kickboxing or matcha (antioxidants) might release it.
+        + numb
+        - Feeling numb? Try painting or salmon (omega-3s) to reconnect.
+        + desperate
+        - Desperation’s heavy. Reach out to someone or eat eggs (vitamin D).
+        + trapped
+        - Feeling trapped? A nature walk or avocados (B vitamins) might free you up.
+        + helpless
+        - Helplessness is tough. Journaling or berries (antioxidants) could empower you.
+        + jittery
+        - Jittery nerves? Green tea or a quick stretch could calm you.
+        + weary
+        - Weariness weighs you down. Oranges (vitamin C) or a nap could help.
+        + frazzled
+        - Frazzled? Try yoga or oats (complex carbs) to unwind.
+        + rattled
+        - Rattled nerves? Deep breathing or Brazil nuts (magnesium) might steady you.
+        + broken
+        - Feeling broken? A warm hug or salmon (omega-3s) could mend you.
+        + fragile
+        - Fragile today? Gentle stretching or chia seeds (omega-3s) might support you.
+        + dull
+        - Feeling dull? A dance party or strawberries (vitamin C) might spark you.
+        + grumpy
+        - Grumpy mood? Try walnuts (omega-3s) or a funny podcast to lighten up.
+        + distracted
+        - Can’t focus? Oysters (zinc) or a puzzle might sharpen your mind.
 
+        // New 50 Single-Word Triggers
+        + annoyed
+        - Annoyed? Take a deep breath or eat cashews (magnesium) to chill out.
+        + panicked
+        - Panicked again? Slow breaths or yogurt (probiotics) could calm you.
+        + restless
+        - Restless still? Swimming or flaxseeds (omega-3s) might settle you.
+        + edgy
+        - Feeling edgy? Try tai chi or bananas (B6) to smooth the edges.
+        + scattered
+        - Scattered thoughts? A puzzle or lentils (B vitamins) might focus you.
+        + gloomy
+        - Gloomy again? Kale (antioxidants) or sunlight could brighten you.
+        + bleak
+        - Things seem bleak? Eggs (vitamin D) or a walk might shift it.
+        + strained
+        - Strained out? Stretching or oats (carbs) could ease the tension.
+        + foggy
+        - Brain fog? Chia seeds (omega-3s) or a quick jog might clear it.
+        + heavy
+        - Feeling heavy? A warm bath or berries (vitamin C) could lighten you.
+        + stuck
+        - Stuck in a rut? Painting or salmon (omega-3s) might move you.
+        + weak
+        - Weak today? Spinach (iron) or a short walk could strengthen you.
+        + off
+        - Off your game? Dark chocolate or music might reset you.
+        + flat
+        - Feeling flat? Dancing or oranges (vitamin C) could perk you up.
+        + blah
+        - Just blah? Try berries (antioxidants) or a funny movie.
+        + dazed
+        - Dazed and confused? Oysters (zinc) or a grounding exercise might help.
+        + spaced
+        - Spaced out? Green tea (L-theanine) or a puzzle could ground you.
+        + wired
+        - Too wired? Chamomile tea or yoga might calm you down.
+        + jumpy
+        - Jumpy nerves? Almonds (magnesium) or deep breathing could steady you.
+        + grim
+        - Feeling grim? Sunlight or blueberries (vitamin C) might lift it.
+        + sour
+        - Sour mood? Walnuts (omega-3s) or a dance break could sweeten it.
+        + cranky
+        - Cranky today? A stretch or cashews (magnesium) might help.
+        + listless
+        - Listless? Spinach (folate) or a quick walk could energize you.
+        + mopey
+        - Mopey vibes? Dark chocolate or a funny video might cheer you.
+        + sulky
+        - Sulking? Try painting or salmon (omega-3s) to shift your mood.
+        + broody
+        - Brooding much? Journaling or eggs (vitamin D) could lighten it.
+        + antsy
+        - Antsy feeling? Jogging or pumpkin seeds (magnesium) might settle you.
+        + twitchy
+        - Twitchy nerves? Green tea or a grounding exercise could calm you.
+        + glum
+        - Glum today? Sunlight or kale (antioxidants) might brighten you.
+        + dreary
+        - Dreary mood? Dancing or oranges (vitamin C) could spark it.
+        + sluggish
+        - Sluggish? Spinach (iron) or a quick nap might boost you.
+        + pouty
+        - Pouting? A funny movie or berries (antioxidants) could turn it around.
+        + testy
+        - Testy mood? Kickboxing or walnuts (omega-3s) might ease it.
+        + snappy
+        - Snapping at things? Deep breathing or almonds (magnesium) could help.
+        + dazed
+        - Dazed again? A puzzle or chia seeds (omega-3s) might focus you.
+        + foggy
+        - Foggy still? Jogging or salmon (omega-3s) could clear it.
+        + bleak
+        - Bleak again? Eggs (vitamin D) or a walk might shift it.
+        + grim
+        - Grim again? Blueberries (vitamin C) or sunlight could help.
+        + sour
+        - Sour still? Dancing or walnuts (omega-3s) might sweeten it.
+        + prickly
+        - Prickly mood? Stretching or bananas (B6) could smooth it.
+        + wobbly
+        - Wobbly nerves? Chamomile tea or yoga might steady you.
+        + rattled
+        - Rattled again? Brazil nuts (magnesium) or breathing could calm you.
+        + dazed
+        - Dazed once more? Oysters (zinc) or a puzzle might ground you.
+        + jittery
+        - Jittery still? Green tea or a stretch could settle you.
+        + droopy
+        - Droopy today? Oranges (vitamin C) or a nap might lift you.
+        + muzzy
+        - Muzzy head? Chia seeds (omega-3s) or a jog might clear it.
+        + groggy
+        - Groggy feeling? Spinach (iron) or a dance could wake you.
+        + flaky
+        - Flaky mood? Dark chocolate or a funny movie might steady it.
+        + wonky
+        - Wonky vibes? Salmon (omega-3s) or a walk could balance you.
 
+        // Original 46 Additional Triggers
+        + i feel sad
+        - Same as "sad" above.
+        + i feel anxious
+        - Same as "anxious" above.
+        + i feel stressed
+        - Same as "stressed" above.
+        + i can’t sleep
+        - Trouble sleeping? Warm milk (tryptophan) or tart cherries (melatonin) might help. Try a bedtime story or soft music too.
+        + i need help
+        - I’m here! Try spinach (folate) or a warm shower. What’s going on?
+        + what foods help mental health
+        - Big list! Omega-3s: salmon, chia seeds. Magnesium: almonds, spinach. Vitamin D: eggs, mushrooms. B vitamins: oats, avocados. Antioxidants: berries, dark chocolate. Zinc: oysters, chickpeas. More?
+        + what foods help with anxiety
+        - Salmon (omega-3s), almonds (magnesium), yogurt (probiotics), green tea (L-theanine), turmeric (curcumin). Try breathing too!
+        + what foods help with depression
+        - Salmon (omega-3s), eggs (vitamin D), walnuts (fats), spinach (folate), berries (vitamin C). Sunlight helps!
+        + what foods help with stress
+        - Oats (carbs), bananas (B6), avocados (B vitamins), dark chocolate (antioxidants), pumpkin seeds (magnesium). Stretch it out!
+        + what activities help mental health
+        - Physical: walking, yoga, swimming. Creative: painting, writing. Social: friends, volunteering. Relaxation: meditation, gardening. Pick one!
+        + what activities help with anxiety
+        - Jogging, meditation, coloring, knitting, petting an animal. Foods too?
+        + what activities help with depression
+        - Hiking, journaling, painting, Zumba, sunlight walks. Want more?
+        + what activities help with stress
+        - Yoga, gardening, baking, kickboxing, nature hikes. Pair with bananas!
+        + i’m not okay
+        - I’m sorry to hear that. Try eggs (vitamin D) or a warm bath. Want to talk?
+        + i feel bad
+        - Bad days suck. Dark chocolate or a quick walk might help. What’s up?
+        + i’m struggling
+        - Struggling’s tough. Avocados (B vitamins) or journaling could ease it. Tell me more?
+        + i feel off
+        - Feeling off? Try chia seeds (omega-3s) or listening to music. What’s off?
+        + i’m burned out
+        - Burnout’s heavy. Oranges (vitamin C) or a nap might recharge you. Need ideas?
+        + i feel stuck
+        - Stuck feelings? A nature walk or lentils (B vitamins) might unstick you.
+        + i’m tired all the time
+        - Constant tiredness? Spinach (iron) or swimming could boost you. What’s draining you?
+        + how do i relax
+        - Relaxation ideas: deep breathing, tai chi, warm bath, lavender tea. Try one!
+        + how do i feel better
+        - To feel better, eat berries (antioxidants) or dance. What’s got you down?
+        + what helps sadness
+        - For sadness: dark chocolate (serotonin), walks, music. More suggestions?
+        + what helps anxiety
+        - Anxiety helpers: almonds (magnesium), breathing, yoga. Want specifics?
+        + what helps stress
+        - Stress relief: oats (carbs), stretching, gardening. Need more?
+        + how do i sleep better
+        - Better sleep: warm milk (tryptophan), soft music, relaxation. Tips?
+        + i’m losing hope
+        - Losing hope’s hard. Eggs (vitamin D) or sunlight might spark it. Talk to me?
+        + i’m so tired
+        - So tired? Spinach (iron) or a quick nap could help. What’s exhausting you?
+        + i feel weak
+        - Feeling weak? Oysters (zinc) or a short walk might strengthen you.
+        + i’m in a rut
+        - In a rut? Try painting or salmon (omega-3s) to shake it up.
+        + i feel empty inside
+        - Emptiness is tough. Oats (carbs) or a pet hug might fill you.
+        + i’m falling apart
+        - Falling apart? A warm bath or chia seeds (omega-3s) might hold you together.
+        + i need energy
+        - Need energy? Oranges (vitamin C) or dancing could boost you.
+        + i feel out of control
+        - Out of control? Meditation or almonds (magnesium) might steady you.
+        + i’m scared of everything
+        - Fear everywhere? Chamomile tea or grounding could calm you.
+        + i feel worthless
+        - You’re not worthless! Try eggs (vitamin D) or affirmations. Want to talk?
+        + i’m always worried
+        - Always worried? Green tea (L-theanine) or yoga might ease it.
+        + how do i calm down
+        - Calm down with breathing, lavender tea, or a warm bath. Try it!
+        + i’m at my limit
+        - At your limit? A nap or dark chocolate might reset you.
+        + i feel disconnected
+        - Disconnected? A friend call or walnuts (omega-3s) might reconnect you.
+        + i’m going crazy
+        - Feeling crazy? Meditation or salmon (omega-3s) could ground you.
+        + i need a break
+        - Need a break? Try a bath or oats (carbs) to recharge.
+        + i feel like giving up
+        - Don’t give up! Eggs (vitamin D) or a walk might lift you.
+        + i’m so angry
+        - So angry? Kickboxing or walnuts (omega-3s) could help.
+        + i’m not myself
+        - Not yourself? Try painting or berries (antioxidants) to reconnect.
 
-       <!--++++++++++++++++++++ Jquery ++++++++++++++ -->
+        // New 50 Phrase-Based Triggers
+        + i’m having a bad day
+        - Bad days are rough. Dark chocolate (serotonin) or a funny movie might turn it around.
+        + i feel like crying
+        - Want to cry? Let it out—then try eggs (vitamin D) or a warm hug.
+        + i’m too tired to move
+        - Too tired? Spinach (iron) or a short nap could get you going.
+        + i can’t focus
+        - Can’t focus? Oysters (zinc) or a puzzle might sharpen you up.
+        + i feel restless all the time
+        - Always restless? Swimming or pumpkin seeds (magnesium) could calm you.
+        + i’m sick of everything
+        - Sick of it all? A nature walk or berries (antioxidants) might refresh you.
+        + i feel so alone
+        - So alone? Call someone or sip lavender tea for comfort.
+        + i can’t stop worrying
+        - Nonstop worry? Green tea (L-theanine) or meditation might help.
+        + i’m freaking out
+        - Freaking out? Slow breaths or almonds (magnesium) could ease it.
+        + i feel like a mess
+        - A mess, huh? A warm bath or chia seeds (omega-3s) might tidy you up.
+        + what calms nerves
+        - For nerves: chamomile tea, deep breathing, almonds (magnesium). Try one!
+        + what boosts mood
+        - Mood boosters: dark chocolate (serotonin), dancing, sunlight. Pick one?
+        + what gives energy
+        - Energy givers: oranges (vitamin C), spinach (iron), a quick jog. Need more?
+        + how do i stop stressing
+        - Stop stress with yoga, oats (carbs), or gardening. Want tips?
+        + i’m too anxious to think
+        - Too anxious? Slow breaths or salmon (omega-3s) might clear your head.
+        + i feel dead inside
+        - Dead inside? Try painting or eggs (vitamin D) to spark life.
+        + i can’t handle this
+        - Can’t handle it? A warm bath or avocados (B vitamins) might help.
+        + i’m a nervous wreck
+        - Nervous wreck? Green tea (L-theanine) or yoga could steady you.
+        + i feel shattered
+        - Shattered? A nap or salmon (omega-3s) might piece you back.
+        + i’m on edge
+        - On edge? Tai chi or bananas (B6) could smooth it out.
+        + what helps loneliness
+        - Loneliness helpers: calling a friend, walnuts (omega-3s), a cozy movie. More?
+        + what eases tension
+        - Ease tension with stretching, oats (carbs), or a warm bath. Try it?
+        + how do i lift my spirits
+        - Lift spirits with dancing, berries (vitamin C), or sunlight. Pick one!
+        + i feel crushed
+        - Crushed? A hug or dark chocolate (serotonin) might lift you.
+        + i’m spiraling
+        - Spiraling? Meditation or almonds (magnesium) could stop it.
+        + i can’t calm down
+        - Can’t calm? Chamomile tea or deep breathing might work.
+        + i feel doomed
+        - Doomed? Eggs (vitamin D) or a walk could shift that feeling.
+        + i’m all over the place
+        - All over? A puzzle or chia seeds (omega-3s) might focus you.
+        + i feel detached
+        - Detached? A friend chat or walnuts (omega-3s) might reconnect you.
+        + i’m wound up
+        - Wound up? Yoga or pumpkin seeds (magnesium) could unwind you.
+        + how do i chill out
+        - Chill with a warm bath, lavender tea, or stretching. Try it!
+        + i feel gloomy all the time
+        - Always gloomy? Sunlight or kale (antioxidants) might brighten you.
+        + i can’t shake this
+        - Can’t shake it? Dancing or berries (vitamin C) might help.
+        + i’m a wreck
+        - A wreck? A nap or salmon (omega-3s) could fix you up.
+        + i feel smothered
+        - Smothered? A nature walk or avocados (B vitamins) might free you.
+        + i’m fed up
+        - Fed up? Kickboxing or dark chocolate could release it.
+        + i feel hollow
+        - Hollow inside? Oats (carbs) or a pet hug might fill you.
+        + i’m at my wits end
+        - At your wits’ end? A warm bath or eggs (vitamin D) might reset you.
+        + i can’t take it anymore
+        - Can’t take it? Meditation or almonds (magnesium) could ease it.
+        + i feel beaten
+        - Beaten down? Sunlight or spinach (folate) might lift you.
+        + i’m crumbling
+        - Crumbling? A nap or chia seeds (omega-3s) might hold you up.
+        + i feel dazed
+        - Dazed? A puzzle or oysters (zinc) might ground you.
+        + i’m flipping out
+        - Flipping out? Slow breaths or green tea (L-theanine) could calm you.
+        + i feel foggy
+        - Foggy head? Jogging or salmon (omega-3s) might clear it.
+        + i’m out of it
+        - Out of it? Oranges (vitamin C) or a dance could snap you back.
+        + i feel bleak
+        - Bleak? Eggs (vitamin D) or a walk might shift it.
+        + i’m toast
+        - Toast? A nap or dark chocolate might revive you.
+        + i feel grim
+        - Grim? Blueberries (vitamin C) or sunlight could help.
+        + i’m done
+        - Done with it? A warm bath or walnuts (omega-3s) might reset you.
 
-    <script
-       src="https://code.jquery.com/jquery-3.6.0.js"
-       integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-       crossorigin="anonymous">
-   </script>
+        // Fallback
+        + *
+        - Hmm, not sure about that. Try saying how you feel—like "sad" or "anxious"—or I’ll suggest avocados (B vitamins) and a stretch!
+    `;
+    bot.parse("inline.rive", inlineBrain);
+    bot.sortReplies();
+    console.log("Bot brain initialized with 200 RiveScript entries!");
 
-   <!-- +++++++++++++++ FONT AWEWSOME CDN +++++++++++++ -->
-   <script src="https://kit.fontawesome.com/1b2b6a64da.js" crossorigin="anonymous"></script>
+    // Initialize Speech Synthesis
+    const synth = window.speechSynthesis;
+    let voices = synth.getVoices();
+    if (voices.length === 0) {
+        synth.onvoiceschanged = () => {
+            voices = synth.getVoices();
+            console.log("Voices loaded:", voices);
+        };
+    }
 
+    // Function to speak a message
+    function speak(text) {
+        if (synth.speaking) synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        const selectedVoice = voices.find(voice => voice.lang === "en-US" && voice.name.includes("Female")) || voices[0];
+        utterance.voice = selectedVoice || voices[0];
+        utterance.pitch = 1;
+        utterance.rate = 1;
+        utterance.volume = 1;
+        synth.speak(utterance);
+    }
 
-   <!-- +++++++++++++++++ RIVE SCRIPT  +++++++++++++++++++++++ -->
+    // Speak the initial welcome message
+    speak("Hello! How can I assist you today?");
+    $("#chat-messages").append(`<div class="message-container bot-message-container"><p class="bot-message"></p></div>`);
 
-   <script src="https://unpkg.com/rivescript@latest/dist/rivescript.min.js"></script>
+    // Handle sending messages
+    $("#send-btn").click(function() {
+        let userMessage = $("#user-input").val().trim();
+        if (userMessage !== "") {
+            $("#chat-messages").append(`<div class="message-container user-message-container"><p class="user-message">${userMessage}</p></div>`);
+            $("#user-input").val("");
 
-   <!-- ++++++++++++++++++ P5 JS CDN ++++++++++++++++++++++++++++++ -->
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/p5.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/addons/p5.dom.js"></script>
+            bot.reply("user", userMessage).then((reply) => {
+                $("#chat-messages").append(`<div class="message-container bot-message-container"><p class="bot-message">${reply}</p></div>`);
+                $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
+                speak(reply);
+            }).catch((error) => {
+                console.error("Error:", error);
+                const errorMsg = "Oops, something went wrong!";
+                $("#chat-messages").append(`<div class="message-container bot-message-container"><p class="bot-message">${errorMsg}</p></div>`);
+                speak(errorMsg);
+            });
+        }
+    });
 
-   <script src="../library/p5.speech.js"></script>
-
-   <script src="../otherJS/hamberger.js"></script>
-   <script src="../otherJS/chatBot.js"></script>
-
+    // Allow Enter key to send message
+    $("#user-input").keypress(function(event) {
+        if (event.which === 13) $("#send-btn").click();
+    });
+});
+    </script>
 </body>
 </html>

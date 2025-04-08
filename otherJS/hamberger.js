@@ -47,3 +47,9 @@ mobileNavList.forEach((list)=>{
         midLine2.classList.toggle('changeMidLine2');
     })
 })
+
+$(document).ready(function() {
+    $('.hamBurger').click(function() {
+        $('#mobile-nav').slideToggle();
+    });
+});
