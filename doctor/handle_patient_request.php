@@ -1,76 +1,96 @@
 <?php
 session_start();
-include("../connection.php");
 
+// Check if the user is logged in and has the correct user type
 if (!isset($_SESSION["user"]) || $_SESSION['usertype'] != 'd') {
     header("location: ../login.php");
     exit();
 }
 
-if (($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && isset($_POST['id'])) || 
-    (isset($_GET['action']) && isset($_GET['id']))) {
-    
-    $action = isset($_POST['action']) ? $_POST['action'] : $_GET['action'];
-    $request_id = isset($_POST['id']) ? $_POST['id'] : $_GET['id'];
+include("../connection.php");
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && isset($_POST['id'])) {
+    $action = $_POST['action'];
+    $request_id = $_POST['id'];
+
+    // Fetch the request details
+    $request_query = "SELECT * FROM patient_requests WHERE request_id = $request_id AND doctor_id = {$_SESSION['docid']} AND status = 'pending'";
+    $request_result = $database->query($request_query);
+
+    if ($request_result->num_rows == 0) {
+        header("location: schedule.php?error=Invalid request");
+        exit();
+    }
+
+    $request = $request_result->fetch_assoc();
+    $patient_id = $request['patient_id'];
+    $doctor_id = $request['doctor_id'];
+    $session_date = $request['session_date'];
+    $start_time = $request['start_time'];
+    $duration = $request['duration'];
+    $gmeet_request = $request['gmeet_request'];
 
     if ($action == 'approve') {
-        // Fetch the patient request
-        $request_query = "SELECT * FROM patient_requests WHERE request_id = ?";
-        $stmt = $database->prepare($request_query);
-        $stmt->bind_param("i", $request_id);
-        $stmt->execute();
-        $request = $stmt->get_result()->fetch_assoc();
-
-        if (!$request) {
-            header("Location: schedule.php?error=Invalid request ID");
+        // Ensure a title is provided
+        if (!isset($_POST['title']) || empty(trim($_POST['title']))) {
+            header("location: schedule.php?error=Session title is required");
             exit();
         }
 
-        // Insert into schedule
-        $insert_query = "INSERT INTO schedule (docid, title, scheduledate, start_time, end_time, gmeet_link) 
-                         VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $database->prepare($insert_query);
-        $gmeet_link = $request['gmeet_request'] ? 'pending' : NULL; // Placeholder for Google Meet link
-        $stmt->bind_param("isssss", $request['doctor_id'], $request['title'], $request['session_date'], 
-                          $request['start_time'], $request['end_time'], $gmeet_link);
-        $stmt->execute();
-        $schedule_id = $database->insert_id; // Get the newly inserted schedule ID
+        $title = trim($_POST['title']);
 
-        // Update patient request status to approved
-        $update_query = "UPDATE patient_requests SET status = 'approved' WHERE request_id = ?";
-        $stmt = $database->prepare($update_query);
-        $stmt->bind_param("i", $request_id);
-        $stmt->execute();
+        // Calculate end time based on duration
+        $start_datetime = DateTime::createFromFormat('H:i:s', $start_time);
+        $end_datetime = clone $start_datetime;
+        $end_datetime->modify("+$duration minutes");
+        $end_time = $end_datetime->format('H:i:s');
 
-        if ($request['gmeet_request']) {
-            $notify_query = "INSERT INTO session_requests (docid, schedule_id, title, session_date, start_time, end_time, duration, gmeet_request, status, request_date) 
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())";
-            $stmt = $database->prepare($notify_query);
-            $duration = (strtotime($request['end_time']) - strtotime($request['start_time'])) / 60; // Duration in minutes
-            $gmeet_request_flag = 1; // True for Google Meet request
-            $stmt->bind_param("iissssii", $request['doctor_id'], $schedule_id, $request['title'], 
-                              $request['session_date'], $request['start_time'], $request['end_time'], 
-                              $duration, $gmeet_request_flag);
-            $stmt->execute();
+        // Insert the session into the schedule table
+        $insert_schedule_query = "INSERT INTO schedule (title, docid, scheduledate, start_time, end_time, gmeet_link) 
+                                VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $database->prepare($insert_schedule_query);
+        if (!$stmt) {
+            header("location: schedule.php?error=Failed to prepare schedule insert query: " . $database->error);
+            exit();
         }
+        $gmeet_link = $gmeet_request ? '' : NULL; // Placeholder for Google Meet link (to be set by admin if requested)
+        $stmt->bind_param("sissss", $title, $doctor_id, $session_date, $start_time, $end_time, $gmeet_link);
+        $stmt->execute();
+        if ($stmt->affected_rows > 0) {
+            $schedule_id = $stmt->insert_id;
 
-        header("Location: schedule.php?success=Request approved successfully" . 
-               ($request['gmeet_request'] ? " (Admin notified for Google Meet link)" : ""));
-        exit();
+            // Update the patient request status to approved
+            $update_request_query = "UPDATE patient_requests SET status = 'approved' WHERE request_id = $request_id";
+            $database->query($update_request_query);
 
-    } elseif ($action == 'reject' && isset($_POST['rejection_reason'])) {
-        // Update request status to rejected with reason
-        $reason = $_POST['rejection_reason'];
+            // Create an appointment for the patient
+            $insert_appointment_query = "INSERT INTO appointment (pid, scheduleid, appodate, appotime) 
+                                        VALUES (?, ?, ?, ?)";
+            $stmt = $database->prepare($insert_appointment_query);
+            $stmt->bind_param("iiss", $patient_id, $schedule_id, $session_date, $start_time);
+            $stmt->execute();
+
+            header("location: schedule.php?success=Request approved successfully");
+        } else {
+            header("location: schedule.php?error=Failed to create session");
+        }
+        $stmt->close();
+    } elseif ($action == 'reject') {
+        // Handle rejection (unchanged)
+        $rejection_reason = isset($_POST['rejection_reason']) ? $_POST['rejection_reason'] : 'No reason provided';
         $update_query = "UPDATE patient_requests SET status = 'rejected', rejection_reason = ? WHERE request_id = ?";
         $stmt = $database->prepare($update_query);
-        $stmt->bind_param("si", $reason, $request_id);
+        $stmt->bind_param("si", $rejection_reason, $request_id);
         $stmt->execute();
 
-        header("Location: schedule.php?success=Request rejected successfully");
-        exit();
+        if ($stmt->affected_rows > 0) {
+            header("location: schedule.php?success=Request rejected successfully");
+        } else {
+            header("location: schedule.php?error=Failed to reject request");
+        }
+        $stmt->close();
     }
+} else {
+    header("location: schedule.php?error=Invalid request");
 }
-
-header("Location: schedule.php?error=Invalid request");
-exit();
 ?>

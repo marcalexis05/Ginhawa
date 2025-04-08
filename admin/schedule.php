@@ -84,9 +84,24 @@
             padding: 5px 10px;
             border-radius: 3px;
             cursor: pointer;
+            background-image: none;
         }
+        .notification-actions .btn-edit {
+        background-image: none; /* Ensure no icon appears */
+        }
+
         #addSessionPopup {
             display: none;
+        }
+        .notification-section {
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .notification-section h4 {
+            margin: 10px 0 5px 10px;
+            font-size: 16px;
+            color: #333;
         }
     </style>
 </head>
@@ -103,6 +118,19 @@
     date_default_timezone_set('Asia/Kolkata');
     $today = date('Y-m-d');
     $oneWeekLater = date('Y-m-d', strtotime('+7 days'));
+
+    // Count pending session requests
+    $request_query = $database->query("SELECT COUNT(*) as count FROM session_requests WHERE status='pending'");
+    $request_count = $request_query->fetch_assoc()['count'];
+
+    // Count sessions needing a Google Meet link
+    $gmeet_query = $database->query("SELECT COUNT(*) as count FROM schedule 
+                                     INNER JOIN doctor ON schedule.docid = doctor.docid 
+                                     WHERE schedule.gmeet_link = '' AND doctor.archived = 0");
+    $gmeet_count = $gmeet_query->fetch_assoc()['count'];
+
+    // Total notification count
+    $total_notification_count = $request_count + $gmeet_count;
     ?>
     <div class="container">
         <div class="menu">
@@ -158,43 +186,70 @@
                     </td>
                     <td width="10%">
                         <div class="notification-bell" onclick="toggleNotifications()">
-                        <svg class="bell-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <svg class="bell-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
                             </svg>
-                            <?php
-                            $request_query = $database->query("SELECT COUNT(*) as count FROM session_requests WHERE status='pending'");
-                            $request_count = $request_query->fetch_assoc()['count'];
-                            if ($request_count > 0) {
-                                echo '<span class="notification-count">'.$request_count.'</span>';
-                            }
-                            ?>
+                            <?php if ($total_notification_count > 0) { ?>
+                                <span class="notification-count"><?php echo $total_notification_count; ?></span>
+                            <?php } ?>
                             <div id="notificationDropdown" class="notification-dropdown">
-                                <?php
-                                $requests = $database->query("SELECT sr.*, d.docname FROM session_requests sr 
-                                                            INNER JOIN doctor d ON sr.docid = d.docid 
-                                                            WHERE sr.status='pending' AND d.archived = 0
-                                                            ORDER BY sr.request_date DESC");
-                                if ($requests->num_rows == 0) {
-                                    echo '<div class="notification-item">No pending requests</div>';
-                                } else {
-                                    while ($request = $requests->fetch_assoc()) {
-                                        $request_id = $request['request_id'];
-                                        $start_time = date('h:i A', strtotime($request["start_time"]));
-                                        $end_time = date('h:i A', strtotime($request["end_time"]));
-                                        $gmeet_request = isset($request['gmeet_request']) && $request['gmeet_request'] ? '<br><strong>Google Meet Requested</strong>' : '';
-                                        echo '<div class="notification-item">';
-                                        echo '<p><strong>'.htmlspecialchars($request['docname']).'</strong></p>';
-                                        echo '<p>Title: '.htmlspecialchars($request['title']).'</p>';
-                                        echo '<p>Duration: '.htmlspecialchars($request['duration']).' minutes</p>';
-                                        echo '<p>Date: '.htmlspecialchars($request['session_date']).' '.$start_time.' - '.$end_time.$gmeet_request.'</p>';
-                                        echo '<p>Requested: '.htmlspecialchars($request['request_date']).'</p>';
-                                        echo '<div class="notification-actions">';
-                                        echo '<a href="handle_request.php?action=reject&id='.$request_id.'"><button class="btn-reject">Remove</button></a>';
-                                        echo '</div>';
-                                        echo '</div>';
+                                <!-- Pending Session Requests -->
+                                <div class="notification-section">
+                                    <h4>Pending Session Requests (<?php echo $request_count; ?>)</h4>
+                                    <?php
+                                    $requests = $database->query("SELECT sr.*, d.docname FROM session_requests sr 
+                                                                INNER JOIN doctor d ON sr.docid = d.docid 
+                                                                WHERE sr.status='pending' AND d.archived = 0
+                                                                ORDER BY sr.request_date DESC");
+                                    if ($requests->num_rows == 0) {
+                                        echo '<div class="notification-item">No pending session requests</div>';
+                                    } else {
+                                        while ($request = $requests->fetch_assoc()) {
+                                            $request_id = $request['request_id'];
+                                            $start_time = date('h:i A', strtotime($request["start_time"]));
+                                            $end_time = date('h:i A', strtotime($request["end_time"]));
+                                            $gmeet_request = isset($request['gmeet_request']) && $request['gmeet_request'] ? '<br><strong>Google Meet Requested</strong>' : '';
+                                            echo '<div class="notification-item">';
+                                            echo '<p><strong>' . htmlspecialchars($request['docname']) . '</strong></p>';
+                                            echo '<p>Description: ' . htmlspecialchars($request['description']) . '</p>';
+                                            echo '<p>Duration: ' . htmlspecialchars($request['duration']) . ' minutes</p>';
+                                            echo '<p>Date: ' . htmlspecialchars($request['session_date']) . ' ' . $start_time . ' - ' . $end_time . $gmeet_request . '</p>';
+                                            echo '<p>Requested: ' . htmlspecialchars($request['request_date']) . '</p>';
+                                            echo '<div class="notification-actions">';
+                                            echo '<a href="handle_request.php?action=reject&id=' . $request_id . '"><button class="btn-reject">Remove</button></a>';
+                                            echo '</div>';
+                                            echo '</div>';
+                                        }
                                     }
-                                }
-                                ?>
+                                    ?>
+                                </div>
+                                <!-- Sessions Needing Google Meet Link -->
+                                <div class="notification-section">
+                                    <h4>Sessions Needing Google Meet Link (<?php echo $gmeet_count; ?>)</h4>
+                                    <?php
+                                    $gmeet_sessions = $database->query("SELECT s.*, d.docname FROM schedule s 
+                                                                       INNER JOIN doctor d ON s.docid = d.docid 
+                                                                       WHERE s.gmeet_link = '' AND d.archived = 0
+                                                                       ORDER BY s.scheduledate DESC");
+                                    if ($gmeet_sessions->num_rows == 0) {
+                                        echo '<div class="notification-item">No sessions need a Google Meet link</div>';
+                                    } else {
+                                        while ($session = $gmeet_sessions->fetch_assoc()) {
+                                            $schedule_id = $session['scheduleid'];
+                                            $start_time = date('h:i A', strtotime($session["start_time"]));
+                                            $end_time = date('h:i A', strtotime($session["end_time"]));
+                                            echo '<div class="notification-item">';
+                                            echo '<p><strong>' . htmlspecialchars($session['title']) . '</strong></p>';
+                                            echo '<p>Doctor: ' . htmlspecialchars($session['docname']) . '</p>';
+                                            echo '<p>Date: ' . htmlspecialchars($session['scheduledate']) . ' ' . $start_time . ' - ' . $end_time . '</p>';
+                                            echo '<div class="notification-actions">';
+                                            echo '<button class="btn-edit" onclick="openEditModal(' . $schedule_id . ')">Add GMeet Link</button>';
+                                            echo '</div>';
+                                            echo '</div>';
+                                        }
+                                    }
+                                    ?>
+                                </div>
                             </div>
                         </div>
                     </td>
@@ -237,7 +292,7 @@
                                                 $row00 = $list11->fetch_assoc();
                                                 $sn = $row00["docname"];
                                                 $id00 = $row00["docid"];
-                                                echo "<option value=".$id00.">$sn</option><br/>";
+                                                echo "<option value=" . $id00 . ">$sn</option><br/>";
                                             }
                                             ?>
                                         </select>
@@ -360,7 +415,8 @@
                         <tr><td><label for="scheduledate" class="form-label">Session Date: </label></td></tr>
                         <tr><td class="label-td" colspan="2">
                             <input type="text" name="scheduledate" id="scheduledate" class="input-text" required></td></tr>
-                        <tr><td><label for="start_time" class="form-label">Start Time: </label></td></                        <tr><td class="label-td" colspan="2">
+                        <tr><td><label for="start_time" class="form-label">Start Time: </label></td></tr>
+                        <tr><td class="label-td" colspan="2">
                             <select name="start_time" class="input-text" required>
                                 <option value="">Select Start Time</option>
                                 <?php
@@ -613,6 +669,10 @@
     function toggleNotifications() {
         var dropdown = document.getElementById('notificationDropdown');
         dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function openEditModal(scheduleId) {
+        window.location.href = '?action=edit&id=' + scheduleId;
     }
 
     window.onclick = function(event) {

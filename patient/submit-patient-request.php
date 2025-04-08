@@ -8,7 +8,7 @@ if (!isset($_SESSION["user"]) || $_SESSION['usertype'] != 'p') {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $title = $database->real_escape_string($_POST["title"]);
+    $description = $database->real_escape_string($_POST["description"]);
     $session_date = $database->real_escape_string($_POST["session_date"]);
     $start_time = $database->real_escape_string($_POST["start_time"]);
     $duration = (int)$_POST["duration"];
@@ -41,10 +41,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Insert into patient_requests table
-    $sql = "INSERT INTO patient_requests (patient_id, doctor_id, title, session_date, start_time, end_time, duration, gmeet_request, request_date, status) 
+    $sql = "INSERT INTO patient_requests (patient_id, doctor_id, description, session_date, start_time, end_time, duration, gmeet_request, request_date, status) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), 'pending')";
     $stmt = $database->prepare($sql);
-    $stmt->bind_param("iissssii", $patient_id, $doctor_id, $title, $session_date, $start_time, $end_time, $duration, $gmeet_request);
+    $stmt->bind_param("iissssii", $patient_id, $doctor_id, $description, $session_date, $start_time, $end_time, $duration, $gmeet_request);
 
     if ($stmt->execute()) {
         header("Location: doctors.php?success=Session request submitted successfully");

@@ -15,16 +15,75 @@
         .popup { animation: transitionIn-Y-bottom 0.5s; }
         .sub-table { animation: transitionIn-Y-bottom 0.5s; }
         .request-btn {
-            background-color: #28a745;
+            background-color: var(--primarycolor);
             color: white;
-            border: none;
-            padding: 12px 40px;
+            border: 1px solid var(--primarycolor);
+            padding: 8px 20px;
             border-radius: 5px;
             cursor: pointer;
             margin-top: 10px;
+            font-family: 'Inter', sans-serif;
         }
-        .request-btn:hover { background-color: #218838; }
-        .form-label { display: block; margin: 10px 0 5px; }
+        .request-btn:hover {
+            background-color: var(--primarycolorhover);
+            box-shadow: 0 3px 5px 0 rgba(123,174,55,0.3);
+        }
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 45px 10px 45px;
+        }
+        .symptom-btn {
+            background-color: var(--primarycolor);
+            color: white;
+            border: 1px solid var(--primarycolor);
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .symptom-btn:hover {
+            background-color: var(--primarycolorhover);
+            box-shadow: 0 3px 5px 0 rgba(123,174,55,0.3);
+        }
+        #symptomsPopup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            max-width: 800px;
+            background: white;
+            border-radius: 5px;
+            padding: 30px;
+            z-index: 1000;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        .symptom-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 15px 0;
+        }
+        .symptom-list label {
+            display: block;
+            margin: 8px 0;
+            padding: 8px;
+            font-size: 16px;
+        }
+        .suggestion-box {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ebebeb;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        #symptomsPopupContent {
+            text-align: center;
+        }
+        #symptomsPopupContent h2 {
+            margin-top: 0;
+        }
     </style>
 </head>
 <body>
@@ -43,7 +102,22 @@
     date_default_timezone_set('Asia/Kolkata');
     $today = date('Y-m-d');
     $oneWeekLater = date('Y-m-d', strtotime('+7 days'));
+
+    // Fetch all doctors for recommendations
+    $doctors_query = $database->query("SELECT d.docid, d.docname, s.sname as specialty 
+                                     FROM doctor d 
+                                     JOIN specialties s ON d.specialties = s.id");
+    $doctors = [];
+    while ($row = $doctors_query->fetch_assoc()) {
+        $doctors[] = [
+            'id' => $row['docid'],
+            'name' => $row['docname'],
+            'specialty' => $row['specialty']
+        ];
+    }
+    $doctors_json = json_encode($doctors);
     ?>
+
     <div class="container">
         <div class="menu">
             <table class="menu-container" border="0">
@@ -119,7 +193,10 @@
                 </tr>
                 <tr>
                     <td colspan="4" style="padding-top:10px;">
-                        <p class="heading-main12" style="margin-left:45px;font-size:18px;color:rgb(49,49,49)">All Professionals (<?php echo $list11->num_rows; ?>)</p>
+                        <div class="header-section">
+                            <p class="heading-main12" style="font-size:18px;color:rgb(49,49,49)">All Professionals (<?php echo $list11->num_rows; ?>)</p>
+                            <button class="symptom-btn" onclick="openSymptomsPopup(0)">Select Symptoms</button>
+                        </div>
                     </td>
                 </tr>
                 <?php
@@ -178,34 +255,35 @@
                                                             <a class="close" onclick="document.getElementById(\'requestPopup' . $docid . '\').style.display=\'none\'">×</a>
                                                             <div class="content">
                                                                 <form action="submit-patient-request.php" method="post" onsubmit="return validateRequestForm(' . $docid . ', event)">
-                                                                    <label for="title' . $docid . '" class="form-label">Session Title:</label>
-                                                                    <input type="text" name="title" id="title' . $docid . '" class="input-text" placeholder="Enter session title" required>
-                                                                    <label for="session_date' . $docid . '" class="form-label">Preferred Date:</label>
+                                                                    <label for="description' . $docid . '" style="display:block;margin:10px 0 5px;">Session Description:</label>
+                                                                    <textarea name="description" id="description' . $docid . '" class="input-text" placeholder="Describe how you’re feeling or your symptoms" required style="height:100px;"></textarea>
+                                                                    <div id="suggestions' . $docid . '" class="suggestion-box" style="display:none;"></div>
+                                                                    <label for="session_date' . $docid . '" style="display:block;margin:10px 0 5px;">Preferred Date:</label>
                                                                     <input type="text" name="session_date" id="session_date' . $docid . '" class="input-text" required>
-                                                                    <label for="start_time' . $docid . '" class="form-label">Start Time (8:00 AM - 5:00 PM):</label>
+                                                                    <label for="start_time' . $docid . '" style="display:block;margin:10px 0 5px;">Start Time (8:00 AM - 5:00 PM):</label>
                                                                     <select name="start_time" id="start_time' . $docid . '" class="input-text" required>
                                                                         <option value="">Select Start Time</option>';
                                                                         for ($h = 8; $h < 18; $h++) {
                                                                             foreach ([0, 30] as $m) {
-                                                                                if ($h == 12 || ($h == 17 && $m == 30)) continue; // Skip 12:00 PM and after 5:30 PM
-                                                                                $time = sprintf("%02d:%02d:00", $h, $m); // Value remains in 24-hour for backend
+                                                                                if ($h == 12 || ($h == 17 && $m == 30)) continue;
+                                                                                $time = sprintf("%02d:%02d:00", $h, $m);
                                                                                 $ampm = $h >= 12 ? 'PM' : 'AM';
-                                                                                $display_h = $h > 12 ? $h - 12 : ($h == 12 ? 12 : $h); // Convert to 12-hour
+                                                                                $display_h = $h > 12 ? $h - 12 : ($h == 12 ? 12 : $h);
                                                                                 $display_time = sprintf("%d:%02d %s", $display_h, $m, $ampm);
                                                                                 echo "<option value='$time'>$display_time</option>";
                                                                             }
                                                                         }
                                                 echo '          </select>
-                                                                    <label for="duration' . $docid . '" class="form-label">Duration:</label>
+                                                                    <label for="duration' . $docid . '" style="display:block;margin:10px 0 5px;">Duration:</label>
                                                                     <select name="duration" id="duration' . $docid . '" class="input-text" required>
                                                                         <option value="30">30 minutes</option>
                                                                         <option value="60">1 hour</option>
                                                                         <option value="90">1 hour 30 minutes</option>
                                                                         <option value="120">2 hours</option>
                                                                     </select>
-                                                                    <label for="gmeet_request' . $docid . '" class="form-label">Request Google Meet Link:</label>
+                                                                    <label for="gmeet_request' . $docid . '" style="display:block;margin:10px 0 5px;">Request Google Meet Link:</label>
                                                                     <input type="checkbox" name="gmeet_request" id="gmeet_request' . $docid . '" value="1">
-                                                                    <p><b>Note:</b> Opening: 8:00 AM, Break: 12:00 PM - 1:00 PM, Closing: 6:00 PM</p>
+                                                                    <p><b>Note:</b> Opening: 8:00 AM, Break: 12:00 PM - 1:00 PM, Closing:                                                                    6:00 PM</p>
                                                                     <input type="hidden" name="patient_id" value="' . $userid . '">
                                                                     <input type="hidden" name="doctor_id" value="' . $docid . '">
                                                                     <div style="display: flex; justify-content: center; margin-top: 20px;">
@@ -228,6 +306,27 @@
             </table>
         </div>
     </div>
+
+    <!-- Symptoms Popup -->
+    <div id="symptomsPopup" style="display:none;">
+        <div id="symptomsPopupContent">
+            <a class="close" onclick="document.getElementById('symptomsPopup').style.display='none'" style="position: absolute; top: 20px; right: 30px; font-size: 24px; text-decoration: none; color: #333;">×</a>
+            <h2>Select Symptoms</h2>
+            <div class="content symptom-list">
+                <form id="symptomsForm">
+                    <label><input type="checkbox" name="symptoms[]" value="difficulty_sleeping"> Difficulty Sleeping</label>
+                    <label><input type="checkbox" name="symptoms[]" value="feeling_tired"> Feeling Tired or Exhausted</label>
+                    <label><input type="checkbox" name="symptoms[]" value="low_energy"> Low Energy</label>
+                    <label><input type="checkbox" name="symptoms[]" value="poor_concentration"> Poor Concentration</label>
+                    <label><input type="checkbox" name="symptoms[]" value="appetite_changes"> Appetite Changes</label>
+                    <label><input type="checkbox" name="symptoms[]" value="restlessness"> Restlessness</label>
+                    <label><input type="checkbox" name="symptoms[]" value="irritability"> Irritability</label>
+                </form>
+            </div>
+            <button class="btn-primary btn" onclick="submitSymptoms()">Submit</button>
+        </div>
+    </div>
+
     <?php 
     if ($_GET) {
         $id = $_GET["id"];
@@ -296,6 +395,9 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
+    let currentDocId = null;
+    const allDoctors = <?php echo $doctors_json; ?>;
+
     document.addEventListener('DOMContentLoaded', function() {
         <?php
         $result = $database->query($sqlmain);
@@ -308,7 +410,7 @@
                 maxDate: '$oneWeekLater',
                 disable: [
                     function(date) {
-                        return date.getDay() === 0; // Disable Sundays
+                        return date.getDay() === 0;
                     }
                 ],
                 dateFormat: 'Y-m-d',
@@ -323,7 +425,7 @@
 
     function validateRequestForm(docid, event) {
         event.preventDefault();
-        let title = document.getElementById('title' + docid).value.trim();
+        let description = document.getElementById('description' + docid).value.trim();
         let sessionDateStr = document.getElementById('session_date' + docid).value;
         let sessionDate = new Date(sessionDateStr);
         let startTime = document.getElementById('start_time' + docid).value;
@@ -352,8 +454,8 @@
             }
         }
 
-        if (title === '') {
-            Swal.fire({ icon: 'error', title: 'Oops...', text: 'Session title cannot be empty!' });
+        if (description === '') {
+            Swal.fire({ icon: 'error', title: 'Oops...', text: 'Session description cannot be empty!' });
             return false;
         }
         if (sessionDate < today) {
@@ -367,10 +469,10 @@
 
         let [startHours, startMinutes] = startTime.split(':').map(Number);
         let totalMinutes = startHours * 60 + startMinutes + duration;
-        let breakStart = 12 * 60; // 12:00 PM in minutes
-        let breakEnd = 13 * 60;   // 1:00 PM in minutes
+        let breakStart = 12 * 60;
+        let breakEnd = 13 * 60;
         if (totalMinutes > breakStart && (startHours * 60 + startMinutes) < breakEnd) {
-            totalMinutes += (breakEnd - breakStart); // Add 1 hour for the break
+            totalMinutes += (breakEnd - breakStart);
         }
         let endHours = Math.floor(totalMinutes / 60);
 
@@ -411,6 +513,91 @@
         });
 
         return false;
+    }
+
+    function openSymptomsPopup(docid) {
+        currentDocId = docid;
+        document.getElementById('symptomsPopup').style.display = 'block';
+        document.getElementById('symptomsForm').reset();
+    }
+
+    function submitSymptoms() {
+        let selectedSymptoms = Array.from(document.querySelectorAll('#symptomsForm input[name="symptoms[]"]:checked'))
+            .map(checkbox => checkbox.value);
+
+        if (selectedSymptoms.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No Selection',
+                text: 'Please select at least one symptom!'
+            });
+            return;
+        }
+
+        // Symptom-to-advice mapping based on sleep-related issues
+        const symptomAdvice = {
+            'difficulty_sleeping': 'Establish a regular sleep schedule and avoid screens before bed.',
+            'feeling_tired': 'Ensure adequate rest and check your nutrition and hydration.',
+            'low_energy': 'Incorporate light exercise and maintain consistent sleep hours.',
+            'poor_concentration': 'Take regular breaks and practice relaxation techniques.',
+            'appetite_changes': 'Maintain a balanced diet and regular meal times.',
+            'restlessness': 'Try relaxation exercises before bed.',
+            'irritability': 'Practice stress management and ensure sufficient rest.'
+        };
+
+        // Generate advice based on selected symptoms
+        let advice = selectedSymptoms.map(symptom => symptomAdvice[symptom] || 'Consult a professional for personalized advice.').join(' ');
+
+        // Recommend doctors (always at least one)
+        let recommendedDoctors = [];
+        if (selectedSymptoms.includes('difficulty_sleeping') || selectedSymptoms.includes('feeling_tired') || selectedSymptoms.includes('low_energy')) {
+            recommendedDoctors = allDoctors.filter(doc => 
+                doc.specialty.toLowerCase().includes('sleep') || 
+                doc.specialty.toLowerCase().includes('general')
+            );
+        } else if (selectedSymptoms.includes('poor_concentration') || selectedSymptoms.includes('irritability')) {
+            recommendedDoctors = allDoctors.filter(doc => 
+                doc.specialty.toLowerCase().includes('psych') || 
+                doc.specialty.toLowerCase().includes('neuro')
+            );
+        } else if (selectedSymptoms.includes('appetite_changes') || selectedSymptoms.includes('restlessness')) {
+            recommendedDoctors = allDoctors.filter(doc => 
+                doc.specialty.toLowerCase().includes('general') || 
+                doc.specialty.toLowerCase().includes('psych')
+            );
+        }
+
+        // If no specific match or empty, select at least one random doctor
+        if (recommendedDoctors.length === 0) {
+            const randomIndex = Math.floor(Math.random() * allDoctors.length);
+            recommendedDoctors = [allDoctors[randomIndex]];
+        }
+
+        if (currentDocId === 0) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Suggestions',
+                html: `
+                    <div style="text-align: left;">
+                        <h3>Advice:</h3>
+                        <p>${advice}</p>
+                        <h3>Recommended Doctors:</h3>
+                        <ul>${recommendedDoctors.map(doc => `<li>${doc.name} - ${doc.specialty}</li>`).join('')}</ul>
+                    </div>
+                `
+            });
+            document.getElementById('symptomsPopup').style.display = 'none';
+        } else {
+            let suggestionsDiv = document.getElementById('suggestions' + currentDocId);
+            suggestionsDiv.style.display = 'block';
+            suggestionsDiv.innerHTML = `
+                <h3>Suggestions</h3>
+                <p><strong>Advice:</strong> ${advice}</p>
+                <p><strong>Recommended Doctors:</strong></p>
+                <ul>${recommendedDoctors.map(doc => `<li>${doc.name} - ${doc.specialty}</li>`).join('')}</ul>
+            `;
+            document.getElementById('symptomsPopup').style.display = 'none';
+        }
     }
 
     <?php

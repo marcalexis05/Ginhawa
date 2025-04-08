@@ -1,3 +1,35 @@
+<?php
+// Start the session at the very top, before any output
+session_start();
+
+// Check if the user is logged in and has the correct user type
+if (!isset($_SESSION["user"]) || $_SESSION['usertype'] != 'd') {
+    header("location: ../login.php");
+    exit();
+}
+
+$useremail = $_SESSION["user"];
+include("../connection.php");
+$userrow = $database->query("SELECT * FROM doctor WHERE docemail='$useremail'");
+$userfetch = $userrow->fetch_assoc();
+$userid = $userfetch["docid"];
+$username = $userfetch["docname"];
+$_SESSION["docid"] = $userid;
+
+$request_count_query = "SELECT COUNT(*) as pending_count FROM patient_requests WHERE doctor_id = $userid AND status = 'pending'";
+$request_count_result = $database->query($request_count_query);
+$pending_count = $request_count_result->fetch_assoc()['pending_count'];
+
+$requests_query = "SELECT pr.*, p.pname FROM patient_requests pr 
+                  INNER JOIN patient p ON pr.patient_id = p.pid 
+                  WHERE pr.doctor_id = $userid AND pr.status = 'pending'";
+$requests_result = $database->query($requests_query);
+
+date_default_timezone_set('Asia/Kolkata');
+$today = date('Y-m-d');
+$oneWeekLater = date('Y-m-d', strtotime('+7 days'));
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,12 +46,24 @@
     <style>
         .popup { animation: transitionIn-Y-bottom 0.5s; }
         .sub-table { animation: transitionIn-Y-bottom 0.5s; }
-        .request-btn { background-color: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px; }
+        .request-btn { 
+            background-color: #28a745; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin: 10px; 
+        }
         .request-btn:hover { background-color: #218838; }
         .error-msg { color: red; text-align: center; margin: 10px; }
         .success-msg { color: green; text-align: center; margin: 10px; }
         .form-label { display: block; margin: 10px 0 5px; }
-        .notification-bell { position: relative; display: inline-block; cursor: pointer; }
+        .notification-bell { 
+            position: relative; 
+            display: inline-block; 
+            cursor: pointer; 
+        }
         .notification-count { 
             position: absolute; 
             top: -5px; 
@@ -45,6 +89,10 @@
         .notification-item { 
             padding: 10px; 
             border-bottom: 1px solid #ddd; 
+            background-color: #fff; 
+            border-radius: 5px; 
+            margin: 5px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
         }
         .notification-item:last-child { border-bottom: none; }
         .notification-actions { 
@@ -52,13 +100,27 @@
             justify-content: space-between; 
             margin-top: 10px; 
         }
-        .btn-approve { background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
-        .btn-reject { background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+        .btn-approve { 
+            background-color: #28a745; 
+            color: white; 
+            border: none; 
+            padding: 5px 10px; 
+            border-radius: 3px; 
+            cursor: pointer; 
+        }
+        .btn-reject { 
+            background-color: #dc3545; 
+            color: white; 
+            border: none; 
+            padding: 5px 10px; 
+            border-radius: 3px; 
+            cursor: pointer; 
+        }
         .bell-icon { width: 30px; height: 30px; fill: #333; }
         .bell-icon:hover { fill: #007bff; }
         .gmeet-link { color: #007bff; text-decoration: underline; cursor: pointer; }
         .gmeet-link:hover { color: #0056b3; }
-        .rejection-modal { 
+        .rejection-modal, .title-modal { 
             display: none; 
             position: fixed; 
             z-index: 1000; 
@@ -76,7 +138,7 @@
             width: 300px; 
             text-align: center; 
         }
-        .modal-content select { 
+        .modal-content select, .modal-content input[type="text"] { 
             width: 100%; 
             padding: 5px; 
             margin: 10px 0; 
@@ -88,38 +150,34 @@
             border-radius: 3px; 
             cursor: pointer; 
         }
-        .btn-submit { background-color: #dc3545; color: white; }
+        .btn-submit { background-color: #28a745; color: white; }
         .btn-cancel { background-color: #6c757d; color: white; }
+        /* Updated Request Session Popup Styling */
+        #requestPopup .popup {
+            width: 70%;
+            max-width: 800px;
+            background: white;
+            border-radius: 5px;
+            padding: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        #requestPopup .content {
+            text-align: center;
+        }
+        #requestPopup h2 {
+            margin-top: 0;
+        }
+        #requestPopup .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 24px;
+            text-decoration: none;
+            color: #333;
+        }
     </style>
 </head>
 <body>
-    <?php
-    session_start();
-    if (!isset($_SESSION["user"]) || $_SESSION['usertype'] != 'd') {
-        header("location: ../login.php");
-        exit();
-    }
-    $useremail = $_SESSION["user"];
-    include("../connection.php");
-    $userrow = $database->query("SELECT * FROM doctor WHERE docemail='$useremail'");
-    $userfetch = $userrow->fetch_assoc();
-    $userid = $userfetch["docid"];
-    $username = $userfetch["docname"];
-    $_SESSION["docid"] = $userid;
-
-    $request_count_query = "SELECT COUNT(*) as pending_count FROM patient_requests WHERE doctor_id = $userid AND status = 'pending'";
-    $request_count_result = $database->query($request_count_query);
-    $pending_count = $request_count_result->fetch_assoc()['pending_count'];
-
-    $requests_query = "SELECT pr.*, p.pname FROM patient_requests pr 
-                      INNER JOIN patient p ON pr.patient_id = p.pid 
-                      WHERE pr.doctor_id = $userid AND pr.status = 'pending'";
-    $requests_result = $database->query($requests_query);
-
-    date_default_timezone_set('Asia/Kolkata');
-    $today = date('Y-m-d');
-    $oneWeekLater = date('Y-m-d', strtotime('+7 days'));
-    ?>
     <div class="container">
         <div class="menu">
             <table class="menu-container" border="0">
@@ -189,10 +247,11 @@
                                         $gmeet_request = $request['gmeet_request'] ? '<br><strong>Google Meet Requested</strong>' : '';
                                         echo '<div class="notification-item">';
                                         echo '<strong>' . htmlspecialchars($request['pname']) . '</strong><br>';
-                                        echo 'Title: ' . htmlspecialchars($request['title']) . '<br>';
+                                        echo 'Description: ' . htmlspecialchars($request['description']) . '<br>';
                                         echo 'Date: ' . $request['session_date'] . ' ' . $start_time_display . $gmeet_request . '<br>';
                                         echo '<div class="notification-actions">';
-                                        echo '<a href="handle_patient_request.php?action=approve&id=' . $request_id . '"><button class="btn-approve">Approve</button></a>';
+                                        // Modified Approve button to trigger the title modal
+                                        echo '<button class="btn-approve" onclick="showTitleModal(' . $request_id . ')">Approve</button>';
                                         echo '<button class="btn-reject" onclick="showRejectionModal(' . $request_id . ')">Reject</button>';
                                         echo '</div>';
                                         echo '</div>';
@@ -301,47 +360,45 @@
     </div>
     <div id="requestPopup" class="overlay" style="display:none;">
         <div class="popup">
-            <center>
+            <a class="close" onclick="document.getElementById('requestPopup').style.display='none'">×</a>
+            <div class="content">
                 <h2>Request New Session</h2>
-                <a class="close" onclick="document.getElementById('requestPopup').style.display='none'">×</a>
-                <div class="content">
-                    <form action="submit-request.php" method="post" onsubmit="return validateForm()">
-                        <label for="title" class="form-label">Session Title:</label>
-                        <input type="text" name="title" id="title" class="input-text" placeholder="Enter session title" required>
-                        <label for="session_date" class="form-label">Session Date:</label>
-                        <input type="text" name="session_date" id="session_date" class="input-text" required>
-                        <label for="start_time" class="form-label">Start Time (8:00 AM - 5:00 PM):</label>
-                        <select name="start_time" id="start_time" class="input-text" required>
-                            <option value="">Select Start Time</option>
-                            <?php
-                            for ($h = 8; $h < 18; $h++) {
-                                foreach ([0, 30] as $m) {
-                                    if ($h == 12 || ($h == 17 && $m == 30) || $h > 17) continue;
-                                    $time = sprintf("%02d:%02d:00", $h, $m);
-                                    $ampm = $h >= 12 ? 'PM' : 'AM';
-                                    $display_h = $h > 12 ? $h - 12 : $h;
-                                    echo "<option value='$time'>$display_h:" . ($m == 0 ? '00' : '30') . " $ampm</option>";
-                                }
+                <form action="submit-request.php" method="post" onsubmit="return validateForm()">
+                    <label for="title" class="form-label">Session Title:</label>
+                    <input type="text" name="title" id="title" class="input-text" placeholder="Enter session title" required>
+                    <label for="session_date" class="form-label">Session Date:</label>
+                    <input type="text" name="session_date" id="session_date" class="input-text" required>
+                    <label for="start_time" class="form-label">Start Time (8:00 AM - 5:00 PM):</label>
+                    <select name="start_time" id="start_time" class="input-text" required>
+                        <option value="">Select Start Time</option>
+                        <?php
+                        for ($h = 8; $h < 18; $h++) {
+                            foreach ([0, 30] as $m) {
+                                if ($h == 12 || ($h == 17 && $m == 30) || $h > 17) continue;
+                                $time = sprintf("%02d:%02d:00", $h, $m);
+                                $ampm = $h >= 12 ? 'PM' : 'AM';
+                                $display_h = $h > 12 ? $h - 12 : $h;
+                                echo "<option value='$time'>$display_h:" . ($m == 0 ? '00' : '30') . " $ampm</option>";
                             }
-                            ?>
-                        </select>
-                        <label for="duration" class="form-label">Duration:</label>
-                        <select name="duration" id="duration" class="input-text" required>
-                            <option value="30">30 minutes</option>
-                            <option value="60">1 hour</option>
-                            <option value="90">1 hour 30 minutes</option>
-                            <option value="120">2 hours</option>
-                        </select>
-                        <label for="gmeet_request" class="form-label">Request Google Meet Link:</label>
-                        <input type="checkbox" name="gmeet_request" id="gmeet_request" value="1">
-                        <p><b>Note:</b> Opening: 8:00 AM, Break: 12:00 PM - 1:00 PM, Closing: 6:00 PM</p>
-                        <input type="hidden" name="docid" value="<?php echo $userid; ?>">
-                        <div style="display: flex; justify-content: center; margin-top: 20px;">
-                            <button type="submit" class="btn-primary btn">Submit Request</button>
-                        </div>
-                    </form>
-                </div>
-            </center>
+                        }
+                        ?>
+                    </select>
+                    <label for="duration" class="form-label">Duration:</label>
+                    <select name="duration" id="duration" class="input-text" required>
+                        <option value="30">30 minutes</option>
+                        <option value="60">1 hour</option>
+                        <option value="90">1 hour 30 minutes</option>
+                        <option value="120">2 hours</option>
+                    </select>
+                    <label for="gmeet_request" class="form-label">Request Google Meet Link:</label>
+                    <input type="checkbox" name="gmeet_request" id="gmeet_request" value="1">
+                    <p><b>Note:</b> Opening: 8:00 AM, Break: 12:00 PM - 1:00 PM, Closing: 6:00 PM</p>
+                    <input type="hidden" name="docid" value="<?php echo $userid; ?>">
+                    <div style="display: flex; justify-content: center; margin-top: 20px;">
+                        <button type="submit" class="btn-primary btn">Submit Request</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
     <!-- Rejection Modal -->
@@ -361,6 +418,21 @@
                 <div>
                     <button type="submit" class="btn-submit">Reject</button>
                     <button type="button" class="btn-cancel" onclick="closeRejectionModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Title Input Modal -->
+    <div id="titleModal" class="title-modal">
+        <div class="modal-content">
+            <h3>Name the Session</h3>
+            <form id="titleForm" method="POST" action="handle_patient_request.php">
+                <input type="hidden" name="action" value="approve">
+                <input type="hidden" name="id" id="approveRequestId">
+                <input type="text" name="title" id="sessionTitle" placeholder="Enter session title" required>
+                <div>
+                    <button type="submit" class="btn-submit">Approve</button>
+                    <button type="button" class="btn-cancel" onclick="closeTitleModal()">Cancel</button>
                 </div>
             </form>
         </div>
@@ -468,6 +540,26 @@
                 instance.redraw();
             }
         });
+
+        // Show SweetAlert2 popup for success or error messages
+        <?php
+        if (isset($_GET['success'])) {
+            echo "Swal.fire({ 
+                icon: 'success', 
+                title: 'Success!', 
+                text: '" . addslashes($_GET['success']) . "', 
+                showConfirmButton: true 
+            }).then(() => { window.location = 'schedule.php'; });";
+        }
+        if (isset($_GET['error'])) {
+            echo "Swal.fire({ 
+                icon: 'error', 
+                title: 'Error!', 
+                text: '" . addslashes($_GET['error']) . "', 
+                showConfirmButton: true 
+            }).then(() => { window.location = 'schedule.php'; });";
+        }
+        ?>
     });
 
     function validateForm() {
@@ -538,7 +630,7 @@
     }
 
     window.onclick = function(event) {
-        if (!event.target.closest('.notification-bell') && !event.target.closest('#rejectionModal')) {
+        if (!event.target.closest('.notification-bell') && !event.target.closest('#rejectionModal') && !event.target.closest('#titleModal')) {
             var dropdown = document.getElementById('notificationDropdown');
             if (dropdown.style.display === 'block') {
                 dropdown.style.display = 'none';
@@ -553,6 +645,16 @@
 
     function closeRejectionModal() {
         document.getElementById('rejectionModal').style.display = 'none';
+    }
+
+    function showTitleModal(requestId) {
+        document.getElementById('approveRequestId').value = requestId;
+        document.getElementById('titleModal').style.display = 'block';
+        document.getElementById('sessionTitle').value = ''; // Clear previous input
+    }
+
+    function closeTitleModal() {
+        document.getElementById('titleModal').style.display = 'none';
     }
     </script>
 </body>

@@ -9,13 +9,11 @@
     <link rel="stylesheet" href="../css/admin.css">
     <link rel="icon" href="../Images/G-icon.png">
     <title>Cases</title>
+    <!-- Add SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        .popup {
-            animation: transitionIn-Y-bottom 0.5s;
-        }
-        .sub-table {
-            animation: transitionIn-Y-bottom 0.5s;
-        }
+        .popup { animation: transitionIn-Y-bottom 0.5s; }
+        .sub-table { animation: transitionIn-Y-bottom 0.5s; }
         .modal {
             display: none;
             position: fixed;
@@ -121,7 +119,7 @@
     $userid = $userfetch["docid"];
     $username = $userfetch["docname"];
 
-    // Handle email sending
+    // Handle email sending with SweetAlert
     if(isset($_POST['send_recommendation'])) {
         $patient_id = $_POST['patient_id'];
         $subject = $_POST['subject'];
@@ -180,9 +178,31 @@
             // Store in database
             $database->query("INSERT INTO doctor_recommendations (doctor_id, patient_id, subject, message, sent_date) 
                             VALUES ('$userid', '$patient_id', '$subject', '$message', NOW())");
-            echo '<script>alert("Recommendation sent successfully!");</script>';
+            // Echo SweetAlert success message
+            echo "<script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Recommendation sent successfully!',
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'patient.php'; // Redirect after clicking OK
+                    }
+                });
+            </script>";
         } else {
-            echo '<script>alert("Failed to send recommendation. Please try again.");</script>';
+            // Echo SweetAlert error message
+            echo "<script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Failed to send recommendation. Please try again.',
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK'
+                });
+            </script>";
         }
     }
     ?>
